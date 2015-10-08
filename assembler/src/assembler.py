@@ -158,7 +158,7 @@ class Parser:
       return (None, offset_bin)
     elif operand_type == Operandtype.LABEL_ABSOLUTE:
       target_line_num = label_dict[operand]
-      return (None, format(target_line_num - 1, "026b"))
+      return (None, format(4 * (target_line_num - 1), "026b"))
       
 
 
