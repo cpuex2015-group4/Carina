@@ -1,0 +1,50 @@
+# Current time Thu Oct  8 12:13:18 2015
+# ModelSim Stack Trace
+# Program = vish
+# Id = "10.0c"
+# Version = "2011.07"
+# Date = "Jul 21 2011"
+# Platform = linux
+# 0    0x08192350: 'vish_catch_signal + 0x0' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 1    0xf775941b: '<unknown (@0xf775941b)>'
+# 2    0x082b5a65: 'release_all + 0x15' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 3    0x082b5bc2: 'quit_event + 0x22' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 4    0x0818aea8: 'tclprim_vlmExit + 0x8' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 5    0x083b6167: 'TclInvokeStringCommand + 0x5f' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 6    0x083b7919: 'TclEvalObjvInternal + 0x341' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 7    0x083dd24b: 'TclExprFloatError + 0x2a1b' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 8    0x083e2333: 'TclCompEvalObj + 0x107' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 9    0x08407b89: 'TclObjInterpProc + 0x24d' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 10   0x083b7919: 'TclEvalObjvInternal + 0x341' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 11   0x083dd24b: 'TclExprFloatError + 0x2a1b' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 12   0x083e2333: 'TclCompEvalObj + 0x107' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 13   0x08407b89: 'TclObjInterpProc + 0x24d' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 14   0x083b7919: 'TclEvalObjvInternal + 0x341' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 15   0x083b8dad: 'Tcl_EvalEx + 0x1cd' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 16   0x083b9873: 'Tcl_EvalObjEx + 0x5f' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 17   0x083bced9: 'Tcl_EvalObjCmd + 0x45' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 18   0x083b7919: 'TclEvalObjvInternal + 0x341' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 19   0x083dd24b: 'TclExprFloatError + 0x2a1b' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 20   0x083e2333: 'TclCompEvalObj + 0x107' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 21   0x08407b89: 'TclObjInterpProc + 0x24d' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 22   0x083b7919: 'TclEvalObjvInternal + 0x341' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 23   0x083dd24b: 'TclExprFloatError + 0x2a1b' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 24   0x083e2333: 'TclCompEvalObj + 0x107' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 25   0x083b98ac: 'Tcl_EvalObjEx + 0x98' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 26   0x083bf70d: 'Tcl_IfObjCmd + 0x171' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 27   0x083b7919: 'TclEvalObjvInternal + 0x341' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 28   0x083b8dad: 'Tcl_EvalEx + 0x1cd' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 29   0x083b91f0: 'Tcl_Eval + 0x20' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 30   0x083b9bda: 'Tcl_GlobalEval + 0x26' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 31   0x0839c0d3: 'TkWmProtocolEventProc + 0x8f' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 32   0x08328815: 'Tk_HandleEvent + 0x8b1' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 33   0x08328bc5: 'TkQueueEventForAllChildren + 0xad' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 34   0x083ff3b0: 'Tcl_ServiceEvent + 0x54' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 35   0x083ff5e2: 'Tcl_DoOneEvent + 0x72' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 36   0x08328c89: 'Tk_MainLoop + 0x19' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 37   0x0832fe5c: 'Tk_MainEx + 0x298' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 38   0x08192c62: 'vish_inner_loop + 0x112' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 39   0x08194c0b: 'main + 0xedb' in '/home/yukiimai/modelsim/modeltech/linux/vish'
+# 40   0xf73a9a7e: '_libc_start_main + 0xee' in '/lib/i386-linux-gnu/libc.so.6'
+# End of Stack Trace
+

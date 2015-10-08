@@ -1,0 +1,1052 @@
+Release 14.4 Map P.49d (lin64)
+Xilinx Mapping Report File for Design 'top'
+
+Design Information
+------------------
+Command Line   : map -intstyle ise -p xc5vlx50t-ff1136-1 -w -logic_opt off -ol
+high -t 1 -register_duplication off -global_opt off -mt off -cm area -ir off -pr
+off -lc off -power off -o top_map.ncd top.ngd top.pcf 
+Target Device  : xc5vlx50t
+Target Package : ff1136
+Target Speed   : -1
+Mapper Version : virtex5 -- $Revision: 1.55 $
+Mapped Date    : Wed Oct  7 00:36:11 2015
+
+Design Summary
+--------------
+Number of errors:      0
+Number of warnings:  107
+Slice Logic Utilization:
+
+Slice Logic Distribution:
+
+IO Utilization:
+  Number of bonded IOBs:                        69 out of     480   14%
+    Number of LOCed IOBs:                       69 out of      69  100%
+
+Specific Feature Utilization:
+
+Average Fanout of Non-Clock Nets:                0.00
+
+Peak Memory Usage:  821 MB
+Total REAL time to MAP completion:  7 secs 
+Total CPU time to MAP completion:   7 secs 
+
+Table of Contents
+-----------------
+Section 1 - Errors
+Section 2 - Warnings
+Section 3 - Informational
+Section 4 - Removed Logic Summary
+Section 5 - Removed Logic
+Section 6 - IOB Properties
+Section 7 - RPMs
+Section 8 - Guide Report
+Section 9 - Area Group and Partition Summary
+Section 10 - Timing Report
+Section 11 - Configuration String Information
+Section 12 - Control Set Information
+Section 13 - Utilization by Hierarchy
+
+Section 1 - Errors
+------------------
+
+Section 2 - Warnings
+--------------------
+WARNING:Security:43 - No license file was found in the standard Xilinx license
+directory.
+WARNING:Security:44 - Since no license file was found,
+WARNING:Security:42 - Your software subscription period has lapsed. Your current
+version of Xilinx tools will continue to function, but you no longer qualify for
+Xilinx software updates or new releases.
+WARNING:MapLib:701 - Signal MCLK1 connected to top level port MCLK1 has been
+   removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<31> connected to top level port
+   DEBUG_data1<31> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<30> connected to top level port
+   DEBUG_data1<30> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<29> connected to top level port
+   DEBUG_data1<29> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<28> connected to top level port
+   DEBUG_data1<28> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<27> connected to top level port
+   DEBUG_data1<27> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<26> connected to top level port
+   DEBUG_data1<26> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<25> connected to top level port
+   DEBUG_data1<25> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<24> connected to top level port
+   DEBUG_data1<24> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<23> connected to top level port
+   DEBUG_data1<23> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<22> connected to top level port
+   DEBUG_data1<22> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<21> connected to top level port
+   DEBUG_data1<21> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<20> connected to top level port
+   DEBUG_data1<20> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<19> connected to top level port
+   DEBUG_data1<19> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<18> connected to top level port
+   DEBUG_data1<18> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<17> connected to top level port
+   DEBUG_data1<17> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<16> connected to top level port
+   DEBUG_data1<16> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<15> connected to top level port
+   DEBUG_data1<15> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<14> connected to top level port
+   DEBUG_data1<14> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<13> connected to top level port
+   DEBUG_data1<13> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<12> connected to top level port
+   DEBUG_data1<12> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<11> connected to top level port
+   DEBUG_data1<11> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<10> connected to top level port
+   DEBUG_data1<10> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<9> connected to top level port
+   DEBUG_data1<9> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<8> connected to top level port
+   DEBUG_data1<8> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<7> connected to top level port
+   DEBUG_data1<7> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<6> connected to top level port
+   DEBUG_data1<6> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<5> connected to top level port
+   DEBUG_data1<5> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<4> connected to top level port
+   DEBUG_data1<4> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<3> connected to top level port
+   DEBUG_data1<3> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<2> connected to top level port
+   DEBUG_data1<2> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<1> connected to top level port
+   DEBUG_data1<1> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data1<0> connected to top level port
+   DEBUG_data1<0> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<31> connected to top level port
+   DEBUG_data2<31> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<30> connected to top level port
+   DEBUG_data2<30> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<29> connected to top level port
+   DEBUG_data2<29> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<28> connected to top level port
+   DEBUG_data2<28> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<27> connected to top level port
+   DEBUG_data2<27> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<26> connected to top level port
+   DEBUG_data2<26> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<25> connected to top level port
+   DEBUG_data2<25> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<24> connected to top level port
+   DEBUG_data2<24> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<23> connected to top level port
+   DEBUG_data2<23> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<22> connected to top level port
+   DEBUG_data2<22> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<21> connected to top level port
+   DEBUG_data2<21> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<20> connected to top level port
+   DEBUG_data2<20> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<19> connected to top level port
+   DEBUG_data2<19> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<18> connected to top level port
+   DEBUG_data2<18> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<17> connected to top level port
+   DEBUG_data2<17> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<16> connected to top level port
+   DEBUG_data2<16> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<15> connected to top level port
+   DEBUG_data2<15> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<14> connected to top level port
+   DEBUG_data2<14> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<13> connected to top level port
+   DEBUG_data2<13> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<12> connected to top level port
+   DEBUG_data2<12> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<11> connected to top level port
+   DEBUG_data2<11> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<10> connected to top level port
+   DEBUG_data2<10> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<9> connected to top level port
+   DEBUG_data2<9> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<8> connected to top level port
+   DEBUG_data2<8> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<7> connected to top level port
+   DEBUG_data2<7> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<6> connected to top level port
+   DEBUG_data2<6> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<5> connected to top level port
+   DEBUG_data2<5> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<4> connected to top level port
+   DEBUG_data2<4> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<3> connected to top level port
+   DEBUG_data2<3> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<2> connected to top level port
+   DEBUG_data2<2> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<1> connected to top level port
+   DEBUG_data2<1> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_data2<0> connected to top level port
+   DEBUG_data2<0> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_exe_state<2> connected to top level port
+   DEBUG_exe_state<2> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_exe_state<1> connected to top level port
+   DEBUG_exe_state<1> has been removed.
+WARNING:MapLib:701 - Signal DEBUG_exe_state<0> connected to top level port
+   DEBUG_exe_state<0> has been removed.
+WARNING:MapLib:41 - All members of TNM group "SYS_CLK" have been optimized out
+   of the design.
+WARNING:MapLib:50 - The period specification "TS_SYS_CLK" has been discarded
+   because the group "SYS_CLK" has been optimized away.
+WARNING:PhysDesignRules:368 - The signal <ZA<10>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XLBO_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<11>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<12>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<13>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XZBE<0>_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<14>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XZBE<1>_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<15>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XZBE<2>_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<16>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ADVA_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XZBE<3>_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<17>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<18>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZCLKMA<0>_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<19>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZCLKMA<1>_OBUF> is incomplete. The
+   signal is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XE1_OBUF> is incomplete. The signal is
+   not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<0>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XE3_OBUF> is incomplete. The signal is
+   not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<1>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <E2A_OBUF> is incomplete. The signal is
+   not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<2>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<3>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<4>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<5>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<6>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<7>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<8>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZA<9>_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XGA_OBUF> is incomplete. The signal is
+   not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XFT_OBUF> is incomplete. The signal is
+   not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XWA_OBUF> is incomplete. The signal is
+   not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <RS_TX_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <XZCKE_OBUF> is incomplete. The signal
+   is not driven by any source pin in the design.
+WARNING:PhysDesignRules:368 - The signal <ZZA_OBUF> is incomplete. The signal is
+   not driven by any source pin in the design.
+
+Section 3 - Informational
+-------------------------
+INFO:Security:50 - The XILINXD_LICENSE_FILE environment variable is set to
+'2100@133.11.27.150'.
+INFO:Security:52 - The LM_LICENSE_FILE environment variable is set to
+'1717@133.11.27.150'.
+INFO:Security:54 - 'xc5vlx50t' is a WebPack part.
+INFO:LIT:243 - Logical network ZD<7>_IBUF has no load.
+INFO:LIT:395 - The above info message is repeated 31 more times for the
+   following (max. 5 shown):
+   ZD<8>_IBUF,
+   ZD<9>_IBUF,
+   ZD<10>_IBUF,
+   ZD<11>_IBUF,
+   ZD<12>_IBUF
+   To see the details of these info messages, please use the -detail switch.
+INFO:MapLib:562 - No environment variables are currently set.
+INFO:LIT:244 - All of the single ended outputs in this design are using slew
+   rate limited output drivers. The delay on speed critical single ended outputs
+   can be dramatically reduced by designating them as fast outputs.
+INFO:Pack:1716 - Initializing temperature to 85.000 Celsius. (default - Range:
+   0.000 to 85.000 Celsius)
+INFO:Pack:1720 - Initializing voltage to 0.950 Volts. (default - Range: 0.950 to
+   1.050 Volts)
+INFO:Map:215 - The Interim Design Summary has been generated in the MAP Report
+   (.mrp).
+INFO:Pack:1650 - Map created a placed design.
+
+Section 4 - Removed Logic Summary
+---------------------------------
+ 333 block(s) removed
+ 265 signal(s) removed
+
+Section 5 - Removed Logic
+-------------------------
+
+The trimmed logic report below shows the logic removed from your design due to
+sourceless or loadless signals, and VCC or ground connections.  If the removal
+of a signal or symbol results in the subsequent removal of an additional signal
+or symbol, the message explaining that second removal will be indented.  This
+indentation will be repeated as a chain of related logic is removed.
+
+To quickly locate the original cause for the removal of a chain of logic, look
+above the place where that logic is listed in the trimming report, then locate
+the lines that are least indented (begin at the leftmost edge).
+
+Loadless block "bg" (CKBUF) removed.
+ The signal "iclk" is loadless and has been removed.
+  Loadless block "ib" (CKBUF) removed.
+   The signal "MCLK1" is loadless and has been removed.
+    Loadless block "MCLK1" (PAD) removed.
+
+The trimmed logic reported below is either:
+   1. part of a cycle
+   2. part of disabled logic
+   3. a side-effect of other trimmed logic
+
+The signal "DEBUG_data1<0>" is unused and has been removed.
+ Unused block "DEBUG_data1_0_OBUF" (BUF) removed.
+  The signal "data.result_0" is unused and has been removed.
+   Unused block "data.result_0" (LATCH) removed.
+    The signal "data_result_add0000<0>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<0>" (XOR) removed.
+      The signal "N0" is unused and has been removed.
+       Unused block "XST_GND" (ZERO) removed.
+      The signal "Madd_data.result_add0000_lut<0>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_lut<0>_INV_0" (BUF) removed.
+        The signal "data.operand1_0" is unused and has been removed.
+         Unused block "data.operand1_0" (FF) removed.
+          The signal "DEBUG_exe_state_2_OBUF" is unused and has been removed.
+           Unused block "Mrom_exe_state21" (ROM) removed.
+            The signal "DEBUG_exe_state_0_OBUF" is unused and has been removed.
+             Unused block "Mrom_exe_state12" (ROM) removed.
+            The signal "DEBUG_exe_state_1_OBUF" is unused and has been removed.
+             Unused block "Mrom_exe_state111" (ROM) removed.
+          The signal "N1" is unused and has been removed.
+           Unused block "XST_VCC" (ONE) removed.
+          The signal "Mshreg_data.operand1_0" is unused and has been removed.
+The signal "DEBUG_data1<10>" is unused and has been removed.
+ Unused block "DEBUG_data1_10_OBUF" (BUF) removed.
+  The signal "data.result_10" is unused and has been removed.
+   Unused block "data.result_10" (LATCH) removed.
+    The signal "data_result_add0000<10>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<10>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<9>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<9>" (MUX) removed.
+        The signal "Madd_data.result_add0000_cy<8>" is unused and has been removed.
+         Unused block "Madd_data.result_add0000_cy<8>" (MUX) removed.
+          The signal "Madd_data.result_add0000_cy<7>" is unused and has been removed.
+           Unused block "Madd_data.result_add0000_cy<7>" (MUX) removed.
+            The signal "Madd_data.result_add0000_cy<6>" is unused and has been removed.
+             Unused block "Madd_data.result_add0000_cy<6>" (MUX) removed.
+              The signal "Madd_data.result_add0000_cy<5>" is unused and has been removed.
+               Unused block "Madd_data.result_add0000_cy<5>" (MUX) removed.
+                The signal "Madd_data.result_add0000_cy<4>" is unused and has been removed.
+                 Unused block "Madd_data.result_add0000_cy<4>" (MUX) removed.
+                  The signal "Madd_data.result_add0000_cy<3>" is unused and has been removed.
+                   Unused block "Madd_data.result_add0000_cy<3>" (MUX) removed.
+                    The signal "Madd_data.result_add0000_cy<2>" is unused and has been removed.
+                     Unused block "Madd_data.result_add0000_cy<2>" (MUX) removed.
+                      The signal "Madd_data.result_add0000_cy<1>" is unused and has been removed.
+                       Unused block "Madd_data.result_add0000_cy<1>" (MUX) removed.
+                        The signal "Madd_data.result_add0000_cy<0>" is unused and has been removed.
+                         Unused block "Madd_data.result_add0000_cy<0>" (MUX) removed.
+                        The signal "Madd_data.result_add0000_cy<1>_rt" is unused and has been removed.
+                         Unused block "Madd_data.result_add0000_cy<1>_rt" (ROM) removed.
+                          The signal "data.operand1_1" is unused and has been removed.
+                           Unused block "data.operand1_1" (FF) removed.
+                            The signal "Mshreg_data.operand1_1" is unused and has been removed.
+                      The signal "Madd_data.result_add0000_cy<2>_rt" is unused and has been removed.
+                       Unused block "Madd_data.result_add0000_cy<2>_rt" (ROM) removed.
+                        The signal "data.operand1_2" is unused and has been removed.
+                         Unused block "data.operand1_2" (FF) removed.
+                          The signal "Mshreg_data.operand1_2" is unused and has been removed.
+                    The signal "Madd_data.result_add0000_cy<3>_rt" is unused and has been removed.
+                     Unused block "Madd_data.result_add0000_cy<3>_rt" (ROM) removed.
+                      The signal "data.operand1_3" is unused and has been removed.
+                       Unused block "data.operand1_3" (FF) removed.
+                        The signal "Mshreg_data.operand1_3" is unused and has been removed.
+                  The signal "Madd_data.result_add0000_cy<4>_rt" is unused and has been removed.
+                   Unused block "Madd_data.result_add0000_cy<4>_rt" (ROM) removed.
+                    The signal "data.operand1_4" is unused and has been removed.
+                     Unused block "data.operand1_4" (FF) removed.
+                      The signal "Mshreg_data.operand1_4" is unused and has been removed.
+                The signal "Madd_data.result_add0000_cy<5>_rt" is unused and has been removed.
+                 Unused block "Madd_data.result_add0000_cy<5>_rt" (ROM) removed.
+                  The signal "data.operand1_5" is unused and has been removed.
+                   Unused block "data.operand1_5" (FF) removed.
+                    The signal "Mshreg_data.operand1_5" is unused and has been removed.
+              The signal "Madd_data.result_add0000_cy<6>_rt" is unused and has been removed.
+               Unused block "Madd_data.result_add0000_cy<6>_rt" (ROM) removed.
+                The signal "data.operand1_6" is unused and has been removed.
+                 Unused block "data.operand1_6" (FF) removed.
+                  The signal "Mshreg_data.operand1_6" is unused and has been removed.
+            The signal "Madd_data.result_add0000_cy<7>_rt" is unused and has been removed.
+             Unused block "Madd_data.result_add0000_cy<7>_rt" (ROM) removed.
+              The signal "data.operand1_7" is unused and has been removed.
+               Unused block "data.operand1_7" (FF) removed.
+                The signal "Mshreg_data.operand1_7" is unused and has been removed.
+          The signal "Madd_data.result_add0000_cy<8>_rt" is unused and has been removed.
+           Unused block "Madd_data.result_add0000_cy<8>_rt" (ROM) removed.
+            The signal "data.operand1_8" is unused and has been removed.
+             Unused block "data.operand1_8" (FF) removed.
+              The signal "Mshreg_data.operand1_8" is unused and has been removed.
+        The signal "Madd_data.result_add0000_cy<9>_rt" is unused and has been removed.
+         Unused block "Madd_data.result_add0000_cy<9>_rt" (ROM) removed.
+          The signal "data.operand1_9" is unused and has been removed.
+           Unused block "data.operand1_9" (FF) removed.
+            The signal "Mshreg_data.operand1_9" is unused and has been removed.
+      The signal "Madd_data.result_add0000_cy<10>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<10>_rt" (ROM) removed.
+        The signal "data.operand1_10" is unused and has been removed.
+         Unused block "data.operand1_10" (FF) removed.
+          The signal "Mshreg_data.operand1_10" is unused and has been removed.
+The signal "DEBUG_data1<11>" is unused and has been removed.
+ Unused block "DEBUG_data1_11_OBUF" (BUF) removed.
+  The signal "data.result_11" is unused and has been removed.
+   Unused block "data.result_11" (LATCH) removed.
+    The signal "data_result_add0000<11>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<11>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<10>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<10>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<11>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<11>_rt" (ROM) removed.
+        The signal "data.operand1_11" is unused and has been removed.
+         Unused block "data.operand1_11" (FF) removed.
+          The signal "Mshreg_data.operand1_11" is unused and has been removed.
+The signal "DEBUG_data1<12>" is unused and has been removed.
+ Unused block "DEBUG_data1_12_OBUF" (BUF) removed.
+  The signal "data.result_12" is unused and has been removed.
+   Unused block "data.result_12" (LATCH) removed.
+    The signal "data_result_add0000<12>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<12>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<11>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<11>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<12>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<12>_rt" (ROM) removed.
+        The signal "data.operand1_12" is unused and has been removed.
+         Unused block "data.operand1_12" (FF) removed.
+          The signal "Mshreg_data.operand1_12" is unused and has been removed.
+The signal "DEBUG_data1<13>" is unused and has been removed.
+ Unused block "DEBUG_data1_13_OBUF" (BUF) removed.
+  The signal "data.result_13" is unused and has been removed.
+   Unused block "data.result_13" (LATCH) removed.
+    The signal "data_result_add0000<13>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<13>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<12>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<12>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<13>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<13>_rt" (ROM) removed.
+        The signal "data.operand1_13" is unused and has been removed.
+         Unused block "data.operand1_13" (FF) removed.
+          The signal "Mshreg_data.operand1_13" is unused and has been removed.
+The signal "DEBUG_data1<14>" is unused and has been removed.
+ Unused block "DEBUG_data1_14_OBUF" (BUF) removed.
+  The signal "data.result_14" is unused and has been removed.
+   Unused block "data.result_14" (LATCH) removed.
+    The signal "data_result_add0000<14>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<14>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<13>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<13>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<14>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<14>_rt" (ROM) removed.
+        The signal "data.operand1_14" is unused and has been removed.
+         Unused block "data.operand1_14" (FF) removed.
+          The signal "Mshreg_data.operand1_14" is unused and has been removed.
+The signal "DEBUG_data1<15>" is unused and has been removed.
+ Unused block "DEBUG_data1_15_OBUF" (BUF) removed.
+  The signal "data.result_15" is unused and has been removed.
+   Unused block "data.result_15" (LATCH) removed.
+    The signal "data_result_add0000<15>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<15>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<14>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<14>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<15>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<15>_rt" (ROM) removed.
+        The signal "data.operand1_15" is unused and has been removed.
+         Unused block "data.operand1_15" (FF) removed.
+          The signal "Mshreg_data.operand1_15" is unused and has been removed.
+The signal "DEBUG_data1<16>" is unused and has been removed.
+ Unused block "DEBUG_data1_16_OBUF" (BUF) removed.
+  The signal "data.result_16" is unused and has been removed.
+   Unused block "data.result_16" (LATCH) removed.
+    The signal "data_result_add0000<16>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<16>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<15>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<15>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<16>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<16>_rt" (ROM) removed.
+        The signal "data.operand1_16" is unused and has been removed.
+         Unused block "data.operand1_16" (FF) removed.
+          The signal "Mshreg_data.operand1_16" is unused and has been removed.
+The signal "DEBUG_data1<17>" is unused and has been removed.
+ Unused block "DEBUG_data1_17_OBUF" (BUF) removed.
+  The signal "data.result_17" is unused and has been removed.
+   Unused block "data.result_17" (LATCH) removed.
+    The signal "data_result_add0000<17>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<17>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<16>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<16>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<17>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<17>_rt" (ROM) removed.
+        The signal "data.operand1_17" is unused and has been removed.
+         Unused block "data.operand1_17" (FF) removed.
+          The signal "Mshreg_data.operand1_17" is unused and has been removed.
+The signal "DEBUG_data1<18>" is unused and has been removed.
+ Unused block "DEBUG_data1_18_OBUF" (BUF) removed.
+  The signal "data.result_18" is unused and has been removed.
+   Unused block "data.result_18" (LATCH) removed.
+    The signal "data_result_add0000<18>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<18>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<17>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<17>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<18>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<18>_rt" (ROM) removed.
+        The signal "data.operand1_18" is unused and has been removed.
+         Unused block "data.operand1_18" (FF) removed.
+          The signal "Mshreg_data.operand1_18" is unused and has been removed.
+The signal "DEBUG_data1<19>" is unused and has been removed.
+ Unused block "DEBUG_data1_19_OBUF" (BUF) removed.
+  The signal "data.result_19" is unused and has been removed.
+   Unused block "data.result_19" (LATCH) removed.
+    The signal "data_result_add0000<19>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<19>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<18>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<18>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<19>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<19>_rt" (ROM) removed.
+        The signal "data.operand1_19" is unused and has been removed.
+         Unused block "data.operand1_19" (FF) removed.
+          The signal "Mshreg_data.operand1_19" is unused and has been removed.
+The signal "DEBUG_data1<1>" is unused and has been removed.
+ Unused block "DEBUG_data1_1_OBUF" (BUF) removed.
+  The signal "data.result_1" is unused and has been removed.
+   Unused block "data.result_1" (LATCH) removed.
+    The signal "data_result_add0000<1>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<1>" (XOR) removed.
+The signal "DEBUG_data1<20>" is unused and has been removed.
+ Unused block "DEBUG_data1_20_OBUF" (BUF) removed.
+  The signal "data.result_20" is unused and has been removed.
+   Unused block "data.result_20" (LATCH) removed.
+    The signal "data_result_add0000<20>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<20>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<19>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<19>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<20>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<20>_rt" (ROM) removed.
+        The signal "data.operand1_20" is unused and has been removed.
+         Unused block "data.operand1_20" (FF) removed.
+          The signal "Mshreg_data.operand1_20" is unused and has been removed.
+The signal "DEBUG_data1<21>" is unused and has been removed.
+ Unused block "DEBUG_data1_21_OBUF" (BUF) removed.
+  The signal "data.result_21" is unused and has been removed.
+   Unused block "data.result_21" (LATCH) removed.
+    The signal "data_result_add0000<21>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<21>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<20>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<20>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<21>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<21>_rt" (ROM) removed.
+        The signal "data.operand1_21" is unused and has been removed.
+         Unused block "data.operand1_21" (FF) removed.
+          The signal "Mshreg_data.operand1_21" is unused and has been removed.
+The signal "DEBUG_data1<22>" is unused and has been removed.
+ Unused block "DEBUG_data1_22_OBUF" (BUF) removed.
+  The signal "data.result_22" is unused and has been removed.
+   Unused block "data.result_22" (LATCH) removed.
+    The signal "data_result_add0000<22>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<22>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<21>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<21>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<22>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<22>_rt" (ROM) removed.
+        The signal "data.operand1_22" is unused and has been removed.
+         Unused block "data.operand1_22" (FF) removed.
+          The signal "Mshreg_data.operand1_22" is unused and has been removed.
+The signal "DEBUG_data1<23>" is unused and has been removed.
+ Unused block "DEBUG_data1_23_OBUF" (BUF) removed.
+  The signal "data.result_23" is unused and has been removed.
+   Unused block "data.result_23" (LATCH) removed.
+    The signal "data_result_add0000<23>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<23>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<22>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<22>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<23>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<23>_rt" (ROM) removed.
+        The signal "data.operand1_23" is unused and has been removed.
+         Unused block "data.operand1_23" (FF) removed.
+          The signal "Mshreg_data.operand1_23" is unused and has been removed.
+The signal "DEBUG_data1<24>" is unused and has been removed.
+ Unused block "DEBUG_data1_24_OBUF" (BUF) removed.
+  The signal "data.result_24" is unused and has been removed.
+   Unused block "data.result_24" (LATCH) removed.
+    The signal "data_result_add0000<24>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<24>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<23>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<23>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<24>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<24>_rt" (ROM) removed.
+        The signal "data.operand1_24" is unused and has been removed.
+         Unused block "data.operand1_24" (FF) removed.
+          The signal "Mshreg_data.operand1_24" is unused and has been removed.
+The signal "DEBUG_data1<25>" is unused and has been removed.
+ Unused block "DEBUG_data1_25_OBUF" (BUF) removed.
+  The signal "data.result_25" is unused and has been removed.
+   Unused block "data.result_25" (LATCH) removed.
+    The signal "data_result_add0000<25>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<25>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<24>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<24>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<25>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<25>_rt" (ROM) removed.
+        The signal "data.operand1_25" is unused and has been removed.
+         Unused block "data.operand1_25" (FF) removed.
+          The signal "Mshreg_data.operand1_25" is unused and has been removed.
+The signal "DEBUG_data1<26>" is unused and has been removed.
+ Unused block "DEBUG_data1_26_OBUF" (BUF) removed.
+  The signal "data.result_26" is unused and has been removed.
+   Unused block "data.result_26" (LATCH) removed.
+    The signal "data_result_add0000<26>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<26>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<25>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<25>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<26>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<26>_rt" (ROM) removed.
+        The signal "data.operand1_26" is unused and has been removed.
+         Unused block "data.operand1_26" (FF) removed.
+          The signal "Mshreg_data.operand1_26" is unused and has been removed.
+The signal "DEBUG_data1<27>" is unused and has been removed.
+ Unused block "DEBUG_data1_27_OBUF" (BUF) removed.
+  The signal "data.result_27" is unused and has been removed.
+   Unused block "data.result_27" (LATCH) removed.
+    The signal "data_result_add0000<27>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<27>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<26>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<26>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<27>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<27>_rt" (ROM) removed.
+        The signal "data.operand1_27" is unused and has been removed.
+         Unused block "data.operand1_27" (FF) removed.
+          The signal "Mshreg_data.operand1_27" is unused and has been removed.
+The signal "DEBUG_data1<28>" is unused and has been removed.
+ Unused block "DEBUG_data1_28_OBUF" (BUF) removed.
+  The signal "data.result_28" is unused and has been removed.
+   Unused block "data.result_28" (LATCH) removed.
+    The signal "data_result_add0000<28>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<28>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<27>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<27>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<28>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<28>_rt" (ROM) removed.
+        The signal "data.operand1_28" is unused and has been removed.
+         Unused block "data.operand1_28" (FF) removed.
+          The signal "Mshreg_data.operand1_28" is unused and has been removed.
+The signal "DEBUG_data1<29>" is unused and has been removed.
+ Unused block "DEBUG_data1_29_OBUF" (BUF) removed.
+  The signal "data.result_29" is unused and has been removed.
+   Unused block "data.result_29" (LATCH) removed.
+    The signal "data_result_add0000<29>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<29>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<28>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<28>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<29>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<29>_rt" (ROM) removed.
+        The signal "data.operand1_29" is unused and has been removed.
+         Unused block "data.operand1_29" (FF) removed.
+          The signal "Mshreg_data.operand1_29" is unused and has been removed.
+The signal "DEBUG_data1<2>" is unused and has been removed.
+ Unused block "DEBUG_data1_2_OBUF" (BUF) removed.
+  The signal "data.result_2" is unused and has been removed.
+   Unused block "data.result_2" (LATCH) removed.
+    The signal "data_result_add0000<2>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<2>" (XOR) removed.
+The signal "DEBUG_data1<30>" is unused and has been removed.
+ Unused block "DEBUG_data1_30_OBUF" (BUF) removed.
+  The signal "data.result_30" is unused and has been removed.
+   Unused block "data.result_30" (LATCH) removed.
+    The signal "data_result_add0000<30>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<30>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<29>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<29>" (MUX) removed.
+      The signal "Madd_data.result_add0000_cy<30>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<30>_rt" (ROM) removed.
+        The signal "data.operand1_30" is unused and has been removed.
+         Unused block "data.operand1_30" (FF) removed.
+          The signal "Mshreg_data.operand1_30" is unused and has been removed.
+The signal "DEBUG_data1<31>" is unused and has been removed.
+ Unused block "DEBUG_data1_31_OBUF" (BUF) removed.
+  The signal "data.result_31" is unused and has been removed.
+   Unused block "data.result_31" (LATCH) removed.
+    The signal "data_result_add0000<31>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<31>" (XOR) removed.
+      The signal "Madd_data.result_add0000_cy<30>" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_cy<30>" (MUX) removed.
+      The signal "Madd_data.result_add0000_xor<31>_rt" is unused and has been removed.
+       Unused block "Madd_data.result_add0000_xor<31>_rt" (ROM) removed.
+        The signal "data.operand1_31" is unused and has been removed.
+         Unused block "data.operand1_31" (FF) removed.
+          The signal "Mshreg_data.operand1_31" is unused and has been removed.
+The signal "DEBUG_data1<3>" is unused and has been removed.
+ Unused block "DEBUG_data1_3_OBUF" (BUF) removed.
+  The signal "data.result_3" is unused and has been removed.
+   Unused block "data.result_3" (LATCH) removed.
+    The signal "data_result_add0000<3>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<3>" (XOR) removed.
+The signal "DEBUG_data1<4>" is unused and has been removed.
+ Unused block "DEBUG_data1_4_OBUF" (BUF) removed.
+  The signal "data.result_4" is unused and has been removed.
+   Unused block "data.result_4" (LATCH) removed.
+    The signal "data_result_add0000<4>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<4>" (XOR) removed.
+The signal "DEBUG_data1<5>" is unused and has been removed.
+ Unused block "DEBUG_data1_5_OBUF" (BUF) removed.
+  The signal "data.result_5" is unused and has been removed.
+   Unused block "data.result_5" (LATCH) removed.
+    The signal "data_result_add0000<5>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<5>" (XOR) removed.
+The signal "DEBUG_data1<6>" is unused and has been removed.
+ Unused block "DEBUG_data1_6_OBUF" (BUF) removed.
+  The signal "data.result_6" is unused and has been removed.
+   Unused block "data.result_6" (LATCH) removed.
+    The signal "data_result_add0000<6>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<6>" (XOR) removed.
+The signal "DEBUG_data1<7>" is unused and has been removed.
+ Unused block "DEBUG_data1_7_OBUF" (BUF) removed.
+  The signal "data.result_7" is unused and has been removed.
+   Unused block "data.result_7" (LATCH) removed.
+    The signal "data_result_add0000<7>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<7>" (XOR) removed.
+The signal "DEBUG_data1<8>" is unused and has been removed.
+ Unused block "DEBUG_data1_8_OBUF" (BUF) removed.
+  The signal "data.result_8" is unused and has been removed.
+   Unused block "data.result_8" (LATCH) removed.
+    The signal "data_result_add0000<8>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<8>" (XOR) removed.
+The signal "DEBUG_data1<9>" is unused and has been removed.
+ Unused block "DEBUG_data1_9_OBUF" (BUF) removed.
+  The signal "data.result_9" is unused and has been removed.
+   Unused block "data.result_9" (LATCH) removed.
+    The signal "data_result_add0000<9>" is unused and has been removed.
+     Unused block "Madd_data.result_add0000_xor<9>" (XOR) removed.
+The signal "DEBUG_data2<0>" is unused and has been removed.
+ Unused block "DEBUG_data2_0_OBUF" (BUF) removed.
+The signal "DEBUG_data2<10>" is unused and has been removed.
+ Unused block "DEBUG_data2_10_OBUF" (BUF) removed.
+The signal "DEBUG_data2<11>" is unused and has been removed.
+ Unused block "DEBUG_data2_11_OBUF" (BUF) removed.
+The signal "DEBUG_data2<12>" is unused and has been removed.
+ Unused block "DEBUG_data2_12_OBUF" (BUF) removed.
+The signal "DEBUG_data2<13>" is unused and has been removed.
+ Unused block "DEBUG_data2_13_OBUF" (BUF) removed.
+The signal "DEBUG_data2<14>" is unused and has been removed.
+ Unused block "DEBUG_data2_14_OBUF" (BUF) removed.
+The signal "DEBUG_data2<15>" is unused and has been removed.
+ Unused block "DEBUG_data2_15_OBUF" (BUF) removed.
+The signal "DEBUG_data2<16>" is unused and has been removed.
+ Unused block "DEBUG_data2_16_OBUF" (BUF) removed.
+The signal "DEBUG_data2<17>" is unused and has been removed.
+ Unused block "DEBUG_data2_17_OBUF" (BUF) removed.
+The signal "DEBUG_data2<18>" is unused and has been removed.
+ Unused block "DEBUG_data2_18_OBUF" (BUF) removed.
+The signal "DEBUG_data2<19>" is unused and has been removed.
+ Unused block "DEBUG_data2_19_OBUF" (BUF) removed.
+The signal "DEBUG_data2<1>" is unused and has been removed.
+ Unused block "DEBUG_data2_1_OBUF" (BUF) removed.
+The signal "DEBUG_data2<20>" is unused and has been removed.
+ Unused block "DEBUG_data2_20_OBUF" (BUF) removed.
+The signal "DEBUG_data2<21>" is unused and has been removed.
+ Unused block "DEBUG_data2_21_OBUF" (BUF) removed.
+The signal "DEBUG_data2<22>" is unused and has been removed.
+ Unused block "DEBUG_data2_22_OBUF" (BUF) removed.
+The signal "DEBUG_data2<23>" is unused and has been removed.
+ Unused block "DEBUG_data2_23_OBUF" (BUF) removed.
+The signal "DEBUG_data2<24>" is unused and has been removed.
+ Unused block "DEBUG_data2_24_OBUF" (BUF) removed.
+The signal "DEBUG_data2<25>" is unused and has been removed.
+ Unused block "DEBUG_data2_25_OBUF" (BUF) removed.
+The signal "DEBUG_data2<26>" is unused and has been removed.
+ Unused block "DEBUG_data2_26_OBUF" (BUF) removed.
+The signal "DEBUG_data2<27>" is unused and has been removed.
+ Unused block "DEBUG_data2_27_OBUF" (BUF) removed.
+The signal "DEBUG_data2<28>" is unused and has been removed.
+ Unused block "DEBUG_data2_28_OBUF" (BUF) removed.
+The signal "DEBUG_data2<29>" is unused and has been removed.
+ Unused block "DEBUG_data2_29_OBUF" (BUF) removed.
+The signal "DEBUG_data2<2>" is unused and has been removed.
+ Unused block "DEBUG_data2_2_OBUF" (BUF) removed.
+The signal "DEBUG_data2<30>" is unused and has been removed.
+ Unused block "DEBUG_data2_30_OBUF" (BUF) removed.
+The signal "DEBUG_data2<31>" is unused and has been removed.
+ Unused block "DEBUG_data2_31_OBUF" (BUF) removed.
+The signal "DEBUG_data2<3>" is unused and has been removed.
+ Unused block "DEBUG_data2_3_OBUF" (BUF) removed.
+The signal "DEBUG_data2<4>" is unused and has been removed.
+ Unused block "DEBUG_data2_4_OBUF" (BUF) removed.
+The signal "DEBUG_data2<5>" is unused and has been removed.
+ Unused block "DEBUG_data2_5_OBUF" (BUF) removed.
+The signal "DEBUG_data2<6>" is unused and has been removed.
+ Unused block "DEBUG_data2_6_OBUF" (BUF) removed.
+The signal "DEBUG_data2<7>" is unused and has been removed.
+ Unused block "DEBUG_data2_7_OBUF" (BUF) removed.
+The signal "DEBUG_data2<8>" is unused and has been removed.
+ Unused block "DEBUG_data2_8_OBUF" (BUF) removed.
+The signal "DEBUG_data2<9>" is unused and has been removed.
+ Unused block "DEBUG_data2_9_OBUF" (BUF) removed.
+The signal "DEBUG_exe_state<0>" is unused and has been removed.
+ Unused block "DEBUG_exe_state_0_OBUF" (BUF) removed.
+The signal "DEBUG_exe_state<1>" is unused and has been removed.
+ Unused block "DEBUG_exe_state_1_OBUF" (BUF) removed.
+The signal "DEBUG_exe_state<2>" is unused and has been removed.
+ Unused block "DEBUG_exe_state_2_OBUF" (BUF) removed.
+Unused block "DEBUG_data1<0>" (PAD) removed.
+Unused block "DEBUG_data1<10>" (PAD) removed.
+Unused block "DEBUG_data1<11>" (PAD) removed.
+Unused block "DEBUG_data1<12>" (PAD) removed.
+Unused block "DEBUG_data1<13>" (PAD) removed.
+Unused block "DEBUG_data1<14>" (PAD) removed.
+Unused block "DEBUG_data1<15>" (PAD) removed.
+Unused block "DEBUG_data1<16>" (PAD) removed.
+Unused block "DEBUG_data1<17>" (PAD) removed.
+Unused block "DEBUG_data1<18>" (PAD) removed.
+Unused block "DEBUG_data1<19>" (PAD) removed.
+Unused block "DEBUG_data1<1>" (PAD) removed.
+Unused block "DEBUG_data1<20>" (PAD) removed.
+Unused block "DEBUG_data1<21>" (PAD) removed.
+Unused block "DEBUG_data1<22>" (PAD) removed.
+Unused block "DEBUG_data1<23>" (PAD) removed.
+Unused block "DEBUG_data1<24>" (PAD) removed.
+Unused block "DEBUG_data1<25>" (PAD) removed.
+Unused block "DEBUG_data1<26>" (PAD) removed.
+Unused block "DEBUG_data1<27>" (PAD) removed.
+Unused block "DEBUG_data1<28>" (PAD) removed.
+Unused block "DEBUG_data1<29>" (PAD) removed.
+Unused block "DEBUG_data1<2>" (PAD) removed.
+Unused block "DEBUG_data1<30>" (PAD) removed.
+Unused block "DEBUG_data1<31>" (PAD) removed.
+Unused block "DEBUG_data1<3>" (PAD) removed.
+Unused block "DEBUG_data1<4>" (PAD) removed.
+Unused block "DEBUG_data1<5>" (PAD) removed.
+Unused block "DEBUG_data1<6>" (PAD) removed.
+Unused block "DEBUG_data1<7>" (PAD) removed.
+Unused block "DEBUG_data1<8>" (PAD) removed.
+Unused block "DEBUG_data1<9>" (PAD) removed.
+Unused block "DEBUG_data2<0>" (PAD) removed.
+Unused block "DEBUG_data2<10>" (PAD) removed.
+Unused block "DEBUG_data2<11>" (PAD) removed.
+Unused block "DEBUG_data2<12>" (PAD) removed.
+Unused block "DEBUG_data2<13>" (PAD) removed.
+Unused block "DEBUG_data2<14>" (PAD) removed.
+Unused block "DEBUG_data2<15>" (PAD) removed.
+Unused block "DEBUG_data2<16>" (PAD) removed.
+Unused block "DEBUG_data2<17>" (PAD) removed.
+Unused block "DEBUG_data2<18>" (PAD) removed.
+Unused block "DEBUG_data2<19>" (PAD) removed.
+Unused block "DEBUG_data2<1>" (PAD) removed.
+Unused block "DEBUG_data2<20>" (PAD) removed.
+Unused block "DEBUG_data2<21>" (PAD) removed.
+Unused block "DEBUG_data2<22>" (PAD) removed.
+Unused block "DEBUG_data2<23>" (PAD) removed.
+Unused block "DEBUG_data2<24>" (PAD) removed.
+Unused block "DEBUG_data2<25>" (PAD) removed.
+Unused block "DEBUG_data2<26>" (PAD) removed.
+Unused block "DEBUG_data2<27>" (PAD) removed.
+Unused block "DEBUG_data2<28>" (PAD) removed.
+Unused block "DEBUG_data2<29>" (PAD) removed.
+Unused block "DEBUG_data2<2>" (PAD) removed.
+Unused block "DEBUG_data2<30>" (PAD) removed.
+Unused block "DEBUG_data2<31>" (PAD) removed.
+Unused block "DEBUG_data2<3>" (PAD) removed.
+Unused block "DEBUG_data2<4>" (PAD) removed.
+Unused block "DEBUG_data2<5>" (PAD) removed.
+Unused block "DEBUG_data2<6>" (PAD) removed.
+Unused block "DEBUG_data2<7>" (PAD) removed.
+Unused block "DEBUG_data2<8>" (PAD) removed.
+Unused block "DEBUG_data2<9>" (PAD) removed.
+Unused block "DEBUG_exe_state<0>" (PAD) removed.
+Unused block "DEBUG_exe_state<1>" (PAD) removed.
+Unused block "DEBUG_exe_state<2>" (PAD) removed.
+Unused block "Mshreg_data.operand1_0" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_1" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_10" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_11" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_12" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_13" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_14" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_15" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_16" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_17" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_18" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_19" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_2" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_20" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_21" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_22" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_23" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_24" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_25" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_26" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_27" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_28" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_29" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_3" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_30" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_31" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_4" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_5" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_6" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_7" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_8" (SRLC16E) removed.
+Unused block "Mshreg_data.operand1_9" (SRLC16E) removed.
+
+Section 6 - IOB Properties
+--------------------------
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| IOB Name                           | Type             | Direction | IO Standard          | Diff  | Drive    | Slew | Reg (s)      | Resistor | IOB      |
+|                                    |                  |           |                      | Term  | Strength | Rate |              |          | Delay    |
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ADVA                               | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| E2A                                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| RS_TX                              | IOB              | OUTPUT    | LVTTL                |       | 12       | SLOW |              |          |          |
+| XE1                                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XE3                                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XFT                                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XGA                                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XLBO                               | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XWA                                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XZBE<0>                            | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XZBE<1>                            | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XZBE<2>                            | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XZBE<3>                            | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| XZCKE                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<0>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<1>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<2>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<3>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<4>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<5>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<6>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<7>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<8>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<9>                              | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<10>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<11>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<12>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<13>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<14>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<15>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<16>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<17>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<18>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZA<19>                             | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZCLKMA<0>                          | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZCLKMA<1>                          | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
+| ZD<0>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<1>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<2>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<3>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<4>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<5>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<6>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<7>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<8>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<9>                              | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<10>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<11>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<12>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<13>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<14>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<15>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<16>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<17>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<18>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<19>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<20>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<21>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<22>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<23>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<24>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<25>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<26>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<27>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<28>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<29>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<30>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZD<31>                             | IOB              | INPUT     | LVCMOS25             |       |          |      |              |          |          |
+| ZZA                                | IOB              | OUTPUT    | LVCMOS25             |       | 12       | SLOW |              |          |          |
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Section 7 - RPMs
+----------------
+
+Section 8 - Guide Report
+------------------------
+Guide not run on this design.
+
+Section 9 - Area Group and Partition Summary
+--------------------------------------------
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+Area Group Information
+----------------------
+
+  No area groups were found in this design.
+
+----------------------
+
+Section 10 - Timing Report
+--------------------------
+A logic-level (pre-route) timing report can be generated by using Xilinx static
+timing analysis tools, Timing Analyzer (GUI) or TRCE (command line), with the
+mapped NCD and PCF files. Please note that this timing report will be generated
+using estimated delay information. For accurate numbers, please generate a
+timing report with the post Place and Route NCD file.
+
+For more information about the Timing Analyzer, consult the Xilinx Timing
+Analyzer Reference Manual; for more information about TRCE, consult the Xilinx
+Command Line Tools User Guide "TRACE" chapter.
+
+Section 11 - Configuration String Details
+-----------------------------------------
+Use the "-detail" map option to print out Configuration Strings
+
+Section 12 - Control Set Information
+------------------------------------
+Use the "-detail" map option to print out Control Set Information.
+
+Section 13 - Utilization by Hierarchy
+-------------------------------------
+Use the "-detail" map option to print out the Utilization by Hierarchy section.

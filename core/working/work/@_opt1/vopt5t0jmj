@@ -1,0 +1,273 @@
+m255
+K3
+13
+cModel Technology
+Z0 d/home/yukiimai/Sandbox/2015_winter/carina/working
+T_opt
+Z1 V[A_lGnVS3E<fICZm=[]ln1
+Z2 04 9 8 work carina_tb behavior 1
+Z3 =1-68f728241c90-5613fe90-e6c97-6499
+Z4 o-quiet -auto_acc_if_foreign -work work +acc
+Z5 n@_opt
+Z6 OE;O;10.0c;49
+Z7 d/home/yukiimai/Sandbox/2015_winter/carina/working
+T_opt1
+Z8 Vzl7[en0m2ige;m4`lcI0M3
+Z9 04 6 8 work cpu_tb behavior 1
+Z10 =1-68f728241c90-5614943c-a318f-cbb
+R4
+Z11 n@_opt1
+R6
+R7
+T_opt2
+Z12 VBmoD:2f8Qik4U_cEHN_M01
+R9
+Z13 =1-68f728241c90-561493cf-52088-c6a
+R4
+Z14 n@_opt2
+R6
+R7
+Ebram_inst
+Z15 w1444150881
+Z16 DPx3 std 6 textio 0 22 G^o2zK;Vh4eVdKTVo98653
+Z17 DPx4 ieee 14 std_logic_1164 0 22 5=aWaoGZSMWIcH0i^f`XF1
+R7
+Z18 8../ipcore_dir/BRAM_INST.vhd
+Z19 F../ipcore_dir/BRAM_INST.vhd
+l0
+L43
+Z20 V>nl5D9]7A[]1=CQ2WG_R=0
+Z21 OE;C;10.0c;49
+31
+Z22 !s108 1444189244.408182
+Z23 !s90 -reportprogress|300|-explicit|-93|../ipcore_dir/BRAM_INST.vhd|
+Z24 !s107 ../ipcore_dir/BRAM_INST.vhd|
+Z25 o-explicit -93
+Z26 tExplicit 1
+Z27 !s100 B3JI_<_HXL7`g@cX8_]@e1
+Abram_inst_a
+Z28 DPx4 ieee 18 std_logic_unsigned 0 22 RYmj;=TK`k=k>D@Cz`zoB3
+Z29 DPx4 ieee 15 std_logic_arith 0 22 4`Y?g_lkdn;7UL9IiJck01
+Z30 DEx13 xilinxcorelib 16 blk_mem_gen_v7_3 0 22 >gFlEYB9fNd5eI[QYmHAV2
+R16
+R17
+Z31 DEx4 work 9 bram_inst 0 22 >nl5D9]7A[]1=CQ2WG_R=0
+l131
+L53
+Z32 V<Ujd`bQA`Lknz@6hlfIH`2
+R21
+31
+Z33 !s108 1444179080.772681
+R23
+R24
+R25
+R26
+Z34 !s100 SJIFOY=SDe`L4ge6n`U700
+Apohe
+Z35 DPx4 work 6 p_type 0 22 ;g:Pcc2_=8A>Fi<EBi>Y`3
+R29
+R28
+R16
+R17
+Z36 DEx4 work 9 bram_inst 0 22 2G=MlXe92]_i]INiC5FRL3
+l22
+L19
+Z37 VhbQQ?f?ekhT?Zl14@nhCm3
+R21
+31
+R25
+R26
+Z38 F../BRAM_INST_FOR_TEST.vhd
+Z39 w1444138053
+Z40 8../BRAM_INST_FOR_TEST.vhd
+Z41 !s108 1444145861.723215
+Z42 !s90 -reportprogress|300|-explicit|-93|../BRAM_INST_FOR_TEST.vhd|
+Z43 !s107 ../BRAM_INST_FOR_TEST.vhd|
+Z44 !s100 nBXKX1DbZ`Y8j<o_iQ=5f3
+Ecarina_tb
+Z45 w1444142728
+R35
+R16
+R17
+R7
+Z46 8../Carina_tb.vhd
+Z47 F../Carina_tb.vhd
+l0
+L37
+Z48 VX5gjLCAEhLQJ4f>?YE<AB3
+R21
+31
+Z49 !s108 1444150928.890969
+Z50 !s90 -reportprogress|300|-explicit|-93|../Carina_tb.vhd|
+Z51 !s107 ../Carina_tb.vhd|
+R25
+R26
+Z52 !s100 UVk4XjXYCOPYUa68GJ:Fz3
+Abehavior
+R35
+R16
+R17
+Z53 DEx4 work 9 carina_tb 0 22 X5gjLCAEhLQJ4f>?YE<AB3
+l93
+L40
+Z54 VWIA4hV5A]O7WAf@8eTYjX3
+R21
+31
+R49
+R50
+R51
+R25
+R26
+Z55 !s100 27UV]LE7c48iD<YEV7NO?3
+Ecpu
+Z56 w1444189230
+Z57 DPx4 work 6 p_type 0 22 Mk9:_f]D3UjDa0=>?Pm=53
+Z58 DPx6 unisim 11 vcomponents 0 22 lQ7=TIR^OKg0?TfZ[1JBO3
+R29
+R28
+R16
+R17
+R7
+Z59 8../cpu.vhd
+Z60 F../cpu.vhd
+l0
+L12
+Z61 V?f2BM_2KIcT::^4TbO=]U0
+R21
+31
+Z62 !s108 1444189244.459844
+Z63 !s90 -reportprogress|300|-explicit|-93|../cpu.vhd|
+Z64 !s107 ../cpu.vhd|
+R25
+R26
+Z65 !s100 zRS7NKCU9VcWD=c00g1>_3
+Artl
+R57
+R58
+R29
+R28
+R16
+R17
+Z66 DEx4 work 3 cpu 0 22 ?f2BM_2KIcT::^4TbO=]U0
+l68
+L30
+Z67 VF>Fgd:1TG5K?l1[[N1Y]e3
+R21
+31
+R62
+R63
+R64
+R25
+R26
+Z68 !s100 3F0bVoWJ<HcFL^If>kV@^1
+Ecpu_tb
+Z69 w1444154799
+R57
+R16
+R17
+R7
+Z70 8../cpu_tb.vhd
+Z71 F../cpu_tb.vhd
+l0
+L37
+Z72 VeSVDFT`S@[j3FCP;XU2DI3
+R21
+31
+Z73 !s108 1444189244.615578
+Z74 !s90 -reportprogress|300|-explicit|-93|../cpu_tb.vhd|
+Z75 !s107 ../cpu_tb.vhd|
+R25
+R26
+Z76 !s100 lYobNiSCUL3QUN2L]gPl_3
+Abehavior
+R57
+R16
+R17
+Z77 DEx4 work 6 cpu_tb 0 22 eSVDFT`S@[j3FCP;XU2DI3
+l73
+L40
+Z78 VCP3aM3i]i?2N5TV]7QGV]3
+Z79 !s100 e<fMekH`URK]QWgOMTaZo3
+R21
+31
+R73
+R74
+R75
+R25
+R26
+Pp_type
+R16
+R17
+Z80 w1444189079
+R7
+Z81 8../p_type.vhd
+Z82 F../p_type.vhd
+l0
+L13
+Z83 VMk9:_f]D3UjDa0=>?Pm=53
+R21
+31
+b1
+Z84 !s108 1444189153.880713
+Z85 !s90 -reportprogress|300|-explicit|-93|../p_type.vhd|
+Z86 !s107 ../p_type.vhd|
+R25
+R26
+Z87 !s100 8`C69`HPKF0GiPgkNbk:H3
+Bbody
+R57
+R16
+R17
+l0
+L69
+Z88 V6n`Gk05O@S8U4NYE2fm`Z3
+R21
+31
+R84
+R85
+R86
+R25
+R26
+nbody
+Z89 !s100 zDRTZj^aZJWBBnRS?XoDe3
+Etop
+Z90 w1444150022
+R35
+R58
+R29
+R28
+R16
+R17
+R7
+Z91 8../Carina.vhd
+Z92 F../Carina.vhd
+l0
+L11
+Z93 Vgadb=R3YR]KlHB[HS_V`P0
+R21
+31
+Z94 !s108 1444150928.735030
+Z95 !s90 -reportprogress|300|-explicit|-93|../Carina.vhd|
+Z96 !s107 ../Carina.vhd|
+R25
+R26
+Z97 !s100 @k;z=HQX8T4>37mTdjbRN1
+Artl
+R35
+R58
+R29
+R28
+R16
+R17
+Z98 DEx4 work 3 top 0 22 gadb=R3YR]KlHB[HS_V`P0
+l69
+L41
+Z99 V:?5VNP<<?2HRag<m?NVeW0
+R21
+31
+R94
+R95
+R96
+R25
+R26
+Z100 !s100 c6W`HT5;8?94eYDDVbP][1

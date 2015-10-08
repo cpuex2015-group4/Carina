@@ -1,0 +1,4 @@
+vhdl work "../p_type.vhd"
+vhdl work "../BRAM_INST_FOR_TEST.vhd"
+vhdl work "../cpu.vhd"
+vhdl work "../Carina.vhd"
