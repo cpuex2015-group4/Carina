@@ -39,6 +39,15 @@ architecture RTL of cpu is
     );
   end component;
 
+  component alu
+    port (
+      operand1,operand2:in datat;
+      ALU_control:in alu_controlt;
+      shamt:in REGT;
+      result:out datat;
+      isZero:out std_logic
+      );
+end component;
 
 
   constant ZERO:datat:=x"00000000";
@@ -55,19 +64,29 @@ architecture RTL of cpu is
   signal inst:inst_file;
   signal data:data_file;
   signal control:control_file;
-
+signal alu_control:alu_controlt;
 
   --debug
   signal pohe:std_logic:='0';
 
+--signal operand1:datat;-
+--signal operand2:datat;
+--signal alu_control:alu_controlt;
+--signal shamt:regt;
+signal result:datat;
+--signal isZero:std_logic;
+
+
  --loader
   signal count:integer:=0;
-  constant test_code_max:integer:=2;
+  constant test_code_max:integer:=4;
   type test_code_t is array(0 to test_code_max) of datat; 
   constant test_code:test_code_t:=
     ( "00100000000000010000000000000100",
-      "00100000000000100000000000001000",
-      "00000000001000100000100000100000");
+     "00100000000000100000000000001000",
+     "00000000001000100000100000100000",
+      CONV_STD_LOGIC_VECTOR(13,32),
+      CONV_STD_LOGIC_VECTOR(14,32));
 begin
   inst_mem:BRAM_INST port map(
     addra=>inst_addr,
@@ -76,87 +95,108 @@ begin
     clka=>clk,
     douta=>inst_out
   );
-
+  ALU_main:alu port map(
+    operand1=>data.operand1,
+    operand2=>data.operand2,
+    alu_control=>alu_control,
+    shamt=>inst.shamt,
+    result=>result,
+    isZero=>control.isZero);
   
-
+  alu_control<=make_alu_control(inst.opecode,inst.funct);
   main:process (clk)
   variable instv:inst_file;
+  variable controlv:control_file;
   begin
   if rising_edge(clk) then  
   case (core_state) is
     when WAIT_HEADER =>
-      if pohe='0' then
+      --debug
+      DEBUG.data1<=inst_out;
+      DEBUG.core_state<=core_state;
+      DEBUG.PC<=CONV_STD_LOGIC_VECTOR(count,32);
+      DEBUG.control<=control;
+      --/debug
+
+
+      count<=count+1;
+      if count<=test_code_max then
+        inst_addr<=CONV_STD_LOGIC_VECTOR(count,32);
+        inst_in<=test_code(count);
         inst_we<="1111";
-        inst_addr<=conv_std_logic_vector(count,32);
-        inst_in<=conv_std_logic_vector(count,32);
-        if count>10 then
-          count<=0;
-          pohe<='1';
-          inst_we<="0000";
-        else
-          count<=count+1;
+      else 
+        inst_we<="0000";
+        inst_addr<=PC;
+        if count=test_code_max+10 then
+          core_state<=EXECUTING;
         end if;
-      else
-        count<=count+1;
-        inst_addr<=conv_std_logic_vector(count,32);
       end if;
-      debug.PC<=conv_std_logic_vector(count,32);
-      debug.data1<=inst_out;
-      debug.data2<="000000000000000000000000000" & inst_we & pohe;
     when EXECUTING =>
   --debug
-  DEBUG.data1<=inst.instruction;
-  DEBUG.data2<=reg_file(1);
+  DEBUG.opecode<=inst.opecode;
+  DEBUG.control<=control;
+  
+  DEBUG.data<=data;
+  DEBUG.data1<=reg_file(1);
+  DEBUG.data2<=reg_file(2);
   DEBUG.exe_state<=exe_state;
   DEBUG.core_state<=core_state;
   DEBUG.PC<=PC;
+  DEBUG.inst<=inst;
+  DEBUG.data3<=result;
+  DEBUG.alucont<=alu_control;
   --/debug
       
       case ( exe_state) is
         when F =>
-          inst.instruction<=inst_out;
-        exe_state<=D;
-        when D =>
           instv.PC:=PC;
-          instv.instruction:=inst.instruction;
-          instv.opecode:= inst.instruction(31 downto 26);
-          instv.rs:=inst.instruction(25 downto 21);
-          instv.rt:=inst.instruction(20 downto 16);
-          instv.rd:=inst.instruction(15 downto 11);
-          instv.shamt:=inst.instruction(10 downto 6);
-          instv.funct:=inst.instruction(5 downto 0);
-          instv.immediate:=inst.instruction(15 downto 0);
-          instv.addr:=inst.instruction(25 downto 0);
+          instv.instruction:=inst_out;
+          instv.opecode:= inst_out(31 downto 26);
+          instv.rs:=inst_out(25 downto 21);
+          instv.rt:=inst_out(20 downto 16);
+          instv.rd:=inst_out(15 downto 11);
+          instv.shamt:=inst_out(10 downto 6);
+          instv.funct:=inst_out(5 downto 0);
+          instv.immediate:=inst_out(15 downto 0);
+          instv.addr:=inst_out(25 downto 0);
           inst<=instv;
+          exe_state<=D;
+        when D =>
           exe_state<=EX;
-
-
-        -- add kimeuchi check
-          data.operand1<=reg_file(CONV_INTEGER(instv.rs));
-          if control.ALUSrc='0' then
-            data.operand2<=reg_file(CONV_INTEGER(instv.rt));
+          instv:=inst;
+          controlv:=make_control(inst.opecode);
+          if controlv.RegDst='0' then
+            instv.reg_dest:=instv.rd;
+          else
+            instv.reg_dest:=instv.rt;
+          end if;
+          inst<=instv;
+          data.operand1<=reg_file(CONV_INTEGER(inst.rs));
+          if controlv.ALUSrc='0' then
+            data.operand2<=reg_file(CONV_INTEGER(inst.rt));
           else
             data.operand2<="0000000000000000" & inst.immediate;
           end if;
+          control<=controlv;
         when EX =>
           exe_state<=MEM;
-        --add kimeuchi check
-          data.result<=data.operand1+data.operand2;
+
+--          operand1<=data.operand1;
+--          operand2<=data.operand2;
+--          alu_control<=make_alu_control(inst.opecode,inst.funct);
+--          shamt<=inst.shamt;
+          data.result<=result;
         when MEM =>
           exe_state<=WB;
-        --do nothing
         when WB =>
            if control.RegWrite='1' then
-             if inst.rd /= x"00000" then
-               if control.RegDst='0' then
-                 reg_file(CONV_INTEGER(inst.rd))<=data.result;
-               else
-                 reg_file(CONV_INTEGER(inst.rt))<=data.result;
-               end if;
+             if inst.reg_dest /= x"00000" then
+               reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
              end if;
            end if;
           exe_state<=F;
         -- end if;
+         
           PC<=PC+x"00000001";
           inst_addr<=PC+x"00000001";
       end case;

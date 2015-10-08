@@ -28,6 +28,8 @@ package p_type is
     rs:regt;
     rt:regt;
     rd:regt;
+    reg_dest:regt;
+    reg_source:regt;
     shamt:regt;
     funct:functt;
     immediate:imdt;
@@ -41,14 +43,6 @@ package p_type is
   end record;
  type CORE_STATE_TYPE is (WAIT_HEADER,EXECUTING,HALTED);
   type EXE_STATE_TYPE is (F,D,EX,MEM,WB);
-  type top_debug_out is record
-    data1:datat;
-    data2:datat;
-    exe_state:EXE_STATE_TYPE;
-    core_state:CORE_STATE_TYPE;
-    PC:datat;
-  end record;
-
 
   type control_file is record
                                 --negate /assert
@@ -58,12 +52,35 @@ package p_type is
     MemRead:std_logic;
     MemWrite:std_logic;
     MemtoReg:std_logic;
+    isZero:std_logic;
   end record;
+
 
   function make_control (opecode:opet) return control_file;
 
-  type ALU_CONTROLT is (ALU_ADD,ALU_SUB,ALU_AND,ALU_OR,ALU_SLT)
+  type ALU_CONTROLT is (ALUADD,ALUSUB,ALUAND,ALUOR,ALUSLT,ALUNOR,ALUSLL,ALUSLR);
 
+  function make_alu_control(opecode:opet;funct:functt) return ALU_CONTROLT;
+  
+  
+  type top_debug_out is record  
+    data1:datat;
+    data2:datat;
+    data3:datat;
+    exe_state:EXE_STATE_TYPE;
+    core_state:CORE_STATE_TYPE;
+    control:control_file;
+    opecode:opet;
+    data:data_file;
+    PC:datat;
+    inst:inst_file;
+    alucont:ALU_CONTROLT;
+    
+  end record;
+
+
+
+  
 -- procedure <procedure_nam >(<type_declaration> <constant_name>	: in <type_declaration>);
 --
 
@@ -104,6 +121,49 @@ package body p_type is
 
     return control;
   end make_control;
+
+  function make_alu_control(opecode:opet;funct:functt) return ALU_CONTROLT is
+    variable AC:ALU_CONTROLT;
+  begin
+    if(opecode="000000") then
+      case (funct) is
+        when "100000" =>
+          AC:=ALUADD;
+        when "100010" =>
+          AC:=ALUSUB;
+        when "100100" =>
+          AC:=ALUAND;
+        when "100101" =>
+          AC:=ALUOR;
+        when "101010" =>
+          AC:=ALUSLT;
+        when "100111" =>
+          AC:=ALUNOR;
+        when "000000" =>
+          AC:=ALUSLL;
+        when "000010" =>
+          AC:=ALUSLR;
+        when others =>
+          assert false
+            report "invalid input in make_alu_control";
+      end case;
+    else
+      case (opecode) is
+        when "001000" =>
+          AC:=ALUADD;
+        when "001100" =>
+          AC:=ALUAND;
+        when "001101" =>
+          AC:=ALUOR;
+        when "001010" =>
+          AC:=ALUSLT;
+        when others =>
+          assert false
+            report "invalid input in make_alu_control";
+      end case;
+    end if;
+    return AC;
+  end make_alu_control;
   
 ---- Example 1
 --  function <function_name>  (signal <signal_name> : in <type_declaration>  ) return <type_declaration> is
