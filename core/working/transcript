@@ -1,0 +1,114 @@
+# //  ModelSim SE 10.0c Jul 21 2011 Linux 3.13.0-65-generic
+# //
+# //  Copyright 1991-2011 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# do {cpu_tb.fdo} 
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim SE vcom 10.0c Compiler 2011.07 Jul 21 2011
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Compiling package p_type
+# -- Compiling package body p_type
+# -- Loading package p_type
+# ** Warning: ../p_type.vhd(101): (vcom-1083) Implicit array operator "=" always returns FALSE (left length 6 is not equal to right length 7).
+# ** Warning: ../p_type.vhd(108): (vcom-1083) Implicit array operator "=" always returns FALSE (left length 6 is not equal to right length 8).
+# ** Warning: ../p_type.vhd(108): (vcom-1083) Implicit array operator "=" always returns FALSE (left length 6 is not equal to right length 8).
+# ** Warning: ../p_type.vhd(116): (vcom-1083) Implicit array operator "=" always returns FALSE (left length 6 is not equal to right length 8).
+# ** Warning: ../p_type.vhd(128): (vcom-1083) Implicit array operator "=" always returns FALSE (left length 6 is not equal to right length 5).
+# Model Technology ModelSim SE vcom 10.0c Compiler 2011.07 Jul 21 2011
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package STD_LOGIC_UNSIGNED
+# -- Loading package p_type
+# -- Compiling entity BRAM_INST
+# -- Compiling architecture pohe of BRAM_INST
+# Model Technology ModelSim SE vcom 10.0c Compiler 2011.07 Jul 21 2011
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package STD_LOGIC_UNSIGNED
+# -- Loading package VCOMPONENTS
+# -- Loading package p_type
+# -- Compiling entity alu
+# -- Compiling architecture pohe of alu
+# Model Technology ModelSim SE vcom 10.0c Compiler 2011.07 Jul 21 2011
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package STD_LOGIC_UNSIGNED
+# -- Loading package VCOMPONENTS
+# -- Loading package p_type
+# -- Compiling entity cpu
+# -- Compiling architecture RTL of cpu
+# Model Technology ModelSim SE vcom 10.0c Compiler 2011.07 Jul 21 2011
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package p_type
+# -- Compiling entity cpu_tb
+# -- Compiling architecture behavior of cpu_tb
+# vsim -lib work -voptargs=\"+acc\" -t 1ps work.cpu_tb 
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Note: (vopt-143) Recognized 1 FSM in architecture body "cpu(RTL)".
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading work.p_type(body)
+# Loading work.cpu_tb(behavior)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading unisim.vcomponents
+# Loading work.cpu(rtl)#1
+# Loading work.bram_inst(pohe)#1
+# Loading work.alu(pohe)#1
+# ** Warning: (vsim-8683) Uninitialized out port /cpu_tb/uut/IO_WE has no driver.
+# This port will contribute value (U) to the signal network.
+# ** Warning: (vsim-8683) Uninitialized out port /cpu_tb/uut/IO_RE has no driver.
+# This port will contribute value (U) to the signal network.
+# ** Warning: (vsim-8683) Uninitialized out port /cpu_tb/uut/IO_send_data(31 downto 0) has no driver.
+# This port will contribute value (UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU) to the signal network.
+# .main_pane.wave.interior.cs.body.pw.wf
+# .main_pane.structure.interior.cs.body.struct
+# .main_pane.objects.interior.cs.body.tree
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/uut/ALU_main
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/uut/ALU_main
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/uut/ALU_main
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/uut/inst_mem
+# ** Warning: CONV_INTEGER: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, and it has been converted to 0.
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/uut/inst_mem
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 1  Instance: /cpu_tb/uut/ALU_main
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 1  Instance: /cpu_tb/uut/ALU_main
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 0 ps  Iteration: 1  Instance: /cpu_tb/uut/ALU_main
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 5 ns  Iteration: 1  Instance: /cpu_tb/uut/inst_mem
+# ** Warning: CONV_INTEGER: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, and it has been converted to 0.
+#    Time: 5 ns  Iteration: 1  Instance: /cpu_tb/uut/inst_mem
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 165 ns  Iteration: 3  Instance: /cpu_tb/uut/ALU_main
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 165 ns  Iteration: 3  Instance: /cpu_tb/uut/ALU_main
+# ** Warning: There is an 'U'|'X'|'W'|'Z'|'-' in an arithmetic operand, the result will be 'X'(es).
+#    Time: 165 ns  Iteration: 3  Instance: /cpu_tb/uut/ALU_main
+#  
+run
+run
+run -continue
+run -continue
+run -all

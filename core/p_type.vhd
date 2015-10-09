@@ -18,6 +18,7 @@ package p_type is
   subtype imdt is std_logic_vector(15 downto 0);
   subtype addrt is std_logic_vector( 25 downto 0);
   type reg_filet is array(0 to 31) of datat;  
+  type PC_controlt is (j,jr,b,normal);  
 
    type INST_TYPE is (I,R,J);
   type inst_file is record
@@ -40,6 +41,7 @@ package p_type is
     operand1:datat;
     operand2:datat;
     result:datat;
+    newPC:datat;
   end record;
  type CORE_STATE_TYPE is (WAIT_HEADER,EXECUTING,HALTED);
   type EXE_STATE_TYPE is (F,D,EX,MEM,WB);
@@ -53,10 +55,11 @@ package p_type is
     MemWrite:std_logic;
     MemtoReg:std_logic;
     isZero:std_logic;
+    PC_control:PC_controlt;
   end record;
 
 
-  function make_control (opecode:opet) return control_file;
+  function make_control (opecode:opet;funct:functt) return control_file;
 
   type ALU_CONTROLT is (ALUADD,ALUSUB,ALUAND,ALUOR,ALUSLT,ALUNOR,ALUSLL,ALUSLR);
 
@@ -78,16 +81,13 @@ package p_type is
     
   end record;
 
-
-
-  
--- procedure <procedure_nam >(<type_declaration> <constant_name>	: in <type_declaration>);
+-- procedure <procedure_nam >(<type_declaration> <constant_name>	: in <type_d@eclaration>);
 --
 
 end p_type;
 
 package body p_type is
-  function make_control (opecode:opet) return control_file is
+  function make_control (opecode:opet;funct:functt) return control_file is
     variable control:control_file;
   begin
     if opecode ="000000" then
@@ -119,6 +119,20 @@ package body p_type is
       control.MemWrite:='0';
     end if;
 
+    case (opecode) is
+      when "000100" | "000101" =>
+        control.PC_control:=b;
+      when "000010" | "000011" =>
+        control.PC_control:=j;
+      when "000000" =>
+        if funct="01000" then
+          control.PC_control:=jr;
+        else
+          control.PC_control:=normal;
+        end if;
+      when others=>
+        control.PC_control:=normal;
+    end case;
     return control;
   end make_control;
 
@@ -158,8 +172,7 @@ package body p_type is
         when "001010" =>
           AC:=ALUSLT;
         when others =>
-          assert false
-            report "invalid input in make_alu_control";
+          AC:=ALUSUB;
       end case;
     end if;
     return AC;

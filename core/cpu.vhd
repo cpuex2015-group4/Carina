@@ -79,14 +79,16 @@ signal result:datat;
 
  --loader
   signal count:integer:=0;
-  constant test_code_max:integer:=4;
+  constant test_code_max:integer:=5;
   type test_code_t is array(0 to test_code_max) of datat; 
-  constant test_code:test_code_t:=
-    ( "00100000000000010000000000000100",
-     "00100000000000100000000000001000",
-     "00000000001000100000100000100000",
-      CONV_STD_LOGIC_VECTOR(13,32),
-      CONV_STD_LOGIC_VECTOR(14,32));
+  constant test_code:test_code_t:=(
+    "00100000000000010000000000000000",
+    "00100000000000100000000000000001",
+    "00000000001000100001100000100000",
+    "00000000000000100000100000100000",
+    "00000000000000110001000000100000",
+    "00001000000000000000000000000010"
+    );
 begin
   inst_mem:BRAM_INST port map(
     addra=>inst_addr,
@@ -107,6 +109,7 @@ begin
   main:process (clk)
   variable instv:inst_file;
   variable controlv:control_file;
+  variable vPC:datat;
   begin
   if rising_edge(clk) then  
   case (core_state) is
@@ -118,8 +121,8 @@ begin
       DEBUG.control<=control;
       --/debug
 
-
-      count<=count+1;
+ 
+     count<=count+1;
       if count<=test_code_max then
         inst_addr<=CONV_STD_LOGIC_VECTOR(count,32);
         inst_in<=test_code(count);
@@ -150,7 +153,7 @@ begin
       case ( exe_state) is
         when F =>
           instv.PC:=PC;
-          instv.instruction:=inst_out;
+		           instv.instruction:=inst_out;
           instv.opecode:= inst_out(31 downto 26);
           instv.rs:=inst_out(25 downto 21);
           instv.rt:=inst_out(20 downto 16);
@@ -158,17 +161,18 @@ begin
           instv.shamt:=inst_out(10 downto 6);
           instv.funct:=inst_out(5 downto 0);
           instv.immediate:=inst_out(15 downto 0);
-          instv.addr:=inst_out(25 downto 0);
+          instv.addr:=inst_out(25 downto 0); 
           inst<=instv;
           exe_state<=D;
         when D =>
+			instv:=inst;
           exe_state<=EX;
-          instv:=inst;
-          controlv:=make_control(inst.opecode);
+			 
+          controlv:=make_control(inst.opecode,inst.funct);
           if controlv.RegDst='0' then
-            instv.reg_dest:=instv.rd;
+            instv.reg_dest:=inst.rd;
           else
-            instv.reg_dest:=instv.rt;
+            instv.reg_dest:=inst.rt;
           end if;
           inst<=instv;
           data.operand1<=reg_file(CONV_INTEGER(inst.rs));
@@ -186,6 +190,21 @@ begin
 --          alu_control<=make_alu_control(inst.opecode,inst.funct);
 --          shamt<=inst.shamt;
           data.result<=result;
+
+          case (control.PC_control) is
+            when normal =>
+              data.newPC<=PC+1;
+            when b=>
+              if inst.immediate(15)='0' then
+                data.newPC<=PC+1+("0000000000000000" + inst.immediate);
+              else
+                data.newPC<=PC+1+("1111111111111111" + inst.immediate);
+              end if;
+            when j=>
+              data.newPC<="0000000000000000"&inst.immediate;
+            when jr =>
+              data.newPC<=reg_file(CONV_INTEGER(inst.rs));
+          end case;
         when MEM =>
           exe_state<=WB;
         when WB =>
@@ -195,10 +214,25 @@ begin
              end if;
            end if;
           exe_state<=F;
-        -- end if;
-         
-          PC<=PC+x"00000001";
-          inst_addr<=PC+x"00000001";
+        -- end if
+           if inst.opecode=x"03" then  --jump and link
+             reg_file(31)<=PC+x"00000001";
+           end if;
+           case (control.PC_control) is
+             when normal =>
+               vPC:=PC+x"00000001";
+             when j| jr =>
+               vPC:=data.newPC;
+             when b =>
+               if (inst.opecode="000100" and control.isZero='1') or
+                  (inst.opecode="000101" and control.isZero='0') then
+                 vPC:=data.newPC;
+               else
+                 vPC:=PC+x"00000001";
+               end if;
+           end case;
+           inst_addr<=vPC;
+           PC<=vPC;
       end case;
     when HALTED =>
       -- do nothing;

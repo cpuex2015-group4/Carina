@@ -24,8 +24,6 @@ begin
   main:process(operand1,operand2,ALU_control)
     variable vresult:datat;
   begin
-    assert false
-      report "pohe";
     case (ALU_control) is
       when ALUADD =>
         vresult:=operand1+operand2;
@@ -49,9 +47,10 @@ begin
         vresult:=SHR(operand1,shamt);
     end case;
     result<=vresult;
-    iszero<='0';
-    assert false
-      report "pohe"
-      severity note;
+    if vresult=x"00000000" then
+      iszero<='1';
+    else
+      iszero<='0';
+    end if;
   end process;
 end pohe;

@@ -1,0 +1,3 @@
+work	"../cpu.vhd"
+work	"../ipcore_dir/BRAM_INST.vhd"
+work	"../p_type.vhd"
