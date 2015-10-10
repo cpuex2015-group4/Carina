@@ -2,4 +2,4 @@
 *.swp
 *.o
 *~
-working/*
+core/working/*
