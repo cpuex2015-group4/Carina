@@ -8,9 +8,12 @@ use work.p_type.all;
 
 entity loader is
   port (
-    clk,IO_empty,IO,enable: in std_logic;
+    clk,IO_empty,activate: in std_logic;
     IO_recv_data: in std_logic_vector(31 downto 0);
-    IO_RE,finished: out std_logic
+    addr:out datat;
+    din:out datat;
+    bram_we:out std_logic_vector(3 downto 0);
+    IO_RE,loaded: out std_logic:='0'
   );
 end loader;
 
@@ -20,13 +23,70 @@ architecture kaisensionoodle of loader is
   signal text_size:datat;
   signal data_offset:datat;
   signal data_size:datat;
+  signal i:integer:=0;
 begin
-  case (state) is
-    when HEADER=>
-      
+  main:process(clk)
+  begin
+    case (state) is
+      when HEADER=>
+        if IO_empty='0' then
+          IO_RE<='1';
+          case (i) is
+            when 1 =>
+              text_size<=IO_recv_data;
+            when 2 =>
+              data_offset<=IO_recv_data;
+            when 3 =>
+              data_size<=IO_recv_data;
+            when others =>
+              assert false
+                report "crazy i in loader_HEADER";
+          end case;
+
+          if i<4 then
+            i<=i+1;
+          else
+            i<=0;
+            state<=TEXT_RECEIVING;
+			end if;
+        else
+          IO_RE<='0';
+        end if;
     when TEXT_RECEIVING=>
-    when DATA_RECEIVING=>
+            bram_we<="1111";    
+       if i<conv_integer(text_size) then
+         if IO_empty='0' then
+           addr<=CONV_STD_LOGIC_VECTOR(i,32);
+           din<=IO_recv_data;
+           io_re<='1';
+           i<=i+1;
+         else
+           io_re<='0';
+         end if;
+       else
+         io_re<='0';
+         state<=DATA_RECEIVING;
+         i<=conv_integer(data_offset);
+       end if;
+    when DATA_RECEIVING =>
+      if i<conv_integer(data_offset+data_size) then
+        if IO_empty='0' then
+          addr<=CONV_STD_LOGIC_VECTOR(i,32);
+          din<=IO_recv_data;
+          io_re<='1';
+          i<=i+1;
+        else
+          io_re<='0';
+        end if;
+      else
+        io_re<='0';
+        state<=FINISHED;
+      end if;
     when FINISHED=>
+            bram_we<="0000";
+      io_re<='0';
+      loaded<='1';
   end case;
+  end process;
 end kaisensionoodle;
 

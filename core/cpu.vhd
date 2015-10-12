@@ -47,7 +47,17 @@ architecture RTL of cpu is
       result:out datat;
       isZero:out std_logic
       );
-end component;
+  end component;
+  component loader 
+    port (
+      clk,IO_empty,activate: in std_logic;
+      IO_recv_data: in std_logic_vector(31 downto 0);
+      addr:out datat;
+      din:out datat;
+      bram_we:out std_logic_vector(3 downto 0);
+      IO_RE,loaded: out std_logic:='0'
+    );            
+  end component;
 
 
   constant ZERO:datat:=x"00000000";
@@ -78,6 +88,13 @@ signal result:datat;
 
 
  --loader
+      signal loader_activate: std_logic:='0';
+      signal loader_addr: datat;
+      signal loader_din: datat;
+      signal loader_IO_RE,loaded: std_logic:='0';
+	
+ 
+  
   signal count:integer:=0;
   constant test_code_max:integer:=5;
   type test_code_t is array(0 to test_code_max) of datat; 
@@ -104,12 +121,27 @@ begin
     shamt=>inst.shamt,
     result=>result,
     isZero=>control.isZero);
-  
+
+  lod:loader port map(
+    clk=>clk,
+	 IO_empty=>IO_empty,
+	 activate=>loader_activate,
+	 IO_RECV_DATA=>IO_recv_data,
+	 addr=>loader_addr,
+	 din=>inst_in,
+	 bram_we=>inst_we,
+	 io_re=>loader_io_re,
+	 loaded=>loaded);
+      
   alu_control<=make_alu_control(inst.opecode,inst.funct);
+  
+  inst_addr<=loader_addr when core_state=WAIT_HEADER else
+              PC;
+  
   main:process (clk)
-  variable instv:inst_file;
-  variable controlv:control_file;
-  variable vPC:datat;
+    variable instv:inst_file;
+    variable controlv:control_file;
+    variable vPC:datat;
   begin
   if rising_edge(clk) then  
   case (core_state) is
@@ -120,20 +152,12 @@ begin
       DEBUG.PC<=CONV_STD_LOGIC_VECTOR(count,32);
       DEBUG.control<=control;
       --/debug
-
- 
-     count<=count+1;
-      if count<=test_code_max then
-        inst_addr<=CONV_STD_LOGIC_VECTOR(count,32);
-        inst_in<=test_code(count);
-        inst_we<="1111";
-      else 
-        inst_we<="0000";
-        inst_addr<=PC;
-        if count=test_code_max+10 then
-          core_state<=EXECUTING;
-        end if;
+      loader_activate<='1';
+      if (loaded='1') then
+        core_state<=EXECUTING;
       end if;
+
+      
     when EXECUTING =>
   --debug
   DEBUG.opecode<=inst.opecode;
@@ -231,7 +255,6 @@ begin
                  vPC:=PC+x"00000001";
                end if;
            end case;
-           inst_addr<=vPC;
            PC<=vPC;
       end case;
     when HALTED =>
