@@ -1,10 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
-use ieee.std_logic_arith.all;
-
-library UNISIM;
-use UNISIM.VComponents.all;
 
 library work;
 use work.p_type.all;

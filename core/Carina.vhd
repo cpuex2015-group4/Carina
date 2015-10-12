@@ -1,5 +1,4 @@
---#このモジュールが一番外枠
-
+--
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -53,7 +52,7 @@ architecture RTL of top is
   
 --IO
   signal IO_empty,IO_full,IO_WE,IO_RE:std_logic:='0';
-  signal IO_recv_data,IO_send_data:datat:=ZERO;
+  signal IO_recv_data,IO_send_data:datat:=x"0000000";
 
 --core
   signal debug:top_debug_out;
