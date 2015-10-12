@@ -53,5 +53,4 @@ BRAM_INST.xco
 BRAM_INST.xise
 BRAM_INST_flist.txt
 BRAM_INST_xmdf.tcl
-_xmsgs/pn_parser.xmsgs
 summary.log

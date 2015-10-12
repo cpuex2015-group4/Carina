@@ -10,9 +10,9 @@ entity loader is
   port (
     clk,IO_empty,activate: in std_logic;
     IO_recv_data: in std_logic_vector(31 downto 0);
-    addr:out datat;
+    addr:out BRAM_ADDRT;
     din:out datat;
-    bram_we:out std_logic_vector(3 downto 0);
+    bram_we:out std_logic_vector(0 downto 0);
     IO_RE,loaded: out std_logic:='0'
   );
 end loader;
@@ -53,10 +53,10 @@ begin
           IO_RE<='0';
         end if;
     when TEXT_RECEIVING=>
-            bram_we<="1111";    
+            bram_we<="1";    
        if i<conv_integer(text_size) then
          if IO_empty='0' then
-           addr<=CONV_STD_LOGIC_VECTOR(i,32);
+           addr<=CONV_STD_LOGIC_VECTOR(i,14);
            din<=IO_recv_data;
            io_re<='1';
            i<=i+1;
@@ -71,7 +71,7 @@ begin
     when DATA_RECEIVING =>
       if i<conv_integer(data_offset+data_size) then
         if IO_empty='0' then
-          addr<=CONV_STD_LOGIC_VECTOR(i,32);
+          addr<=CONV_STD_LOGIC_VECTOR(i,14);
           din<=IO_recv_data;
           io_re<='1';
           i<=i+1;
@@ -83,7 +83,7 @@ begin
         state<=FINISHED;
       end if;
     when FINISHED=>
-            bram_we<="0000";
+            bram_we<="0";
       io_re<='0';
       loaded<='1';
   end case;

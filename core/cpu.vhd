@@ -28,9 +28,9 @@ architecture RTL of cpu is
 
   component BRAM_INST
     port(
-      addra: in datat;
+      addra: in BRAM_ADDRT;
       dina: in datat;
-      wea: in  std_logic_vector(3 downto 0);
+      wea: in  std_logic_vector (0 downto 0);
       clka:in std_logic;
       douta:out datat
     );
@@ -49,9 +49,9 @@ architecture RTL of cpu is
     port (
       clk,IO_empty,activate: in std_logic;
       IO_recv_data: in std_logic_vector(31 downto 0);
-      addr:out datat;
+      addr:out BRAM_ADDRT;
       din:out datat;
-      bram_we:out std_logic_vector(3 downto 0);
+      bram_we:out std_logic_vector(0 downto 0);
       IO_RE,loaded: out std_logic:='0'
     );            
   end component;
@@ -65,9 +65,9 @@ architecture RTL of cpu is
   signal core_state:CORE_STATE_TYPE:=WAIT_HEADER;
   signal exe_state:EXE_STATE_TYPE:=F;
   signal inst_in:datat;
-  signal inst_we:std_logic_vector(3 downto 0):="0000";
+  signal inst_we:std_logic_vector(0 downto 0):="0";
   signal inst_out:datat;
-  signal inst_addr:datat;
+  signal inst_addr:BRAM_ADDRT;
   signal inst:inst_file;
   signal data:data_file;
   signal control:control_file;
@@ -86,7 +86,7 @@ signal result:datat;
 
  --loader
       signal loader_activate: std_logic:='0';
-      signal loader_addr: datat;
+      signal loader_addr: BRAM_ADDRT;
       signal loader_din: datat;
       signal loader_IO_RE,loaded: std_logic:='0';
 	
@@ -132,8 +132,8 @@ begin
       
   alu_control<=make_alu_control(inst.opecode,inst.funct);
   
-  inst_addr<=loader_addr when core_state=WAIT_HEADER else
-              PC;
+  inst_addr<=loader_addr(BRAM_ADDR_SIZE-1 downto 0) when core_state=WAIT_HEADER else
+              PC(BRAM_ADDR_SIZE-1 downto 0);
   
   main:process (clk)
     variable instv:inst_file;

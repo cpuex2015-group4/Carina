@@ -11,6 +11,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 
 package p_type is
+  constant BRAM_ADDR_SIZE:integer:=14;
+  subtype BRAM_ADDRT is std_logic_vector(BRAM_ADDR_SIZE-1 downto 0);
   subtype datat is std_logic_vector(31 downto 0);
   subtype opet is std_logic_vector(5 downto 0);
   subtype regt is std_logic_vector(4 downto 0);
@@ -19,7 +21,6 @@ package p_type is
   subtype addrt is std_logic_vector( 25 downto 0);
   type reg_filet is array(0 to 31) of datat;  
   type PC_controlt is (j,jr,b,normal);  
-
    type INST_TYPE is (I,R,J);
   type inst_file is record
     PC:datat;

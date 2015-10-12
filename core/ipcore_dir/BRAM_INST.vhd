@@ -43,8 +43,8 @@ LIBRARY XilinxCoreLib;
 ENTITY BRAM_INST IS
   PORT (
     clka : IN STD_LOGIC;
-    wea : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-    addra : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(13 DOWNTO 0);
     dina : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
@@ -55,8 +55,8 @@ ARCHITECTURE BRAM_INST_a OF BRAM_INST IS
 COMPONENT wrapped_BRAM_INST
   PORT (
     clka : IN STD_LOGIC;
-    wea : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-    addra : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(13 DOWNTO 0);
     dina : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
@@ -65,18 +65,18 @@ END COMPONENT;
 -- Configuration specification
   FOR ALL : wrapped_BRAM_INST USE ENTITY XilinxCoreLib.blk_mem_gen_v7_3(behavioral)
     GENERIC MAP (
-      c_addra_width => 32,
-      c_addrb_width => 32,
+      c_addra_width => 14,
+      c_addrb_width => 14,
       c_algorithm => 1,
       c_axi_id_width => 4,
       c_axi_slave_type => 0,
       c_axi_type => 1,
-      c_byte_size => 8,
+      c_byte_size => 9,
       c_common_clk => 0,
-      c_default_data => "100",
+      c_default_data => "FFFFFFFF",
       c_disable_warn_bhv_coll => 0,
       c_disable_warn_bhv_range => 0,
-      c_enable_32bit_address => 1,
+      c_enable_32bit_address => 0,
       c_family => "virtex5",
       c_has_axi_id => 0,
       c_has_ena => 0,
@@ -84,7 +84,7 @@ END COMPONENT;
       c_has_injecterr => 0,
       c_has_mem_output_regs_a => 0,
       c_has_mem_output_regs_b => 0,
-      c_has_mux_output_regs_a => 1,
+      c_has_mux_output_regs_a => 0,
       c_has_mux_output_regs_b => 0,
       c_has_regcea => 0,
       c_has_regceb => 0,
@@ -112,13 +112,13 @@ END COMPONENT;
       c_rstram_b => 0,
       c_sim_collision_check => "ALL",
       c_use_bram_block => 0,
-      c_use_byte_wea => 1,
-      c_use_byte_web => 1,
+      c_use_byte_wea => 0,
+      c_use_byte_web => 0,
       c_use_default_data => 1,
       c_use_ecc => 0,
       c_use_softecc => 0,
-      c_wea_width => 4,
-      c_web_width => 4,
+      c_wea_width => 1,
+      c_web_width => 1,
       c_write_depth_a => 16384,
       c_write_depth_b => 16384,
       c_write_mode_a => "WRITE_FIRST",

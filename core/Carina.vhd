@@ -1,5 +1,3 @@
---
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
@@ -28,8 +26,8 @@ port (
   ZZA   : out   std_logic;
   XFT   : out   std_logic;
   XZBE  : out   std_logic_vector(3 downto 0);
-  ZCLKMA : out std_logic_vector(1 downto 0);
-  DEBUG :out top_debug_out
+  ZCLKMA : out std_logic_vector(1 downto 0)
+--  DEBUG :out top_debug_out
 );
 end top;
 
@@ -42,10 +40,11 @@ architecture RTL of top is
       recv_data:out               std_logic_vector(31 downto 0);
       full,empty:out              std_logic;
       serial_send:out             std_logic;
-      serial_recv:in              std_logic
+      serial_recv:in              std_logic;
+		word_access:in 				 std_logic
       );
   end component;
-component cpu 
+  component cpu 
 	port (
 	clk,IO_empty,IO_full: in std_logic;
 	IO_recv_data: in std_logic_vector(31 downto 0);
@@ -53,7 +52,7 @@ component cpu
 	IO_send_data:out std_logic_vector(31 downto 0);
 	DEBUG :out top_debug_out
 	);
-	end component;
+  end component;
 
 --clk
   signal iclk:std_logic:='0';
@@ -64,8 +63,27 @@ component cpu
   signal IO_recv_data,IO_send_data:datat:=x"00000000";
 
 --core
+	signal DEBUG_inner:top_debug_out;
+
+
+
+--debug
 
 begin
+  ZA    <="00000000000000000000";
+  XWA  <='0';
+  XE1   <='0';
+  E2A   <='0';
+  XE3   <='0';
+  XGA   <='0';
+  XZCKE <='0';
+  ADVA  <='0';
+  XLBO  <='0';
+  ZZA   <='0';
+  XFT   <='0';
+  XZBE  <="0000";
+  ZCLKMA <=clk & clk;
+  --DEBUG<=DEBUG_inner;
   ib: IBUFG port map(
     i=>MCLK1,
     o=>iclk
@@ -74,7 +92,7 @@ begin
     i=>iclk,
     o=>clk
   );
-  io: IO32 port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX);
+  io: IO32 port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX,'1');
 
-  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,DEBUG);
+  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,DEBUG_inner);
 end RTL;

@@ -2,4 +2,5 @@
 *.swp
 *.o
 *~
-core/working/*
+core/working
+core/hakeisimu
