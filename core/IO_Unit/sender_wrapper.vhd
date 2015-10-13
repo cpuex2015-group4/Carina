@@ -37,7 +37,8 @@ architecture RTL of sender_wrapper is
       empty   : out   std_logic
     );
   end component;
-  signal rd_en,empty,go,busy:std_logic:='0';
+  signal rd_en,go,busy:std_logic:='0';
+  signal empty:std_logic:='1';
   signal dout:std_logic_vector( 7 downto 0);
 
   signal entry_prohibiting:std_logic:='0';
@@ -63,5 +64,13 @@ begin
       end if;
     end if;
   end process;
-  
+
+debug:process(clk)
+begin
+  if rising_edge(clk) then
+  if write_enable='1' then
+    report "write:" & integer'image(conv_integer(input));
+  end if;
+  end if;
+end process;  
 end RTL;
