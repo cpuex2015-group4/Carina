@@ -1,12 +1,14 @@
 from enum import Enum
-REG_DICT = {"$zero" : 0, "$at" : 1,\
-    "$v0" : 2, "$v1" : 3,\
-    "$a0" : 4, "$a1" : 5, "$a2" : 6, "$a3" : 7,\
-    "$t0" : 8, "$t1" : 9, "$t2" : 10, "$t3" : 11, "$t4" : 12, "$t5" : 13, "$t6" : 14, "$t7" : 15,\
-    "$s0" : 16, "$s1" : 17, "$s2" : 18, "$s3" : 19, "$s4" : 20, "$s5" : 21, "$s6" : 22, "$s7" : 23,\
-    "$t8" : 24, "$t9" : 25,\
-    "$k0" : 26, "$k1" : 27,\
-    "$gp" : 28, "$sp" : 29, "$fp" : 30, "$ra" : 31}
+import re
+
+REG_DICT = {"%zero" : 0, "%at" : 1,\
+    "%v0" : 2, "%v1" : 3,\
+    "%a0" : 4, "%a1" : 5, "%a2" : 6, "%a3" : 7,\
+    "%t0" : 8, "%t1" : 9, "%t2" : 10, "%t3" : 11, "%t4" : 12, "%t5" : 13, "%t6" : 14, "%t7" : 15,\
+    "%s0" : 16, "%s1" : 17, "%s2" : 18, "%s3" : 19, "%s4" : 20, "%s5" : 21, "%s6" : 22, "%s7" : 23,\
+    "%t8" : 24, "%t9" : 25,\
+    "%k0" : 26, "%k1" : 27,\
+    "%gp" : 28, "%sp" : 29, "%fp" : 30, "%ra" : 31}
 
 def binary_inc(binary):
   i = len(binary)
@@ -82,26 +84,6 @@ def bin2bytes(binary):
   byte4 = chr(int(binary[24:32], 2))
   return (byte1 + byte2 + byte3 + byte4)
 
-
-#read all assembly and make dictionary s.t.
-#{label(string) : line_num(int)}
-def label_dict(lines):
-  dict = {}
-  for i,line in enumerate(lines):
-    if ":" in line:
-      label = line.split(":")[0].strip()
-      dict[label] = i - 1
-  return dict
-
-def remove_label(lines):
-  new_lines = []
-  for line in lines:
-    if ":" in line:
-      new_lines.append(line.split(":")[1].strip() + "\n")
-    else:
-      new_lines.append(line)
-  return new_lines
-
 #operand type
 #1 : $hoge
 #2 : immediate($hoge)
@@ -121,16 +103,65 @@ class Operandtype(Enum):
   LABEL_ABSOLUTE = 7
     
 class Parser:
+  #return : (header, new_lines)
+  @staticmethod
+  def read_header(lines, label_dict):
+    new_lines = []
+    header = ""
+    header += "CARN"
+    header += bin2bytes(format(0, "032b"))
+    header += bin2bytes(format(0, "032b"))
+    offset = 0
+    for line in lines:
+      if ".globl" in line:
+        main_func_name = line.replace(".globl", "").strip()
+        offset = label_dict[main_func_name]
+      #elif ".text" in line:
+      #           
+      #elif ".data "in line:
+      elif not ((".text" in line) or (".data" in line))  :
+        new_lines.append(line)
+    header += bin2bytes(format(offset * 4, "032b"))
+    return (header, new_lines)
+
+  #return : (dict{label_name : line_idx}, new_lines(<- not contain label))
+  @staticmethod
+  def read_label(lines):
+    label_dict = {}
+    new_lines = []
+    line_num_offset = 0
+    for i,line in enumerate(lines):
+      if (".data" in line) or (".text" in line) or (".globl" in line):
+        new_lines.append(line)
+        line_num_offset -= 1
+        continue
+      #ignore comment
+      line = re.sub(r"#.*", "", line)
+      line = line.strip()
+      if line == "":
+        line_num_offset -= 1
+        continue
+      if ":" in line:
+        label_name = line.split(":")[0].strip()
+        label_dict[label_name] = i + line_num_offset
+        line_num_offset -= 1
+      else:
+        new_lines.append(line)
+    return label_dict, new_lines
+
 #return (operation, operands[])
 #line does not contain label
   @staticmethod
   def parse_line(line):
     line = line.strip()
+    print(line)
     tmp = line.split(" ", 1)
     operation = tmp[0]
-    operands = tmp[1].replace(" ", "").split(",")
+    try:
+      operands = tmp[1].replace(" ", "").split(",")
+    except Exception:
+      operands = None
     return (operation, operands)
-
 
   @staticmethod
   def parse_operand(operand, operand_type, label_dict=None, line_num=0):
@@ -143,24 +174,24 @@ class Parser:
       register_bin = reg2bin(tmp[1][0:-1])
       return (register_bin, immediate_bin)
     elif operand_type == Operandtype.IMMEDIATE:
-      immediate_bin = imm2bin(int(operand))
+      immediate_bin = imm2bin(int(operand.replace("$", "")))
       return (None, immediate_bin)
     elif operand_type == Operandtype.SHAMT:
-      shamt_bin = shamt2bin(int(operand))
+      shamt_bin = shamt2bin(int(operand.replace("$", "")))
       return (None, shamt_bin)
     elif operand_type == Operandtype.ADDRESS:
       address_bin = address2bin(int(operand))
       return (None, address_bin)
     elif operand_type == Operandtype.LABEL_RELATIVE:
       target_line_num = label_dict[operand]
-      offset = target_line_num - line_num + 1
+      offset = target_line_num - line_num
       offset_bin = offset2bin(offset)
       return (None, offset_bin)
     elif operand_type == Operandtype.LABEL_ABSOLUTE:
       target_line_num = label_dict[operand]
-      return (None, format(4 * (target_line_num - 1), "026b"))
-      
-
+      print(label_dict)
+      print(target_line_num)
+      return (None, format(4 * target_line_num, "026b"))
 
 class Assembler:
 #all class method take line as arg and return binary
@@ -400,7 +431,22 @@ class Assembler:
 
   @staticmethod
   def move(operands, label_dict, line_num):
-    return Assembler.add([operands[0], "$zero", operands[1]], label_dict, line_num) 
+    return Assembler.add([operands[0], "%zero", operands[1]], label_dict, line_num) 
+
+  @staticmethod
+  def subi(operands, label_dict, line_num):
+    def imm_inverse(imm):
+      return imm.replace("$", "$-")
+    return Assembler.addi([operands[0], operands[1], imm_inverse(operands[2])], label_dict, line_num)
+
+  @staticmethod
+  def li(operands, label_dict, line_num):
+    return Assembler.addi([operands[0], "%zero", operands[1]], label_dict, line_num)
+
+  @staticmethod
+  def hlt(operands, label_dict, line_num):
+    inst_bin = "11111111111111111111111111111111"
+    return bin2bytes(inst_bin)
 
 FUNC_DICT = {\
     "add" : Assembler.add,\
@@ -423,5 +469,8 @@ FUNC_DICT = {\
     "sw" : Assembler.sw,\
     "sub" : Assembler.sub,\
     "move" : Assembler.move,\
+    "subi" : Assembler.subi,\
+    "li" : Assembler.li,\
+    "hlt" : Assembler.hlt,\
     }
 

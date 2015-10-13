@@ -1,15 +1,16 @@
 import assembler as ass
 from assembler import Parser
 from assembler import FUNC_DICT
+import sys
 
-file_in = open("sort.s")
-file_out = open("sort.o", "wb")
+file_in = open(sys.argv[1])
+file_out = open(sys.argv[1].replace(".s", ".o"), "wb")
 lines = file_in.readlines()
-label_dict = ass.label_dict(lines)
-lines = ass.remove_label(lines)
+(label_dict, lines) = ass.Parser.read_label(lines)
+(header, lines) = Parser.read_header(lines, label_dict)
+file_out.write(header)
 for i, line in enumerate(lines):
   (operation, operands) = Parser.parse_line(line)
   func  = FUNC_DICT[operation]
-  print(operation, operands),
-  bytes = func(operands, label_dict, (i + 1))
+  bytes = func(operands, label_dict, i)
   file_out.write(bytes)
