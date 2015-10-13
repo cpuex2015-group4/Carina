@@ -10,9 +10,9 @@ entity loader is
   port (
     clk,IO_empty,activate: in std_logic;
     IO_recv_data: in std_logic_vector(31 downto 0);
-    addr:out BRAM_ADDRT;
-    din:out datat;
-    bram_we:out std_logic_vector(0 downto 0);
+    addr:out BRAM_ADDRT:="00000000000000";
+    din:out datat:=x"00000000";
+    bram_we:out std_logic_vector(0 downto 0):="0";
     IO_RE,loaded: out std_logic:='0'
   );
 end loader;
@@ -30,6 +30,10 @@ begin
     case (state) is
       when HEADER=>
         if IO_empty='0' then
+		   -- assert false
+			-- report "loader:phaze" & integer'image(i) &":data=" & integer'(conv_integer(IO_recv_data)); 
+			report "tsize,doft,dsize=" & integer'image(conv_integer(text_size)) & ","  &
+			integer'image(conv_integer(data_offset)) & "," & integer'image(conv_integer(data_size));
           IO_RE<='1';
           case (i) is
             when 1 =>
@@ -43,7 +47,7 @@ begin
                 report "crazy i in loader_HEADER";
           end case;
 
-          if i<4 then
+          if i<3 then
             i<=i+1;
           else
             i<=0;
