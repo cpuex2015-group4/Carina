@@ -44,7 +44,6 @@ _min_caml_start: # main entry point
 	move    %t0, %v0
 	subi    %sp, %sp, $1
 	sw      %ra, (%sp)
-	jal     min_caml_print_int
 	lw      %ra, (%sp)
 	addi    %sp, %sp, $1
 	# main program end

@@ -170,7 +170,10 @@ class Parser:
       return (register_bin, None)
     elif operand_type == Operandtype.REGISTER_INDIRECT:
       tmp = operand.split("(")
-      immediate_bin = imm2bin(int(tmp[0]))
+      if tmp[0] == "":
+        immediate_bin = imm2bin(0)
+      else:
+        immediate_bin = imm2bin(int(tmp[0]))
       register_bin = reg2bin(tmp[1][0:-1])
       return (register_bin, immediate_bin)
     elif operand_type == Operandtype.IMMEDIATE:
