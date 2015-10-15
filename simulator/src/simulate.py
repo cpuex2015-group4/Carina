@@ -27,7 +27,7 @@ def or_bin(bin1, bin2):
 		bit2 = bin2[i]
 		and_bin += str(int(bit1) + int(bit2))
 		if ans_bin == 2:
-			ans_bin = 1
+			ans_bin += 1
 	return ans_bin
 
 def nor_bin(bin1, bin2):
@@ -113,7 +113,7 @@ class Simulator:
 
 	@staticmethod
 	def fecth_instruction(inst):
-		#print("PC = " + str(Simulator.pc))
+		print("PC = " + str(Simulator.pc))
 		inst_bin = format(int(inst, 16), '032b')
 		operation_bin = inst_bin[0:6]
 		funct_bin = inst_bin[26:]

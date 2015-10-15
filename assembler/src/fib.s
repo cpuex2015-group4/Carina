@@ -2,11 +2,12 @@
 .text
 	.globl  _min_caml_start
 fib.10:
-	slti    %at, %t0, $2
-	beq     %at, %zero, beq_else.24
+	subi    %at, %t0, $1
+	slti    %at, %at, $1
+	beq     %at, %zero, nle_else.24
 	move    %v0, %t0
 	jr      %ra
-beq_else.24:
+nle_else.24:
 	subi    %t1, %t0, $1
 	sw      %t0, -1(%sp)
 	move    %t0, %t1
@@ -44,6 +45,7 @@ _min_caml_start: # main entry point
 	move    %t0, %v0
 	subi    %sp, %sp, $1
 	sw      %ra, (%sp)
+	jal     min_caml_print_int
 	lw      %ra, (%sp)
 	addi    %sp, %sp, $1
 	# main program end
