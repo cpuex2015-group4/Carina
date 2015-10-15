@@ -10,7 +10,8 @@ lines = file_in.readlines()
 (header, lines) = Parser.read_header(lines, label_dict)
 file_out.write(header)
 for i, line in enumerate(lines):
-  (operation, operands) = Parser.parse_line(line)
-  func  = FUNC_DICT[operation]
-  bytes = func(operands, label_dict, i)
-  file_out.write(bytes)
+	(operation, operands) = Parser.parse_line(line)
+	func  = FUNC_DICT[operation]
+	bytes = func(operands, label_dict, i)
+	file_out.write(bytes)
+

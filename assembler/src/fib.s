@@ -35,7 +35,7 @@ _min_caml_start: # main entry point
 	sw      %fp, 0(%sp)
 	move    %fp, %sp
 	# main program start
-	li      %t0, $7
+	li      %t0, $20
 	subi    %sp, %sp, $1
 	sw      %ra, (%sp)
 	jal     fib.10
@@ -44,7 +44,6 @@ _min_caml_start: # main entry point
 	move    %t0, %v0
 	subi    %sp, %sp, $1
 	sw      %ra, (%sp)
-	jal     min_caml_print_int
 	lw      %ra, (%sp)
 	addi    %sp, %sp, $1
 	# main program end
