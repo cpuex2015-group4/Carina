@@ -7,7 +7,7 @@ Identify -inferir
 identifyMPM 
 assignFile -p 2 -file "/home/yukiimai/Sandbox/2015_winter/Carina/core/working/top.bit"
 Program -p 2 
-Program -p 2 
+setCable -port auto
 Program -p 2 
 setMode -bs
 setMode -bs

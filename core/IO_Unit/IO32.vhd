@@ -56,7 +56,7 @@ begin
 			--  report integer'image(send_count);
         if send_count<=3 then
           if io_full='0' then
-			   report "sc:" & integer'image(send_count);
+			--   report "sc:" & integer'image(send_count);
 				
             io_we<='1';
             case (send_count) is
@@ -97,8 +97,8 @@ begin
             elsif fifo_read_wait=1 then
               fifo_read_wait<=2;
             else
-              report "read a byte here:" & integer'image(recv_count) & " " & integer'image(conv_integer(io_recv_data));
-              case (send_count) is
+              report  ":read a byte here:" & integer'image(recv_count) & " " & integer'image(conv_integer(io_recv_data));
+              case (recv_count) is
               when 0 =>
                recv_buf(31 downto 24)<=io_recv_data;
               when 1 =>

@@ -2,7 +2,7 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   03:47:35 10/14/2015
+-- Create Date:   20:52:38 10/15/2015
 -- Design Name:   
 -- Module Name:   /home/yukiimai/Sandbox/2015_winter/Carina/core/top_tb.vhd
 -- Project Name:  Carina
@@ -27,13 +27,18 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
- 
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+library work;
+use work.p_type.all; 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
 ENTITY top_tb IS
 END top_tb;
+ 
+
  
 ARCHITECTURE behavior OF top_tb IS 
  
@@ -64,7 +69,7 @@ ARCHITECTURE behavior OF top_tb IS
 
    --Inputs
    signal MCLK1 : std_logic := '0';
-   signal RS_RX : std_logic := '0';
+   signal RS_RX : std_logic := '1';
 
 	--BiDirs
    signal ZD : std_logic_vector(31 downto 0);
@@ -88,13 +93,23 @@ ARCHITECTURE behavior OF top_tb IS
    -- appropriate port name 
  
    constant MCLK1_period : time := 15 ns;
- 
- 
-   constant ROMMAX:Integer:=9;
-   type rom_t is array (0 to ROMMAX) of std_logic_vector(7 downto 0);
-   constant rom:rom_t:=(x"11",x"22",x"33",x"44",x"55",x"66",x"77",x"88",x"99",x"aa");
-	
- 
+
+
+   	 constant ROMMAX:Integer:=10;
+   type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
+   constant rom:rom_t:=(
+	  conv_std_logic_vector(0,32),
+	  conv_std_logic_vector(7,32),
+  	  conv_std_logic_vector(100,32),
+	  conv_std_logic_vector(0,32),
+    "00100000000000010000000000000000",
+    "00100000000000100000000000000001",
+    "00000000001000100001100000100000",
+    "00000000000000100000100000100000",
+    "00000000000000110001000000100000",
+	 "01101100000000110000000000000000",
+    "00001000000000000000000000000010");
+  
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
@@ -137,17 +152,30 @@ BEGIN
       wait for MCLK1_period*10;
 
       -- insert stimulus here 
-    eternal:loop
-        for I in 0 to ROMMAX loop
-          RS_RX<='0';
-          wait for 0.104 ms;
-          for J in 0 to 7 loop
-            RS_RX<=rom(I)(J);
-            wait for 0.104 ms;
-          end loop;
-          RS_RX<='1';
-          wait for 0.104 ms;
-        end loop;
-      end loop eternal;
+
+      wait;
    end process;
+   stim_recvproc: process
+   begin		
+     -- hold reset state for 100 ns.
+     wait for 0.104 ms*10;	
+     
+     wait for Mclk1_period*10;
+     
+     -- insert stimulus here
+     eternal:loop
+       for I in 0 to ROMMAX loop
+         for k in 0 to 3 loop
+           rs_rx<='0';
+           wait for 0.104 ms;
+           for J in 0 to 7 loop
+             rs_rx<=rom(I)(24-8*k+j);
+             wait for 0.104 ms;
+           end loop;
+         rs_rx<='1';
+         wait for 0.104 ms;		 
+       end loop;
+     end loop;
+   end loop eternal;
+ end process;
 END;

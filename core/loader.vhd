@@ -24,78 +24,86 @@ architecture kaisensionoodle of loader is
   signal data_offset:datat;
   signal data_size:datat;
   signal i:integer:=0;
+  signal justread:boolean:=false;
 begin
   main:process(clk)
   begin
    if rising_edge(clk) then
     case (state) is
       when HEADER=>
+--		 report "head";
         if i<4 then
-          if IO_empty='0' then
- --            report "loader:phaze" & integer'image(i) & ":data=" & integer'(conv_integer(IO_recv_data)); 
-            i<=i+1;
-            IO_RE<='1';
-            case (i) is
-              when 1 =>
-                text_size<=IO_recv_data;
-              when 2 =>
-                data_offset<=IO_recv_data;
-              when 3 =>
-                data_size<=IO_recv_data;
-              when others =>
-                assert false
-                  report "crazy i in loader_HEADER";
-            end case;
-          else
+          if justread then
             IO_RE<='0';
+            i<=i+1;
+            justread<=false;
+          else
+            if IO_empty='0' then
+              IO_RE<='1';
+              case (i) is
+                when 1 =>
+                  text_size<=IO_recv_data;
+                when 2 =>
+                  data_offset<=IO_recv_data;
+                when 3 =>
+                  data_size<=IO_recv_data;
+                when others =>
+                  --assert false
+                 --   report "crazy i in loader_HEADER:" & integer'image(i);
+              end case;
+              justread<=true;
+            end if;
           end if;
         else
           report "i,tsize,doft,dsize=" & integer'image (i) & ","& integer'image(conv_integer(text_size)) & ","  &
             integer'image(conv_integer(data_offset)) & "," & integer'image(conv_integer(data_size));
           i<=0;
           state<=TEXT_RECEIVING;
-          IO_RE<='0';
         end if;
       when TEXT_RECEIVING=>
         if i<conv_integer(text_size) then
-          if IO_empty='0' then
-            report "write_inst@" & integer'image(i) & ":" & integer'image(conv_integer(io_recv_data));
-            din<=IO_recv_data;
-            addr<=CONV_STD_LOGIC_VECTOR(i,14);
-            io_re<='1';
-            i<=i+1;
-            BRAM_WE<="1";
-          else
-            BRAM_we<="0";
+          if justread then
             io_re<='0';
+            justread<=false;
+            i<=i+1;
+            BRAM_WE<="0";
+          else
+            if IO_empty='0' then
+              report "text_recv:i,tsize,doft,dsize=" & integer'image (i) & ","& integer'image(conv_integer(text_size)) & ","  &
+              integer'image(conv_integer(data_offset)) & "," & integer'image(conv_integer(data_size));
+              report "write_inst@" & integer'image(i) & ":" & integer'image(conv_integer(io_recv_data));
+              din<=IO_recv_data;
+              addr<=CONV_STD_LOGIC_VECTOR(i,14);
+              justread<=true;
+              BRAM_WE<="1";
+              io_re<='1';
+            end if;
           end if;
         else
-          BRAM_we<="0";
-          io_re<='0';
           state<=DATA_RECEIVING;
           i<=conv_integer(data_offset);
         end if;
       when DATA_RECEIVING =>
-        report "data_receiving:" & integer'image(i);
         if i<conv_integer(data_offset+data_size) then
-          if IO_empty='0' then
-            addr<=CONV_STD_LOGIC_VECTOR(i,14);
-            din<=IO_recv_data;
-            io_re<='1';
-            BRAM_WE<="1";
-            i<=i+1;
-          else
+          if justread then
+            BRAM_WE<="0";
             io_re<='0';
-            bRAM_we<="0";
+            i<=i+1;
+            justread<=false;
+          else
+            if IO_empty='0' then
+              report "data_receiving@" & integer'image(i) & ":" & integer'IMAGE(conv_integer(io_recv_data)) ;     
+              addr<=CONV_STD_LOGIC_VECTOR(i,14);
+              din<=IO_recv_data;
+              io_re<='1';
+				  justread<=true;
+				  bram_we<="1";
+            end if;
           end if;
         else
-          io_re<='0';
-			 BRAM_WE<="0";
           state<=FINISHED;
         end if;
       when FINISHED=>
-        bram_we<="0";
-        io_re<='0';
         loaded<='1';
     end case;
    end if;
@@ -103,7 +111,13 @@ begin
   
   debug:process(state)
   begin
---	report "state:" & statet'image(state);
+	--report "state:" & statet'image(state);
+  end process;
+  debueg:process(i)
+  begin
+	if i'event then
+	  report "i=" & integer'image(i);
+   end if;
   end process;
 end kaisensionoodle;
 

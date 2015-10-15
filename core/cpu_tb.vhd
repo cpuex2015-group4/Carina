@@ -105,6 +105,17 @@ BEGIN
    end process;
  
 
+
+   iof:process (clk)
+   begin
+     if rising_edge(clk) then
+       if io_we='1' then
+         io_full<='1';
+       else
+         io_full<='0';
+       end if;
+     end if;
+   end process;
    -- Stimulus process
    stim_proc: process
    begin		

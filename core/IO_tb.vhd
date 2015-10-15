@@ -70,9 +70,20 @@ ARCHITECTURE behavior OF IO_tb IS
    -- Clock period definitions
    constant clk_period : time := 15 ns;
 	
-	 constant ROMMAX:Integer:=9;
-   type rom_t is array (0 to ROMMAX) of std_logic_vector(7 downto 0);
-   constant rom:rom_t:=(x"00",x"11",x"22",x"33",x"44",x"55",x"66",x"77",x"88",x"99");
+	 constant ROMMAX:Integer:=10;
+   type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
+   constant rom:rom_t:=(
+	  conv_std_logic_vector(0,32),
+	  	  conv_std_logic_vector(7,32),
+		  	  conv_std_logic_vector(100,32),
+			  	  conv_std_logic_vector(4,32),
+    "00100000000000010000000000000000",
+    "00100000000000100000000000000001",
+    "00000000001000100001100000100000",
+    "00000000000000100000100000100000",
+    "00000000000000110001000000100000",
+	 "01101100000000110000000000000000",
+    "00001000000000000000000000000010");
  
 BEGIN
  
@@ -110,11 +121,37 @@ BEGIN
       -- insert stimulus here 
 		eternal:loop
         for I in 0 to ROMMAX loop
-
           serial_recv<='0';
           wait for 0.104 ms;
           for J in 0 to 7 loop
-            serial_recv<=rom(I)(J);
+            serial_recv<=rom(I)(31 downto 24)(J);
+            wait for 0.104 ms;
+          end loop;
+          serial_recv<='1';
+          wait for 0.104 ms;
+			 
+			         serial_recv<='0';
+          wait for 0.104 ms;
+          for J in 0 to 7 loop
+            serial_recv<=rom(I)(23 downto 16)(J);
+            wait for 0.104 ms;
+          end loop;
+          serial_recv<='1';
+          wait for 0.104 ms;
+			 
+			         serial_recv<='0';
+          wait for 0.104 ms;
+          for J in 0 to 7 loop
+            serial_recv<=rom(I)(15 downto 8)(J);
+            wait for 0.104 ms;
+          end loop;
+          serial_recv<='1';
+          wait for 0.104 ms;
+			 
+			         serial_recv<='0';
+          wait for 0.104 ms;
+          for J in 0 to 7 loop
+            serial_recv<=rom(I)(7 downto 0)(J);
             wait for 0.104 ms;
           end loop;
           serial_recv<='1';

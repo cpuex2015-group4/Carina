@@ -79,8 +79,6 @@ ARCHITECTURE behavior OF loader_tb IS
    signal loaded : std_logic;
 
   --bram
-  signal douta:datat;
-  signal addra:datat;
  -- bram:BRAM_INST port map(addra,din,bram_we,clk,douta);
 
    -- Clock period definitions
@@ -134,7 +132,7 @@ BEGIN
 			 io_recv_data<=rom(I);
 			 io_empty<='0';
 			 
-			 wait until rising_edge(clk) & io_re='1';
+			 wait until rising_edge(clk) and io_re='1';
 			 io_empty<='1';
 			 wait for clk_period;
         end loop;

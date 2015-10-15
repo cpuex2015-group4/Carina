@@ -155,4 +155,15 @@ BEGIN
           wait for clk_period;
       end process; 
 
+	REPROC:process(clk)
+	begin
+	if rising_edge(clk) then
+		if empty='0' then
+		  re<='1';
+		 else
+		   re<='0';
+		end if;
+	end if;
+	
+	end process;
 END;
