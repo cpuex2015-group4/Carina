@@ -27,7 +27,9 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
- 
+
+library work;
+use work.p_type.all;
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
@@ -52,7 +54,16 @@ ARCHITECTURE behavior OF loader_tb IS
          loaded : OUT  std_logic
         );
     END COMPONENT;
-    
+     component BRAM_INST
+    port(
+      addra: in BRAM_ADDRT;
+      dina: in datat;
+      wea: in  std_logic_vector (0 downto 0);
+      clka:in std_logic;
+      douta:out datat
+    );
+  end component;
+
 
    --Inputs
    signal clk : std_logic := '0';
@@ -66,6 +77,11 @@ ARCHITECTURE behavior OF loader_tb IS
    signal bram_we : std_logic_vector(0 downto 0):="0";
    signal IO_RE : std_logic;
    signal loaded : std_logic;
+
+  --bram
+  signal douta:datat;
+  signal addra:datat;
+ -- bram:BRAM_INST port map(addra,din,bram_we,clk,douta);
 
    -- Clock period definitions
    constant clk_period : time := 15 ns;
@@ -101,7 +117,7 @@ BEGIN
 		wait for clk_period/2;
    end process;
  
-
+ 
    -- Stimulus process
    stim_proc: process
    begin		
@@ -112,19 +128,20 @@ BEGIN
 		activate<='1';
 		wait for clk_period;
       -- insert stimulus here 
-   eternal:loop
+--   eternal:loop
         for I in 0 to ROMMAX loop
 			 wait for clk_period*10;
 			 io_recv_data<=rom(I);
 			 io_empty<='0';
 			 
-			 wait until io_re='1';
+			 wait until rising_edge(clk) & io_re='1';
 			 io_empty<='1';
 			 wait for clk_period;
         end loop;
-		  wait;
-      end loop eternal; 
-      wait;
+--		  wait;
+--      end loop eternal; 
+--      wait;
+
    end process;
 
 END;

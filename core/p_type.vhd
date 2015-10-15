@@ -44,7 +44,7 @@ package p_type is
     result:datat;
     newPC:datat;
   end record;
- type CORE_STATE_TYPE is (WAIT_HEADER,EXECUTING,HALTED);
+ type CORE_STATE_TYPE is (WAIT_HEADER,EXE_READY,EXECUTING,HALTED);
   type EXE_STATE_TYPE is (F,D,EX,MEM,WB);
 
   type control_file is record
@@ -54,6 +54,8 @@ package p_type is
     ALUSrc:std_logic;           --reg2/imd
     MemRead:std_logic;
     MemWrite:std_logic;
+    IORead:std_logic;
+    IOWrite:std_logic;
     MemtoReg:std_logic;
     isZero:std_logic;
     PC_control:PC_controlt;
@@ -134,6 +136,14 @@ package body p_type is
       when others=>
         control.PC_control:=normal;
     end case;
+
+    if opecode="11010" then
+      control.IORead:='0';
+    end if;
+    
+    if opecode="11011" then
+      control.IOWrite:='1';
+    end if;
     return control;
   end make_control;
 

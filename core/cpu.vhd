@@ -10,7 +10,7 @@ entity cpu is
 port (
   clk,IO_empty,IO_full: in std_logic;
   IO_recv_data: in std_logic_vector(31 downto 0);
-  IO_WE,IO_RE: out std_logic;
+  IO_WE,IO_RE: out std_logic:='0';
   IO_send_data:out std_logic_vector(31 downto 0);
   DEBUG :out top_debug_out
 );
@@ -71,6 +71,7 @@ architecture RTL of cpu is
   signal inst:inst_file;
   signal data:data_file;
   signal control:control_file;
+  signal io_re_cpu:std_logic:='0';
 signal alu_control:alu_controlt;
 
   --debug
@@ -135,6 +136,8 @@ begin
   inst_addr<=loader_addr(BRAM_ADDR_SIZE-1 downto 0) when core_state=WAIT_HEADER else
               PC(BRAM_ADDR_SIZE-1 downto 0);
   
+  io_re<=loader_io_re when core_state=Wait_header else
+			io_re_cpu;
   main:process (clk)
     variable instv:inst_file;
     variable controlv:control_file;
@@ -150,11 +153,13 @@ begin
       DEBUG.control<=control;
       --/debug
       loader_activate<='1';
-      if (loaded='1') then
-        core_state<=EXECUTING;
+      if loaded='1' then
+        core_state<=EXE_READY;
       end if;
 
-      
+    when EXE_READY=>
+      report "exe ready";
+      core_state<=EXECUTING;    --data source no kirikae
     when EXECUTING =>
   --debug
   DEBUG.opecode<=inst.opecode;
@@ -173,7 +178,11 @@ begin
       
       case ( exe_state) is
         when F =>
-          instv.PC:=PC;
+		    report "inst_out:" & integer'image(conv_integer(inst_out));
+			 report "PC:" &  integer'image(conv_integer(PC));
+          exe_state<=D;
+        when D =>
+			          instv.PC:=PC;
 		           instv.instruction:=inst_out;
           instv.opecode:= inst_out(31 downto 26);
           instv.rs:=inst_out(25 downto 21);
@@ -183,24 +192,20 @@ begin
           instv.funct:=inst_out(5 downto 0);
           instv.immediate:=inst_out(15 downto 0);
           instv.addr:=inst_out(25 downto 0); 
-          inst<=instv;
-          exe_state<=D;
-        when D =>
-			instv:=inst;
           exe_state<=EX;
 			 
-          controlv:=make_control(inst.opecode,inst.funct);
+          controlv:=make_control(instv.opecode,instv.funct);
           if controlv.RegDst='0' then
             instv.reg_dest:=inst.rd;
           else
             instv.reg_dest:=inst.rt;
           end if;
           inst<=instv;
-          data.operand1<=reg_file(CONV_INTEGER(inst.rs));
+          data.operand1<=reg_file(CONV_INTEGER(instv.rs));
           if controlv.ALUSrc='0' then
-            data.operand2<=reg_file(CONV_INTEGER(inst.rt));
+            data.operand2<=reg_file(CONV_INTEGER(instv.rt));
           else
-            data.operand2<="0000000000000000" & inst.immediate;
+            data.operand2<="0000000000000000" & instv.immediate;
           end if;
           control<=controlv;
         when EX =>
@@ -227,15 +232,31 @@ begin
               data.newPC<=reg_file(CONV_INTEGER(inst.rs));
           end case;
         when MEM =>
-          exe_state<=WB;
+          if control.IORead='1' then
+			   if IO_empty='0'then
+					data.result<=IO_recv_data;
+					IO_re_cpu<='1';
+					exe_state<=WB;
+				end if;
+          elsif control.IOWrite='1' then
+			   if IO_full='0' then
+              IO_we<='1';
+              IO_send_data<=data.operand2;
+	   			exe_state<=WB;
+				end if;
+          else
+			    exe_state<=WB;
+			 end if;
         when WB =>
+          IO_re_cpu<='0';
+         IO_we<='0';
+          
            if control.RegWrite='1' then
              if inst.reg_dest /= x"00000" then
                reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
              end if;
            end if;
           exe_state<=F;
-        -- end if
            if inst.opecode=x"03" then  --jump and link
              reg_file(31)<=PC+x"00000001";
            end if;
@@ -258,5 +279,15 @@ begin
       -- do nothing;
   end case;
   end if;
+  end process;
+  
+  bram_info:process(inst_addr,inst_in,inst_we,inst_out)
+  begin
+    if rising_edge(clk) then
+		report core_state_type'image(core_state);
+     report "BRAM addr:" & integer'image(CONV_INTEGER(inst_addr)) & " WE:" & integer'image(conv_integer(inst_we)) &
+				"data_in:" & integer'image(conv_integer(inst_in)) &
+				"data_out:" & integer'image(conv_integer(inst_out));
+				end if;
   end process;
 end RTL;

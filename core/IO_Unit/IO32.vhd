@@ -118,8 +118,11 @@ begin
     end if;
   end process;
   
-  debug:process(io_recv_data)
+  debug:process(io_recv_data,re)
   begin
-
+		if rising_edge(re) then
+			report "iore:" & integer'image (conv_integer(io_recv_data));
+		end if;
   end process;
 end pohe;
+ 

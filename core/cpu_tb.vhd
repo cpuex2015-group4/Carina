@@ -27,7 +27,8 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
- 
+use ieee.std_logic_unsigned.all; 
+use ieee.std_logic_arith.all;
 library work;
 use work.p_type.all;
 -- Uncomment the following library declaration if using
@@ -57,7 +58,7 @@ ARCHITECTURE behavior OF cpu_tb IS
 
    --Inputs
    signal clk : std_logic := '0';
-   signal IO_empty : std_logic := '0';
+   signal IO_empty : std_logic := '1';
    signal IO_full : std_logic := '0';
    signal IO_recv_data : std_logic_vector(31 downto 0) := (others => '0');
 
@@ -68,8 +69,17 @@ ARCHITECTURE behavior OF cpu_tb IS
    signal DEBUG : top_debug_out;
 
    -- Clock period definitions
-   constant clk_period : time := 10 ns;
- 
+   constant clk_period : time := 15 ns;
+   
+	 constant ROMMAX:Integer:=5;
+   type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
+   constant rom:rom_t:=(
+    "00100000000000010000000000000000",
+    "00100000000000100000000000000001",
+    "00000000001000100001100000100000",
+    "00000000000000100000100000100000",
+    "00000000000000110001000000100000",
+    "00001000000000000000000000000010");
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
@@ -102,8 +112,31 @@ BEGIN
 
       wait for clk_period*10;
 
-      -- insert stimulus here 
-
+      -- insert stimulus here
+		--wait until rising_edge(clk);
+		
+		io_empty<='0';
+		io_recv_data<=conv_std_logic_vector(0,32);
+      wait for clk_period;
+		io_recv_data<=conv_std_logic_vector(6,32);
+		wait for clk_period;
+		io_recv_data<=conv_std_logic_vector(100,32);
+		wait for clk_period;
+		io_recv_data<=conv_std_logic_vector(0,32);
+		wait for clk_period;
+      io_empty<='1';
+      wait for clk_period*10;
+		
+      for I in 0 to ROMMAX loop
+			 io_recv_data<=rom(I);
+			 io_empty<='0';
+			 if io_re='0' then
+			   wait until  io_re='1';
+			 end if;
+			 io_empty<='1';
+			 wait for clk_period*10;
+			 
+      end loop;
       wait;
    end process;
 
