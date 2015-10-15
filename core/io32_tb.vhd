@@ -127,28 +127,32 @@ BEGIN
       end loop eternal;
    end process;
 	
-	 stim_sendproc: process
-   begin		
+		writeproc:process
+	begin
+          wait for 100 ns;
+          if full ='1' then
+            wait until falling_edge(full);
+          end if;
+          wait until rising_edge(clk);
+          send_data<=x"11111111";
+          we<='1';
+          wait for clk_period;
 
-      -- hold reset state for 100 ns.
-      wait for 0.104 ms*	10;	
+          if full ='1' then
+            wait until falling_edge(full);
+          end if;
+          wait until rising_edge(clk);
+          send_data<=x"22222222";
+          we<='1';
+          wait for clk_period;
 
-      wait for clk_period*10;
-
-      -- insert stimulus here
-      eternal:loop
-        for I in 0 to SENDROMMAX loop
-		  if full='1' then
-		    wait until falling_edge(clk) and full='0';
-		  end if;
-		    report "wrote:" & integer'image(i);
-			 we<='1';
-			 send_data<=sendrom(I);
-			 wait for clk_period;
-			 we<='0';
-        end loop;
-		  wait;
-      end loop eternal;
-   end process;
+          if full ='1' then
+            wait until falling_edge(full);
+          end if;
+          wait until rising_edge(clk);
+          send_data<=x"33333333";
+          we<='1';
+          wait for clk_period;
+      end process; 
 
 END;

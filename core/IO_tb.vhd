@@ -110,8 +110,7 @@ BEGIN
       -- insert stimulus here 
 		eternal:loop
         for I in 0 to ROMMAX loop
-			 assert false
-			 report "send";
+
           serial_recv<='0';
           wait for 0.104 ms;
           for J in 0 to 7 loop
@@ -133,4 +132,32 @@ BEGIN
 		end if;
 	end process;
 
+
+	writeproc:process
+	begin
+          wait for 100 ns;
+          if full ='1' then
+            wait until falling_edge(full);
+          end if;
+          wait until rising_edge(clk);
+          send_data<=x"11";
+          we<='1';
+          wait for clk_period;
+
+          if full ='1' then
+            wait until falling_edge(full);
+          end if;
+          wait until rising_edge(clk);
+          send_data<=x"22";
+          we<='1';
+          wait for clk_period;
+
+          if full ='1' then
+            wait until falling_edge(full);
+          end if;
+          wait until rising_edge(clk);
+          send_data<=x"33";
+          we<='1';
+          wait for clk_period;
+      end process; 
 END;

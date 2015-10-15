@@ -44,7 +44,7 @@ package p_type is
     result:datat;
     newPC:datat;
   end record;
- type CORE_STATE_TYPE is (WAIT_HEADER,EXE_READY,EXECUTING,HALTED);
+ type CORE_STATE_TYPE is (INIT,WAIT_HEADER,EXE_READY,EXECUTING,HALTED);
   type EXE_STATE_TYPE is (F,D,EX,MEM,WB);
 
   type control_file is record
@@ -93,7 +93,7 @@ package body p_type is
   function make_control (opecode:opet;funct:functt) return control_file is
     variable control:control_file;
   begin
-    if opecode ="000000" then
+    if opecode ="000000" OR opecode="011011" then
       control.RegDst:='0';
       control.ALUSrc:='0';
     else
@@ -137,13 +137,17 @@ package body p_type is
         control.PC_control:=normal;
     end case;
 
-    if opecode="11010" then
-      control.IORead:='0';
+    if opecode="011010" then
+      control.IORead:='1';
+	 else
+	   control.IORead:='0';
     end if;
     
-    if opecode="11011" then
+    if opecode="011011" then
       control.IOWrite:='1';
-    end if;
+    eLSE
+		control.IOWrite:='0';
+	 end if;
     return control;
   end make_control;
 

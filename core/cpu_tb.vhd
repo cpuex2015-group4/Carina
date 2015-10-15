@@ -71,7 +71,7 @@ ARCHITECTURE behavior OF cpu_tb IS
    -- Clock period definitions
    constant clk_period : time := 15 ns;
    
-	 constant ROMMAX:Integer:=5;
+	 constant ROMMAX:Integer:=6;
    type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
    constant rom:rom_t:=(
     "00100000000000010000000000000000",
@@ -79,6 +79,7 @@ ARCHITECTURE behavior OF cpu_tb IS
     "00000000001000100001100000100000",
     "00000000000000100000100000100000",
     "00000000000000110001000000100000",
+	 "01101100000000110000000000000000",
     "00001000000000000000000000000010");
 BEGIN
  
@@ -118,7 +119,7 @@ BEGIN
 		io_empty<='0';
 		io_recv_data<=conv_std_logic_vector(0,32);
       wait for clk_period;
-		io_recv_data<=conv_std_logic_vector(6,32);
+		io_recv_data<=conv_std_logic_vector(7,32);
 		wait for clk_period;
 		io_recv_data<=conv_std_logic_vector(100,32);
 		wait for clk_period;

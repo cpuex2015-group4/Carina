@@ -11,7 +11,7 @@ port (
   clk,IO_empty,IO_full: in std_logic;
   IO_recv_data: in std_logic_vector(31 downto 0);
   IO_WE,IO_RE: out std_logic:='0';
-  IO_send_data:out std_logic_vector(31 downto 0);
+  IO_send_data:out std_logic_vector(31 downto 0):=x"00000000";
   DEBUG :out top_debug_out
 );
 end cpu;
@@ -62,7 +62,7 @@ architecture RTL of cpu is
  
   signal PC :datat:=ZERO;
   signal reg_file:reg_filet:=(others=>ZERO);
-  signal core_state:CORE_STATE_TYPE:=WAIT_HEADER;
+  signal core_state:CORE_STATE_TYPE:=INIT;
   signal exe_state:EXE_STATE_TYPE:=F;
   signal inst_in:datat;
   signal inst_we:std_logic_vector(0 downto 0):="0";
@@ -145,6 +145,14 @@ begin
   begin
   if rising_edge(clk) then  
   case (core_state) is
+    when INIT=>
+      if io_full='0' then
+        io_we<='1';
+        io_send_data<=x"4341524e";
+      else
+        io_we<='0';
+        core_state<=WaIT_HEADER;
+      end if;
     when WAIT_HEADER =>
       --debug
       DEBUG.data1<=inst_out;
@@ -172,7 +180,7 @@ begin
   DEBUG.core_state<=core_state;
   DEBUG.PC<=PC;
   DEBUG.inst<=inst;
-  DEBUG.data3<=result;
+  DEBUG.data3<=reg_file(3);
   DEBUG.alucont<=alu_control;
   --/debug
       
@@ -196,9 +204,9 @@ begin
 			 
           controlv:=make_control(instv.opecode,instv.funct);
           if controlv.RegDst='0' then
-            instv.reg_dest:=inst.rd;
+            instv.reg_dest:=instv.rd;
           else
-            instv.reg_dest:=inst.rt;
+            instv.reg_dest:=instv.rt;
           end if;
           inst<=instv;
           data.operand1<=reg_file(CONV_INTEGER(instv.rs));

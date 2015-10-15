@@ -69,7 +69,7 @@ debug:process(clk)
 begin
   if rising_edge(clk) then
   if write_enable='1' then
-    report "write:" & integer'image(conv_integer(input));
+--    report "write:" & integer'image(conv_integer(input));
   end if;
   end if;
 end process;  

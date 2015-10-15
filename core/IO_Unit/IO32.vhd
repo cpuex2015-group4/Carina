@@ -61,13 +61,13 @@ begin
             io_we<='1';
             case (send_count) is
               when 0 =>
-                io_send_data<=send_buf(7 downto 0);
-              when 1 =>
-                io_send_data<=send_buf(15 downto 8);
-              when 2 =>
-                io_send_data<=send_buf(23 downto 16);
-              when 3 =>
                 io_send_data<=send_buf(31 downto 24);
+              when 1 =>
+                io_send_data<=send_buf(23 downto 16);
+              when 2 =>
+                io_send_data<=send_buf(15 downto 8);
+              when 3 =>
+                io_send_data<=send_buf(7 downto 0);
               when others=> --impossible case
                 io_send_data<=x"00";
             end case;
@@ -91,14 +91,25 @@ begin
         if recv_count<=3 then
             if fifo_read_wait=0 then
               if io_empty='0' then
-	                io_re<='1';
+                io_re<='1';
                 fifo_read_wait<=1;
               end if;
             elsif fifo_read_wait=1 then
-					fifo_read_wait<=2;
-				else
-				  report "read a byte here:" & integer'image(recv_count) & " " & integer'image(conv_integer(io_recv_data));
-              recv_buf((recv_count+1)*8-1 downto recv_count*8)<=io_recv_data;
+              fifo_read_wait<=2;
+            else
+              report "read a byte here:" & integer'image(recv_count) & " " & integer'image(conv_integer(io_recv_data));
+              case (send_count) is
+              when 0 =>
+               recv_buf(31 downto 24)<=io_recv_data;
+              when 1 =>
+                recv_buf(23 downto 16)<=io_recv_data;
+              when 2 =>
+                recv_buf(15 downto 8)<=io_recv_data;
+              when 3 =>
+                recv_buf(7 downto 0)<=io_recv_data;
+              when others=> --impossible case
+                --do nothing
+            end case;
               io_re<='0';
               recv_count<=recv_count+1;
               fifo_read_wait<=0;
