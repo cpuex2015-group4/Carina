@@ -94,16 +94,6 @@ signal result:datat;
  
   
   signal count:integer:=0;
-  constant test_code_max:integer:=5;
-  type test_code_t is array(0 to test_code_max) of datat; 
-  constant test_code:test_code_t:=(
-    "00100000000000010000000000000000",
-    "00100000000000100000000000000001",
-    "00000000001000100001100000100000",
-    "00000000000000100000100000100000",
-    "00000000000000110001000000100000",
-    "00001000000000000000000000000010"
-    );
 begin
   inst_mem:BRAM_INST port map(
     addra=>inst_addr,
@@ -162,10 +152,12 @@ begin
       --/debug
       loader_activate<='1';
       if loaded='1' then
+			io_send_data<=x"52435644";
+			IO_WE<='1';
         core_state<=EXE_READY;
       end if;
-
     when EXE_READY=>
+			io_we<='0';
       report "exe ready";
       core_state<=EXECUTING;    --data source no kirikae
     when EXECUTING =>
@@ -186,12 +178,22 @@ begin
       
       case ( exe_state) is
         when F =>
-		    report "inst_out:" & integer'image(conv_integer(inst_out));
-			 report "PC:" &  integer'image(conv_integer(PC));
-          exe_state<=D;
-        when D =>
-			          instv.PC:=PC;
-		           instv.instruction:=inst_out;
+--		    report "inst_out:" & integer'image(conv_integer(inst_out));
+--			 report "PC:" &  integer'image(conv_integer(PC));
+-- ###################################DEBUG############################
+--			 if io_full='0' then
+--				io_we<='1';
+--				io_send_data<=inst_out;
+--				exe_state<=D;
+--			 end if;
+
+--        when D =>
+--				io_we<='0';
+--#####################################################################
+			exe_state<=D;
+		 when D=>
+			 instv.PC:=PC;
+          instv.instruction:=inst_out;
           instv.opecode:= inst_out(31 downto 26);
           instv.rs:=inst_out(25 downto 21);
           instv.rt:=inst_out(20 downto 16);

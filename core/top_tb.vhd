@@ -163,7 +163,7 @@ BEGIN
      wait for Mclk1_period*10;
      
      -- insert stimulus here
-     eternal:loop
+    -- eternal:loop
        for I in 0 to ROMMAX loop
          for k in 0 to 3 loop
            rs_rx<='0';
@@ -176,6 +176,7 @@ BEGIN
          wait for 0.104 ms;		 
        end loop;
      end loop;
-   end loop eternal;
+	  wait;
+   --end loop eternal;
  end process;
 END;

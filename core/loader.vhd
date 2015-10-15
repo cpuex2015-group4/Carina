@@ -113,11 +113,11 @@ begin
   begin
 	--report "state:" & statet'image(state);
   end process;
-  debueg:process(i)
-  begin
-	if i'event then
-	  report "i=" & integer'image(i);
-   end if;
-  end process;
+--  debueg:process(i)
+--  begin
+--	if i'event then-
+--	  report "i=" & integer'image(i);
+--   end if;
+--  end process;
 end kaisensionoodle;
 
