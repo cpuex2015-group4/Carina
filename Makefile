@@ -16,4 +16,4 @@ $(TEST):
 
 .PHONY: clean
 clean:
-	rm -rf *.pyc tests/*.o
+	@rm -rf *.pyc tests/*.o

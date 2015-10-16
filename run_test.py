@@ -5,6 +5,6 @@ from assembler.main import assemble
 from simulator.main import simulate
 
 def test_fib1():
+	# calculate fib(20)
 	assemble("tests/fib.s")
-	simulate("tests/fib.o")
-	assert 1 == 1
+	assert simulate("tests/fib.o") == 6765

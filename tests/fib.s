@@ -1,5 +1,6 @@
 .data
 .text
+.globl _min_caml_start
 fib.10:
 	subi    %at, %t0, $1
 	slti    %at, %at, $1
@@ -35,7 +36,7 @@ _min_caml_start: # main entry point
 	sw      %fp, 0(%sp)
 	move    %fp, %sp
 	# main program start
-	li      %t0, $2
+	li      %t0, $20
 	subi    %sp, %sp, $1
 	sw      %ra, (%sp)
 	jal     fib.10

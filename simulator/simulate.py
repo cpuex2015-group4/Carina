@@ -68,9 +68,9 @@ class Simulator:
 			Simulator.reg[format(i, "05b")] = format(0, "032b")
 #stack pointer 
 		Simulator.reg["11101"] = format(100, "032b")
-		print("Simulator.text_offset = " + str(Simulator.text_offset))
+		#print("Simulator.text_offset = " + str(Simulator.text_offset))
 		Simulator.pc = Simulator.text_offset / 4
-		print(Simulator.reg)
+		#print(Simulator.reg)
 
 #read first 16byte
 #magic number
@@ -116,7 +116,7 @@ class Simulator:
 
 	@staticmethod
 	def fecth_instruction(inst):
-		print("PC = " + str(Simulator.pc))
+		#print("PC = " + str(Simulator.pc))
 		inst_bin = format(int(inst, 16), '032b')
 		operation_bin = inst_bin[0:6]
 		funct_bin = inst_bin[26:]
@@ -368,6 +368,7 @@ class Simulator:
 
 	@staticmethod
 	def hlt(inst_bin):
+		print("HALT\n{}".format("=" * 20))
 		pprint.pprint(Simulator.reg)
 		pprint.pprint(Simulator.mem)
 		return 0
