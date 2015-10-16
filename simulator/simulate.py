@@ -3,7 +3,7 @@
 
 import pprint
 
-#if minus, disolute it
+#if minus, dissolve it
 def bin2int(binary):
 	def turn_binary(binary):
 		if len(binary) == 0:

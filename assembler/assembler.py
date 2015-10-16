@@ -25,7 +25,7 @@ def binary_inc(binary):
 			i -= 1
 	return "".join(lst)
 
-def disolute_minus(binary):
+def dissolve_minus(binary):
 	new_binary = ""
 	binary = binary.replace("-", "")
 	while(len(binary) > 0):
@@ -46,7 +46,7 @@ def hex2bin(hex):
 def imm2bin(immediate):
 	if immediate < 0:
 		binary = format(immediate, '017b')
-		binary = disolute_minus(binary)
+		binary = dissolve_minus(binary)
 	else:
 		binary = format(immediate, '016b')
 	return binary 
@@ -54,7 +54,7 @@ def imm2bin(immediate):
 def shamt2bin(shamt):
 	if shamt < 0:
 		binary = format(shamt, '06b')
-		binary = disolute_minus(binary)
+		binary = dissolve_minus(binary)
 	else:
 		binary = format(shamt, '05b')
 	return binary 
@@ -62,7 +62,7 @@ def shamt2bin(shamt):
 def address2bin(address):
 	if address < 0:
 		binary = format(address, '027b')
-		binary = disolute_minus(binary)
+		binary = dissolve_minus(binary)
 	else:
 		binary = format(address, '026b')
 	return binary
@@ -70,7 +70,7 @@ def address2bin(address):
 def offset2bin(offset):
 	if offset < 0:
 		binary = format(offset, '017b')
-		binary = disolute_minus(binary)
+		binary = dissolve_minus(binary)
 	else:
 		binary = format(offset, '016b')
 	return binary
