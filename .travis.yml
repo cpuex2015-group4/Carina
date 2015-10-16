@@ -1,7 +1,8 @@
 language: python
 python:
-    - "2.7"
-# command to install dependencies
-install: "pip install -r .install.txt"
-# command to run tests
+- '2.7'
+install: pip install -r .install.txt
 script: make test
+notifications:
+  slack:
+    secure: OEMuBUcNlqHAHwG74Jq46RS6zg0n47E6gZCBoOViksHWbnwramXZMdxz/jVwxrKTIApycw6DQaAli+UkPerH6sK+JFisLbnO95Y1qx2XdzPcOz7BBNQRbDqHRJleUN96pnxj8zNAZ08NgIu9P6D8B/DBjxMDDIYUeM2F9jD6SFi+4SzRicfQIh/ewjFcRN7OCbq4XqJUOdKTMXfjNmZJfX4nhpOEgYAzu4GzsiXjpxnTlo5ARfoH8eoZm3DiNSbbyrHnnojdUeDnJnYAPOq6LSwU8dWZgOVCxHm2uv7M7NJPjzc1SLl0NZbp+CF9qBBhKX6LpIX8p5lY+I9heN7tdE3MJ4EQH0jsXbXxHkpRrRIN6A0vNDgTpBLdjfTKvt6lTbms7J+9C1kMtGigdbOCcV1VSV9BfRlWCY4l3uk/Thw5pQLtdciFL7jRRTJehu/oBcAl2L6THnoOIW29vhXKzqweWZByRJAIzJmIROen4SrsBzVXGviZ4S2Re1f1Uq/UrchRvVB9UcKvQS0USflnSl3hQOiUvlB2HV9UCdJeGqnlG4hEBQ0XPEqQGv85G2bnQypPvuU0P2wF9/8fK/TM4+2hD/fH3v5MUUcvRgejhFEwM6EhjQL2eVcu8nCWQs/EDLzpPW0Bv2D2xvk9Bw7Y1Fc4l6mZKx2CtErupZjQeSQ=
