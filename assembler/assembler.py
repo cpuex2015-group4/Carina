@@ -154,7 +154,7 @@ class Parser:
 	@staticmethod
 	def parse_line(line):
 		line = line.strip()
-		print(line)
+		#print(line)
 		tmp = line.split(" ", 1)
 		operation = tmp[0]
 		try:
@@ -192,8 +192,8 @@ class Parser:
 			return (None, offset_bin)
 		elif operand_type == Operandtype.LABEL_ABSOLUTE:
 			target_line_num = label_dict[operand]
-			#print(label_dict)
-			#print(target_line_num)
+			##print(label_dict)
+			##print(target_line_num)
 			return (None, format(4 * target_line_num, "026b"))
 
 class Assembler:
@@ -208,8 +208,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				format(0, "05b") +\
 				funct_bin
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -219,8 +219,8 @@ class Assembler:
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -233,8 +233,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				format(0, "05b") +\
 				funct_bin
-		print(bin2hex(inst_bin))
-		print(inst_bin),
+		#print(bin2hex(inst_bin))
+		#print(inst_bin),
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -244,8 +244,8 @@ class Assembler:
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
-		print(inst_bin)
-		print(bin2hex(inst_bin))
+		#print(inst_bin)
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -255,8 +255,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.LABEL_RELATIVE, label_dict, line_num)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -266,8 +266,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.LABEL_RELATIVE, label_dict, line_num)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -275,8 +275,8 @@ class Assembler:
 		opecode_bin = format(int("2", 16), "06b")
 		inst_bin = opecode_bin +\
 				Parser.parse_operand(operands[0], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -284,8 +284,8 @@ class Assembler:
 		opecode_bin = format(int("3", 16), "06b")
 		inst_bin = opecode_bin +\
 				Parser.parse_operand(operands[0], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -298,8 +298,8 @@ class Assembler:
 				format(0, "05b") +\
 				format(0, "05b") +\
 				funct_bin
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -309,8 +309,8 @@ class Assembler:
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin) 
 
 	@staticmethod
@@ -323,8 +323,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				format(0, "05b") +\
 				funct_bin
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -337,8 +337,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				format(0, "05b") +\
 				funct_bin
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -348,8 +348,8 @@ class Assembler:
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -362,8 +362,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				format(0, "05b") +\
 				funct_bin
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -373,8 +373,8 @@ class Assembler:
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	#####according to henepata, R[rd] = R[rs] << shamt
@@ -389,8 +389,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.SHAMT)[1] +\
 				format(0, "06b")
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -403,8 +403,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.SHAMT)[1] +\
 				format(0, "06b")
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -414,8 +414,8 @@ class Assembler:
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod
@@ -428,8 +428,8 @@ class Assembler:
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				format(0, "05b") +\
 				funct_bin
-		print(inst_bin),
-		print(bin2hex(inst_bin))
+		#print(inst_bin),
+		#print(bin2hex(inst_bin))
 		return bin2bytes(inst_bin)
 
 	@staticmethod

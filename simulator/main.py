@@ -1,19 +1,26 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 import sys
 import simulate as sim
 
-file_in = open(sys.argv[1], "rb")
+def simulate(filename):
+	with open(filename, "rb") as file_in:
+		sim.Simulator.load_instruction(file_in.read())
 
-sim.Simulator.load_instruction(file_in.read())
-file_in.close()
-print(sim.Simulator.inst_mem)
-sim.Simulator.initialization()
-inst_cnt = 0
-while(True):
-	inst = sim.Simulator.inst_mem[sim.Simulator.pc]
-	res = sim.Simulator.fecth_instruction(inst)
-	inst_cnt += 1
-	if(res == 0):
-		break
-	else:
-		continue
-print("instruction : " + str(inst_cnt))
+	print(sim.Simulator.inst_mem)
+	sim.Simulator.initialization()
+	inst_cnt = 0
+	while(True):
+		inst = sim.Simulator.inst_mem[sim.Simulator.pc]
+		res = sim.Simulator.fecth_instruction(inst)
+		inst_cnt += 1
+		if(res == 0):
+			break
+		else:
+			continue
+	print("instruction : " + str(inst_cnt))
+
+if __name__ == "__main__":
+	filename = sys.argv[1]
+	simulate(filename)
