@@ -116,7 +116,7 @@ class Simulator:
 
 	@staticmethod
 	def fecth_instruction(inst):
-		#print("PC = " + str(Simulator.pc))
+		print("PC = " + str(Simulator.pc))
 		inst_bin = format(int(inst, 16), '032b')
 		operation_bin = inst_bin[0:6]
 		funct_bin = inst_bin[26:]
@@ -262,12 +262,12 @@ class Simulator:
 		reg_t_bin = inst_bin[11:16]
 		imm_bin = inst_bin[16:]
 		try:
-			#print(format(4 * (bin2int(Simulator.reg[reg_s_bin]) + bin2int(imm_bin)), "032b"))
+			print("lw " + format(4 * (bin2int(Simulator.reg[reg_s_bin]) + bin2int(imm_bin)), "032b"))
 			Simulator.reg[reg_t_bin] = Simulator.mem[format(4 * (bin2int(Simulator.reg[reg_s_bin]) + bin2int(imm_bin)), "032b")]
-		except Exception:
+		except Exception as ex:
 			#pprint.pprint(Simulator.reg)
 			#pprint.pprint(Simulator.mem)
-			raise Exception
+			raise ex
 		Simulator.pc += 1
 		return 1
 
@@ -351,7 +351,7 @@ class Simulator:
 		reg_t_bin = inst_bin[11:16]
 		imm_bin = inst_bin[16:]
 		Simulator.mem[format(4 * (bin2int(Simulator.reg[reg_s_bin]) + bin2int(imm_bin)), "032b")] = Simulator.reg[reg_t_bin]
-		#print(format(4 * (bin2int(Simulator.reg[reg_s_bin]) + bin2int(imm_bin)), "032b"))
+		print("sw " + format(4 * (bin2int(Simulator.reg[reg_s_bin]) + bin2int(imm_bin)), "032b"))
 		#pprint.pprint(Simulator.reg)
 		#pprint.pprint(Simulator.mem)
 		Simulator.pc += 1
