@@ -9,9 +9,11 @@ $(TARGET):
 	@echo "This Makefile is for test. Please use \`make $(TEST)\`."
 
 .PHONY: $(TEST)
-$(TEST): $(MINCAML)
+$(TEST):
 	@echo "--------------------\nresolving test dependecies ...\n--------------------"
-	@pip install -r $(DEPENDENCY_MODULES)
+	pip install -r $(DEPENDENCY_MODULES)
+	@echo "--------------------\ngenerating min-caml compiler ...\n--------------------"
+	@cd min-caml; $(MAKE) clean; ./to_carina; $(MAKE) min-caml; cd ..
 	@echo "--------------------\ncompiling test ML sources ...\n--------------------"
 	@for src in "`ls tests/*.ml`"; do \
 		echo "  - " $$src; \
