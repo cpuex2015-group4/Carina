@@ -54,11 +54,17 @@ class Assembler:
 			lines = file_in.readlines()
 	
 		with open(oc_name, "wb") as file_out:
+			# build the correspondence between label and address
 			(label_dict, lines) = Parser.read_label(lines)
+
+			# build header
 			(header, lines) = Parser.read_header(lines, label_dict)
 			file_out.write(header)
+
 			for i, line in enumerate(lines):
+				# Each line correspond to one assembly instruction,
+				# which is 32bit fixed length.
 				(operation, operands) = Parser.parse_line(line)
 				func = self.INST_TABLE[operation]
-				bytes = func(operands, label_dict, i)
-				file_out.write(bytes)
+				bytecode = func(operands, label_dict, i)
+				file_out.write(bytecode)

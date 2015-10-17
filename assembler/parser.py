@@ -33,24 +33,48 @@ class Parser:
 		new_lines: list
 			assembly lines removed of pseudo instruction
 		"""
-		new_lines = []
-		header = ""
-		header += "CARN"
-		header += utils.bin2bytes(format(0, "032b"))
-		header += utils.bin2bytes(format(0, "032b"))
-		offset = 0
-		for line in lines:
-			if ".globl" in line:
-				main_func_name = line.replace(".globl", "").strip()
-				offset = label_dict[main_func_name]
-				header += utils.bin2bytes(format(offset * 4, "032b"))
-			elif(not ((".text" in line) or (".data" in line))):
-				new_lines.append(line)
+		entry_point = "_min_caml_start"
+
+		if entry_point not in label_dict:
+			raise ValueError("program should have entry point named {}".format(entry_point))
+
+		epaddr = label_dict[entry_point] * 4
+
+		header = "".join([
+			# magic number
+			"CARN",
+			# text size
+			utils.bin2bytes(format(0, "032b")),
+			# data size
+			utils.bin2bytes(format(0, "032b")),
+			# entry point
+			utils.bin2bytes(format(epaddr, "032b"))])
+		new_lines = filter(lambda l:
+				".text" not in l and
+				".data" not in l and
+				".globl" not in l,
+				lines)
+
 		return (header, new_lines)
 
-	#return : (dict{label_name : line_idx}, new_lines(<- not contain label))
 	@staticmethod
 	def read_label(lines):
+		"""
+		Analyze assembly lines and build correspondence between label and offset.
+
+		Parameters
+		----------
+		lines: str list
+			assembly lines
+
+		Returns
+		----------
+		label_dict: dict
+			correspondance between label and offset in .text section
+
+		new_lines: str list
+			assembly lines removed of the lines only consists of label
+		"""
 		label_dict = {}
 		new_lines = []
 		line_num_offset = 0
@@ -73,21 +97,59 @@ class Parser:
 				new_lines.append(line)
 		return label_dict, new_lines
 
-#return (operation, operands[])
-#line does not contain label
 	@staticmethod
 	def parse_line(line):
-		line = line.strip()
-		tmp = line.split(" ", 1)
-		operation = tmp[0]
-		try:
-			operands = tmp[1].replace(" ", "").split(",")
-		except Exception:
-			operands = None
-		return (operation, operands)
+		"""
+		Parse assembly one line and split into the pair of instruction and operands.
+
+		Parameters
+		----------
+		line: str
+			assembly line (without label)
+
+		Returns
+		----------
+		inst: str
+			instruction mnemonic
+
+		operands: str list
+			list of operands
+		"""
+
+		match = re.findall(r"\s*([a-z]+?)\s+(.*)", line)
+
+		if len(match) == 0:
+			return (line, [])
+		else:
+			return (match[0][0], match[0][1].split(", "))
 
 	@staticmethod
 	def parse_operand(operand, operand_type, label_dict=None, line_num=0):
+		"""
+		Receive operand and its type, then return the binary representation of operand.
+
+		Parameters
+		----------
+		operand: str
+			assembly representation of operand
+
+		operand_type: Operanttype
+			operand type
+
+		label_dict: dict
+			table of correspondence between label and address
+
+		line_num: int
+			line number (similar with .text address/offset)
+
+		Returns
+		----------
+		bin_reg: byte
+			binary representation of register
+
+		bin_imm: byte
+			binary representation of immediate (shamt, funct, etc.)
+		"""
 		if operand_type == Operandtype.REGISTER_DIRECT:
 			register_bin = utils.reg2bin(operand)
 			return (register_bin, None)

@@ -108,6 +108,7 @@ def bin2bytes(binary):
 	bytecode: bytes
 		ascii encoded bytecode
 	"""
+	assert len(binary) == 32
 	byte1 = chr(int(binary[0:8], 2))
 	byte2 = chr(int(binary[8:16], 2))
 	byte3 = chr(int(binary[16:24], 2))
