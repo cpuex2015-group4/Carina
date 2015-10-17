@@ -14,11 +14,7 @@ $(TEST):
 	pip install -r $(DEPENDENCY_MODULES)
 	@echo "--------------------\ngenerating min-caml compiler ...\n--------------------"
 	@cd min-caml; $(MAKE) clean; ./to_carina; $(MAKE) min-caml; cd ..
-	@echo "--------------------\ncompiling test ML sources ...\n--------------------"
-	@for src in "`ls tests/*.ml`"; do \
-		echo "  - " $$src; \
-		$(MINCAML) $${src%.ml}; done
-	@echo "--------------------\ncompile end\n--------------------"
+	@echo "--------------------\ntest begin ...\n--------------------"
 	@nosetests -v
 	@$(MAKE) clean
 	@exit 0

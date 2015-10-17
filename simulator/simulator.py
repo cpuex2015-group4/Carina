@@ -38,9 +38,14 @@ class Simulator:
 		self.pc = self.entry_point / 4
 
 	
-	def simulate(self):
+	def simulate(self, verbose = False):
 		"""
 		Execute simulation until hlt instruction. The target file is given in __init__.
+
+		Parameters
+		----------
+		verbose: bool, option
+			use verbose output in simulation
 
 		Returns
 		----------
@@ -48,6 +53,7 @@ class Simulator:
 			the content of return value register %v0
 		"""
 		while(True):
+			if verbose: print(self.pc)
 			inst = self.inst_mem[self.pc]
 			res = self.fetch_instruction(inst)
 			# halting at `hlt` instruction
