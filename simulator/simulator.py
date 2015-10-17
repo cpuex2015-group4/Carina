@@ -174,7 +174,7 @@ class Simulator:
 	@staticmethod
 	def j(sim, inst_bin):
 		imm_bin = inst_bin[6:]
-		sim.pc = utils.bin2int(sim.reg[imm_bin]) / 4
+		sim.pc = utils.bin2int(imm_bin) / 4
 		return 1
 
 	@staticmethod
