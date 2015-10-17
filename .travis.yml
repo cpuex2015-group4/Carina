@@ -2,7 +2,7 @@ language: python
 python:
 - '2.7'
 install: "pip install -r .install.txt; bash -ex .travis-ocaml.sh"
-sudo: true
+sudo: required
 script: make test
 env:
   - OCAML_VERSION=4.02
