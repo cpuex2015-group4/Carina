@@ -8,7 +8,7 @@ use UNISIM.VComponents.all;
 library work;
 use work.p_type.all;
 
-entity top is
+entity io_top is
 port (
   MCLK1 : in    std_logic;
   RS_RX : in    std_logic;
@@ -29,31 +29,23 @@ port (
   ZCLKMA : out std_logic_vector(1 downto 0)
 --  DEBUG :out top_debug_out
 );
-end top;
+end io_top;
 
-architecture RTL of top is
+architecture RTL of IO_top is
 
-  component IO32 
-    port(
-      clk,WE,RE:in                std_logic;
-      send_data:in                std_logic_vector(31 downto 0);
-      recv_data:out               std_logic_vector(31 downto 0);
-      full,empty:out              std_logic;
-      serial_send:out             std_logic;
-      serial_recv:in              std_logic;
-		word_access:in 				 std_logic
-      );
-  end component;
-  component cpu 
-	port (
-	clk,IO_empty,IO_full: in std_logic;
-	IO_recv_data: in std_logic_vector(31 downto 0);
-	IO_WE,IO_RE: out std_logic;
-	IO_send_data:out std_logic_vector(31 downto 0);
-	DEBUG :out top_debug_out
-	);
-  end component;
+  component IO_module 
+  port(
+    clk,WE,RE:in                std_logic;
+    send_data:in                std_logic_vector(7 downto 0);
+    recv_data:out               std_logic_vector(7 downto 0);
+    full,empty:out              std_logic;
+    serial_send:out             std_logic;
+    serial_recv:in              std_logic
+    );
+end component;
 
+
+  
   constant WAIT_CLK:integer:=100;
   signal WAIT_COUNT:integer:=0;
   
@@ -63,7 +55,7 @@ architecture RTL of top is
   
 --IO
   signal IO_empty,IO_full,IO_WE,IO_RE:std_logic:='0';
-  signal IO_recv_data,IO_send_data:datat:=x"00000000";
+  signal IO_recv_data,IO_send_data:std_logic_vector(7 downto 0):=x"00";
 
 --core
 	signal DEBUG_inner:top_debug_out;
@@ -95,7 +87,7 @@ begin
     i=>iclk,
     o=>clk
   );
-  io: IO32 port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX,'1');
+  io: IO_module port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX);
 
 	iodebug:process(clk)
 	begin

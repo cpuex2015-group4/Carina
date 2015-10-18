@@ -66,8 +66,9 @@ ARCHITECTURE behavior OF top_tb IS
         );
     END COMPONENT;
     
-
+    
    --Inputs
+    constant WAIT_CLK:integer:=100;
    signal MCLK1 : std_logic := '0';
    signal RS_RX : std_logic := '1';
 
@@ -89,6 +90,7 @@ ARCHITECTURE behavior OF top_tb IS
    signal XFT : std_logic;
    signal XZBE : std_logic_vector(3 downto 0);
    signal ZCLKMA : std_logic_vector(1 downto 0);
+
    -- No clocks detected in port list. Replace MCLK1 below with 
    -- appropriate port name 
  
@@ -149,7 +151,8 @@ BEGIN
       -- hold reset state for 100 ns.
       wait for 100 ns;	
 
-      wait for MCLK1_period*10;
+      wait for MCLK1_period*1000;
+      
 
       -- insert stimulus here 
 
@@ -158,9 +161,8 @@ BEGIN
    stim_recvproc: process
    begin		
      -- hold reset state for 100 ns.
-     wait for 0.104 ms*10;	
-     
-     wait for Mclk1_period*10;
+     wait for 0.104 ms*100;
+		wait for 50 ns;
      
      -- insert stimulus here
     -- eternal:loop

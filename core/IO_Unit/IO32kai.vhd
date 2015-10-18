@@ -34,17 +34,20 @@ architecture pohe of IO32 is
       );
   end component;
   signal io_WE,io_RE:             std_logic:='0';
-  signal io_send_data:            std_logic_vector(7 downto 0);
+  signal io_send_data:            std_logic_vector(7 downto 0):=x"ff";
   signal io_recv_data:            std_logic_vector(7 downto 0):=x"ff";
-  signal io_full  :               std_logic:='0';
+  signal io_full:                 std_logic:='0';
   signal io_empty:                std_logic:='1';
- 
-  signal rcv_processed:std_logic:='0';
   signal snd_processing:std_logic:='0';
-  signal fifo_read_wait:integer:=0;
   signal send_count:integer:=0;
-  signal recv_count:integer:=0;
-  signal send_buf,recv_buf:std_logic_vector(31 downto 0):=x"ffffffff";
+  signal send_buf:std_logic_vector(31 downto 0):=x"ffffffff";
+
+--reading:
+  constant READ_wait:integer:=3;
+  signal data_ready:boolean:=false;
+  signal read_wait_i:integer:=0;
+  signal read_bytes:integer:=0;
+  signal recv_buf:std_logic_vector(31 downto 0);
 begin
   io:io_module port map (clk,io_we,io_re,io_send_data,io_recv_data,io_full,io_empty,serial_send,serial_recv);
 
@@ -86,50 +89,51 @@ begin
           snd_processing<='1';
         end if;
       end if;
-      
-      if rcv_processed='0' then
-        if recv_count<=3 then
-          if fifo_read_wait=0 then
+
+      if data_ready then
+        if RE<='1' then
+          data_ready<=false;
+          read_wait_i<=0;
+          read_bytes<=0;
+          empty<='1';
+        end if;
+      else--data_ready
+        if read_bytes<=2 then
+          if read_wait_i=0 then
             if io_empty='0' then
               io_re<='1';
-              fifo_read_wait<=1;
+              read_wait_i<=1;
             end if;
-          --elsif fifo_read_wait=1 then
-          --  fifo_read_wait<=2;
           else
-            report  ":read a byte here:" & integer'image(recv_count) & " " & integer'image(conv_integer(io_recv_data));
-            case (recv_count) is
-              when 0 =>
-                recv_buf(31 downto 24)<=io_recv_data;
-              when 1 =>
-                recv_buf(23 downto 16)<=io_recv_data;
-              when 2 =>
-                recv_buf(15 downto 8)<=io_recv_data;
-              when 3 =>
-                recv_buf(7 downto 0)<=io_recv_data;
-              when others=> --impossible case
-                --do nothing
-            end case;
             io_re<='0';
-            recv_count<=recv_count+1;
-            fifo_read_wait<=0;
+            if read_wait_i<=read_wait then
+              read_wait_i<=read_wait_i+1;
+            else
+              case (read_bytes) is
+                when 0 =>
+                  recv_buf(31 downto 24)<=io_recv_data;
+                when 1 =>
+                  recv_buf(23 downto 16)<=io_recv_data;
+                when 2 =>
+                  recv_buf(15 downto 8)<=io_recv_data;
+                when 3 =>
+                  --recv_buf(7 downto 0)<=io_recv_data;
+                  recv_data(31 downto 8)<=recv_buf(31 downto 8);
+                  recv_data(7 downto 0)<=io_recv_data;
+                when others =>
+                  report "impossible read_bytes in io32_recv";
+              end case;
+
+              if read_bytes<=2 then
+                read_bytes<=read_bytes+1;
+                read_wait_i<=0;--kokode wait until !io_empty ni modoru
+              else
+                data_ready<=true;
+            end if;
           end if;
-        else--recv_count<=3
-          recv_data<=recv_buf;
-          rcv_processed<='1';
-          empty<='0';
-        end if;
-      else --rcv_processed
-        if re='1' then
-          recv_count<=0;
-          rcv_processed<='0';
-          empty<='1';
-          recv_data<=x"ffffffff";
-        end if;
-      end if;  --rcv_processed
-    end if;
+            
+      end if;--data ready
   end process;
-  
   debug:process(io_recv_data,re)
   begin
     if rising_edge(re) then
