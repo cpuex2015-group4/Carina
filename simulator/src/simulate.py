@@ -50,6 +50,8 @@ def right_shift_logical(binary, shamt):
 	return zero_shamt + binary[0:-shamt] 
 
 class Simulator:
+	debug_flag = False
+
 	data_size = 0
 	text_size = 0
 	text_offset = 0
@@ -65,9 +67,11 @@ class Simulator:
 			Simulator.reg[format(i, "05b")] = format(0, "032b")
 #stack pointer 
 		Simulator.reg["11101"] = format(100, "032b")
-		print("Simulator.text_offset = " + str(Simulator.text_offset))
+		if(Simulator.debug_flag):
+			print("Simulator.text_offset = " + str(Simulator.text_offset))
 		Simulator.pc = Simulator.text_offset / 4
-		print(Simulator.reg)
+		if(Simulator.debug_flag):
+			print(Simulator.reg)
 
 #read first 16byte
 #magic number
@@ -113,7 +117,7 @@ class Simulator:
 
 	@staticmethod
 	def fecth_instruction(inst):
-		print("PC = " + str(Simulator.pc))
+		#print("PC = " + str(Simulator.pc))
 		inst_bin = format(int(inst, 16), '032b')
 		operation_bin = inst_bin[0:6]
 		funct_bin = inst_bin[26:]
