@@ -23,6 +23,10 @@ def test_ack_3_5():
 	# calculate ack(3,5)
 	assert execute("tests/ack") == 253
 
+def test_gcd_216_3375():
+	# caluculate gcd(216, 3375)
+	assert execute("tests/gcd") == 27
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(execute(tb_name))

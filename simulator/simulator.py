@@ -96,6 +96,7 @@ class Simulator:
 		elif(operation_bin == "000000" and funct_bin == "100100"):
 			return Simulator.and_(self, inst_bin)
 		elif(operation_bin == "000100"):
+			print utils.bin2int(self.reg["01000"]), utils.bin2int(self.reg["01001"])
 			return Simulator.beq(self, inst_bin)
 		elif(operation_bin == "000101"):
 			return Simulator.bne(self, inst_bin)
