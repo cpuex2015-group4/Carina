@@ -4,7 +4,7 @@
 import sys, os
 import subprocess
 from assembler.assembler import Assembler
-from simulator.simulator import Simulator
+from simulator.python.simulator import Simulator
 
 MIN_CAML = os.path.join(os.path.dirname(os.path.abspath(__file__)), "min-caml/min-caml")
 
