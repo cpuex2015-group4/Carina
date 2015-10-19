@@ -1,6 +1,7 @@
 *.pyc
 *.swp
 *.o
+*.s
 *~
 __pycache__
 .python-version
