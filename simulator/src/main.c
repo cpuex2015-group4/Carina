@@ -70,7 +70,7 @@ void print_reg(simulator* sim)
 	int i;
 	puts("------------------reg---------------");
 	for(i = 0; i < 32; i++){
-		printf("reg[i] = %d\n", sim->reg[i]);
+		printf("reg[%d] = %d\n", i, sim->reg[i]);
 	}
 	puts("------------------------------------");
 	return;
@@ -92,14 +92,24 @@ unsigned char inst2char(instruction inst, int idx)
 	return (unsigned char)inst;
 }
 
-unsigned int get_binary(instruction inst, int start, int end)
+unsigned int get_binary_unsigned(unsigned int n, int start, int end)
 {
 	//printf("inst_int = %d\n", inst.inst_int);
 	int len = end - start;
 	//printf("%int", inst.inst_int);
-	inst = inst << start;
-	inst = inst >> (32 - len);
-	return inst;
+	n = n << start;
+	n = n >> (32 - len);
+	return n;
+}
+
+int get_binary_signed(int n, int start, int end)
+{
+	//printf("inst_int = %d\n", inst.inst_int);
+	int len = end - start;
+	//printf("%int", inst.inst_int);
+	n = n << start;
+	n = n >> (32 - len);
+	return n;
 }
 
 void load_instruction(simulator* sim, FILE* fp)
@@ -144,9 +154,9 @@ void load_instruction(simulator* sim, FILE* fp)
 
 int inst_add(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	unsigned int reg_d_idx = get_binary(inst, 16, 21);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	unsigned int reg_d_idx = get_binary_unsigned(inst, 16, 21);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
 	int reg_d = reg_s + reg_t;
@@ -157,20 +167,23 @@ int inst_add(simulator* sim_p, instruction inst)
 
 int inst_addi(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	int imm = get_binary(inst, 16, 32);
-	int reg_t = sim_p->reg[reg_t_idx];
-	sim_p->reg[reg_s_idx] = imm + reg_t;
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	int imm = get_binary_signed(inst, 16, 32);
+	int reg_s = sim_p->reg[reg_s_idx];
+	//printf("reg_s_idx = %d\n", reg_s_idx);
+	//printf("reg_t_idx = %d\n", reg_t_idx);
+	//printf("imm = %d\n", imm);
+	sim_p->reg[reg_t_idx] = imm + reg_s;
 	sim_p->pc++; 
 	return 1;
 }
 
 int inst_and(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	unsigned int reg_d_idx = get_binary(inst, 16, 21);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	unsigned int reg_d_idx = get_binary_unsigned(inst, 16, 21);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
 	sim_p->reg[reg_d_idx] = reg_s & reg_t;
@@ -180,9 +193,9 @@ int inst_and(simulator* sim_p, instruction inst)
 
 int inst_beq(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	int imm = get_binary(inst, 16, 32);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	int imm = get_binary_signed(inst, 16, 32);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
 	if(reg_s == reg_t){
@@ -195,9 +208,9 @@ int inst_beq(simulator* sim_p, instruction inst)
 
 int inst_bne(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	int imm = get_binary(inst, 16, 32);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	int imm = get_binary_signed(inst, 16, 32);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
 	if(reg_s != reg_t){
@@ -210,7 +223,7 @@ int inst_bne(simulator* sim_p, instruction inst)
 
 int inst_j(simulator* sim_p, instruction inst)
 {
-	int imm = get_binary(inst, 6, 32);
+	int imm = get_binary_signed(inst, 6, 32);
 	sim_p->pc += imm;
 	return 1;
 }
@@ -218,25 +231,24 @@ int inst_j(simulator* sim_p, instruction inst)
 int inst_jal(simulator* sim_p, instruction inst)
 {
 	sim_p->reg[31] = (sim_p->pc + 1);
-	int imm = get_binary(inst, 6, 32);
+	int imm = get_binary_signed(inst, 6, 32);
 	sim_p->pc = imm;
 	return 1;
 }
 
 int inst_jr(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
 	int reg_s = sim_p->reg[reg_s_idx];
-	int pc_target = sim_p->mem[reg_s];
-	sim_p->pc = pc_target;
+	sim_p->pc = reg_s;
 	return 1;
 }
 
 int inst_lw(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	int imm = get_binary(inst, 16, 32);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	int imm = get_binary_signed(inst, 16, 32);
 	int reg_s = sim_p->reg[reg_s_idx];
 	sim_p->reg[reg_t_idx] = sim_p->mem[reg_s + imm];
 	sim_p->pc++;
@@ -245,9 +257,9 @@ int inst_lw(simulator* sim_p, instruction inst)
 
 int inst_nor(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	unsigned int reg_d_idx = get_binary(inst, 16, 21);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	unsigned int reg_d_idx = get_binary_unsigned(inst, 16, 21);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
 	sim_p->reg[reg_d_idx] = ~(reg_s | reg_t);
@@ -257,9 +269,9 @@ int inst_nor(simulator* sim_p, instruction inst)
 
 int inst_or(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	unsigned int reg_d_idx = get_binary(inst, 16, 21);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	unsigned int reg_d_idx = get_binary_unsigned(inst, 16, 21);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
 	sim_p->reg[reg_d_idx] = (reg_s | reg_t);
@@ -269,9 +281,9 @@ int inst_or(simulator* sim_p, instruction inst)
 
 int inst_ori(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	int imm = get_binary(inst, 16, 32);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	int imm = get_binary_signed(inst, 16, 32);
 	int reg_s = sim_p->reg[reg_s_idx];
 	sim_p->reg[reg_t_idx] = (reg_s | imm);
 	sim_p->pc++;
@@ -280,9 +292,9 @@ int inst_ori(simulator* sim_p, instruction inst)
 
 int inst_slt(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	unsigned int reg_d_idx = get_binary(inst, 16, 21);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	unsigned int reg_d_idx = get_binary_unsigned(inst, 16, 21);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
 	if(reg_s < reg_t){
@@ -296,10 +308,14 @@ int inst_slt(simulator* sim_p, instruction inst)
 
 int inst_slti(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	int imm = get_binary(inst, 16, 32);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	int imm = get_binary_signed(inst, 16, 32);
 	int reg_s = sim_p->reg[reg_s_idx];
+//	printf("reg_s_idx = %d\n", reg_s_idx);
+//	print_reg(sim_p);
+//	printf("reg_s = %d\n", reg_s);
+//	printf("imm = %d\n", imm);
 	if(reg_s < imm){
 		sim_p->reg[reg_t_idx] = 1;
 	}else{
@@ -311,10 +327,10 @@ int inst_slti(simulator* sim_p, instruction inst)
 
 int inst_sll(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_t_idx = get_binary(inst, 6, 11);
-	unsigned int reg_d_idx = get_binary(inst, 11, 16);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_d_idx = get_binary_unsigned(inst, 11, 16);
 	int reg_t = sim_p->reg[reg_t_idx];
-	int shamt = get_binary(inst, 21, 26);
+	int shamt = get_binary_unsigned(inst, 21, 26);
 	sim_p->reg[reg_d_idx] = reg_t << shamt;
 	sim_p->pc++;
 	return 1;
@@ -322,10 +338,10 @@ int inst_sll(simulator* sim_p, instruction inst)
 
 int inst_srl(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_t_idx = get_binary(inst, 6, 11);
-	unsigned int reg_d_idx = get_binary(inst, 11, 16);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_d_idx = get_binary_unsigned(inst, 11, 16);
 	int reg_t = sim_p->reg[reg_t_idx];
-	int shamt = get_binary(inst, 21, 26);
+	int shamt = get_binary_unsigned(inst, 21, 26);
 	sim_p->reg[reg_d_idx] = reg_t >> shamt;
 	sim_p->pc++;
 	return 1;
@@ -334,13 +350,11 @@ int inst_srl(simulator* sim_p, instruction inst)
 
 int inst_sw(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	int imm = get_binary(inst, 16, 32);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	int imm = get_binary_signed(inst, 16, 32);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
-	printf("reg_s = %d\n", reg_s);
-	printf("imm = %d\n", imm);
 	sim_p->mem[reg_s + imm] = reg_t; 
 	sim_p->pc++;
 	return 1;
@@ -348,9 +362,9 @@ int inst_sw(simulator* sim_p, instruction inst)
 
 int inst_sub(simulator* sim_p, instruction inst)
 {
-	unsigned int reg_s_idx = get_binary(inst, 6, 11);
-	unsigned int reg_t_idx = get_binary(inst, 11, 16);
-	unsigned int reg_d_idx = get_binary(inst, 16, 21);
+	unsigned int reg_s_idx = get_binary_unsigned(inst, 6, 11);
+	unsigned int reg_t_idx = get_binary_unsigned(inst, 11, 16);
+	unsigned int reg_d_idx = get_binary_unsigned(inst, 16, 21);
 	int reg_s = sim_p->reg[reg_s_idx];
 	int reg_t = sim_p->reg[reg_t_idx];
 	int reg_d = reg_s - reg_t;
@@ -361,6 +375,7 @@ int inst_sub(simulator* sim_p, instruction inst)
 
 int inst_hlt(simulator* sim_p, instruction inst)
 {
+	print_reg(sim_p);
 	return 0;
 }
 
@@ -368,61 +383,61 @@ int inst_hlt(simulator* sim_p, instruction inst)
 int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_binary, unsigned char function_binary)
 {
 	if(operation_binary == 0 && function_binary == 32){
-		puts("add");
+		//puts("add");
 		return inst_add(sim_p, inst);
 	}else if(operation_binary == 8){
-		puts("addi");
+		//puts("addi");
 		return inst_addi(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 36){
-		puts("and_");
+		//puts("and_");
 		return inst_and(sim_p, inst);
 	}else if(operation_binary == 4){
-		puts("beq");
+		//puts("beq");
 		return inst_beq(sim_p, inst);
 	}else if(operation_binary == 5){
-		puts("bne");
+		//puts("bne");
 		return inst_bne(sim_p, inst);
 	}else if(operation_binary == 2){
-		puts("j");
+		//puts("j");
 		return inst_j(sim_p, inst);
 	}else if(operation_binary == 3){
-		puts("jal");
+		//puts("jal");
 		return inst_jal(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 8){
-		puts("jr");
+		//puts("jr");
 		return inst_jr(sim_p, inst);
 	}else if(operation_binary == 35){
-		puts("lw");
+		//puts("lw");
 		return inst_lw(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 39){
-		puts("nor");
+		//puts("nor");
 		return inst_nor(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 37){
-		puts("or_");
+		//puts("or_");
 		return inst_or(sim_p, inst);
 	}else if(operation_binary == 13){
-		puts("ori");
+		//puts("ori");
 		return inst_ori(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 42){
-		puts("slt");
+		//puts("slt");
 		return inst_slt(sim_p, inst);
 	}else if(operation_binary == 10){
-		puts("slti");
+		//puts("slti");
 		return inst_slti(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 0){
-		puts("sll");
+		//puts("sll");
 		return inst_sll(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 2){
-		puts("srl");
+		//puts("srl");
 		return inst_srl(sim_p, inst);
 	}else if(operation_binary == 43){
-		puts("sw");
+		//puts("sw");
 		return inst_sw(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 34){
-		puts("sub");
+		//puts("sub");
 		return inst_sub(sim_p, inst);
 	}else if(operation_binary == 63 && function_binary == 63){
-		puts("hlt");
+		//puts("hlt");
 		return inst_hlt(sim_p, inst);
 	}
 	return 0;
@@ -437,15 +452,15 @@ void simulate(simulator* sim_p)
 	//print_reg(sim_p);
 	sim_p->pc = sim_p->entry_point;
 	while(1){
-		printf("PC = %d\n", sim_p->pc);
+		//printf("%d : ", sim_p->pc);
 		inst = 0;
 		inst = load_char(inst, inst2char(sim_p->inst_mem[sim_p->pc], 0), 0);
 		inst = load_char(inst, inst2char(sim_p->inst_mem[sim_p->pc], 1), 1);
 		inst = load_char(inst, inst2char(sim_p->inst_mem[sim_p->pc], 2), 2);
 		inst = load_char(inst, inst2char(sim_p->inst_mem[sim_p->pc], 3), 3);
 
-		operation_binary = get_binary(inst, 0, 6);
-		function_binary = get_binary(inst, 26, 32);
+		operation_binary = get_binary_unsigned(inst, 0, 6);
+		function_binary = get_binary_unsigned(inst, 26, 32);
 		res = simulate_inst(sim_p, inst, operation_binary, function_binary);
 		//print_reg(sim_p);
 		if(res == 0){
