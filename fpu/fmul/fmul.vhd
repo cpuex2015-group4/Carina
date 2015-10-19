@@ -68,11 +68,8 @@ begin
 
 
 -- オーバーフロー、アンダーフローに関する処理が怪しいので明日以降見直し
-	zeroFlag <= inputA = 0 or inputB = 0;
-	infFlag  <= '1'    when inputA_f.expo = x"11" or inputB_f.expo = x"11" else
-	            uFlag1 when shift = '0' and expoO1(7) = '0' else
-							uFlag2 when shift = '1' and expoO2(7) = '0' else
-							'0';
+	zeroFlag <= '0';
+	infFlag  <= '0';
 	
 	output_f.sign <= inputA_f.sign xor inputB_f.sign when zeroFlag = '0' else
 	                 '0';
