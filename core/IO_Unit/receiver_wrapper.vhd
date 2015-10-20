@@ -38,12 +38,14 @@ architecture RTL of receiver_wrapper is
   end component;
   signal wr_en,full:std_logic:='0';
   signal din:std_logic_vector(7 downto 0);
-  signal valid:std_logic;
+  signal valid:std_logic:='0';
   signal has_fifoed:std_logic:='1';
   signal recv_data:std_logic_vector(7 downto 0);
+  signal out_inner:std_logic_vector(7 downto 0);
 begin
-  obuf:fifo8 port map(clk,wr_en,read_enable,din,output,full,empty);
+  obuf:fifo8 port map(clk,wr_en,read_enable,din,out_inner,full,empty);
   RCVR:receiver port map(clk,serial_in,valid,din);
+  output<=out_inner;
 
   process(clk)
   begin
@@ -52,7 +54,7 @@ begin
         has_fifoed<='0';
       else
        if has_fifoed='0' then
-         wr_en<='1';
+         wr_en<='1'; 
          has_fifoed<='1';
        else --already put in fifo
          wr_en<='0';
@@ -60,5 +62,4 @@ begin
      end if; --valid or not
     end if;--rising edge
   end process;
-  
 end RTL;

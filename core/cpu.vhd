@@ -152,21 +152,11 @@ begin
       --/debug
       loader_activate<='1';
       if loaded='1' then
-		  if count>10 then
 			io_send_data<=x"52435644";
 			IO_WE<='1';
-         core_state<=EXE_READY;
-		  else
-		    count<=count+1;
-		  end if;
-		--########################
-		elsif loader_io_RE='1' then
-		  io_send_data<=io_recv_data;
-		  io_we<='1';
-		else
-		  io_we<='0';
-		end if;
-	when EXE_READY=>
+        core_state<=EXE_READY;
+      end if;
+    when EXE_READY=>
 			io_we<='0';
       report "exe ready";
       core_state<=EXECUTING;    --data source no kirikae

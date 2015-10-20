@@ -13,7 +13,7 @@ port (
   MCLK1 : in    std_logic;
   RS_RX : in    std_logic;
   RS_TX : out   std_logic;
-  ZD    : inout std_logic_vector(31 downto 0):=x"00000000";
+  ZD    : inout std_logic_vector(31 downto 0);
   ZA    : out   std_logic_vector(19 downto 0);
   XWA   : out   std_logic;
   XE1   : out   std_logic;
@@ -54,9 +54,6 @@ architecture RTL of top is
 	);
   end component;
 
-  constant WAIT_CLK:integer:=100;
-  signal WAIT_COUNT:integer:=0;
-  
 --clk
   signal iclk:std_logic:='0';
   signal clk:std_logic:='0';
@@ -97,23 +94,5 @@ begin
   );
   io: IO32 port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX,'1');
 
-	iodebug:process(clk)
-	begin
-	  if rising_edge(clk) then
-            if WAIT_COUNT<WAIT_CLK then
-              WAIT_COUNT<=WAIT_COUNT+1;
-            else
-              if io_full='0' and io_empty='0' then
-                io_we<='1';
-                io_re<='1';
-                io_send_data<=io_recv_data;
-              else
-                io_we<='0';
-                io_re<='0';
-              end if;
-            end if;
-	  end if;
-	end process;
-
---  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,DEBUG_inner);
+  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,DEBUG_inner);
 end RTL;

@@ -11,8 +11,8 @@ entity IO32 is
     clk,WE,RE:in                std_logic;
     send_data:in                std_logic_vector(31 downto 0);
     recv_data:out               std_logic_vector(31 downto 0);
-    full:out                    std_logic:='0';
-    empty:out                   std_logic:='1';
+    full:out              std_logic:='0';
+	     empty:out              std_logic:='1';
     serial_send:out             std_logic;
     serial_recv:in              std_logic;
     word_access:in              std_logic    --this is ignored now. always
@@ -27,17 +27,16 @@ architecture pohe of IO32 is
       clk,WE,RE:in                std_logic;
       send_data:in                std_logic_vector(7 downto 0);
       recv_data:out               std_logic_vector(7 downto 0);
-      full: out                   std_logic;
-      empty:out                   std_logic;
+      full: out 						 std_logic:='1';
+		empty:out                   std_logic:='1';
       serial_send:out             std_logic;
       serial_recv:in              std_logic
       );
   end component;
-  signal io_WE,io_RE:             std_logic:='0';
-  signal io_send_data:            std_logic_vector(7 downto 0);
-  signal io_recv_data:            std_logic_vector(7 downto 0):=x"ff";
-  signal io_full  :               std_logic:='0';
-  signal io_empty:                std_logic:='1';
+  signal io_WE,io_RE:                std_logic:='0';
+  signal io_send_data:                std_logic_vector(7 downto 0);
+  signal io_recv_data:               std_logic_vector(7 downto 0):=x"ff";
+  signal io_full,io_empty:              std_logic:='0';
  
   signal rcv_processed:std_logic:='0';
   signal snd_processing:std_logic:='0';
@@ -53,11 +52,12 @@ begin
   begin
     if rising_edge(clk) then
       if snd_processing='1' then
-        --assert false
-        --report integer'image(send_count);
+			--assert false
+			--  report integer'image(send_count);
         if send_count<=3 then
           if io_full='0' then
-            --report "sc:" & integer'image(send_count);
+			--   report "sc:" & integer'image(send_count);
+				
             io_we<='1';
             case (send_count) is
               when 0 =>
@@ -79,28 +79,28 @@ begin
           io_we<='0';
           snd_processing<='0';
         end if;
-      else--snd_processing=0
+      else  --snd_processing=0
         if we='1' then
           send_buf<=send_data;
           send_count<=0;
           snd_processing<='1';
         end if;
       end if;
-      
-      if rcv_processed='0' then
+
+       if rcv_processed='0' then
         if recv_count<=3 then
-          if fifo_read_wait=0 then
-            if io_empty='0' then
-              io_re<='1';
-              fifo_read_wait<=1;
-            end if;
-          --elsif fifo_read_wait=1 then
-          --  fifo_read_wait<=2;
-          else
-            report  ":read a byte here:" & integer'image(recv_count) & " " & integer'image(conv_integer(io_recv_data));
-            case (recv_count) is
+            if fifo_read_wait=0 then
+              if io_empty='0' then
+                io_re<='1';
+                fifo_read_wait<=1;
+              end if;
+            elsif fifo_read_wait=1 then
+              fifo_read_wait<=2;
+            else
+              report  ":read a byte here:" & integer'image(recv_count) & " " & integer'image(conv_integer(io_recv_data));
+              case (recv_count) is
               when 0 =>
-                recv_buf(31 downto 24)<=io_recv_data;
+               recv_buf(31 downto 24)<=io_recv_data;
               when 1 =>
                 recv_buf(23 downto 16)<=io_recv_data;
               when 2 =>
@@ -110,31 +110,30 @@ begin
               when others=> --impossible case
                 --do nothing
             end case;
-            io_re<='0';
-            recv_count<=recv_count+1;
-            fifo_read_wait<=0;
-          end if;
-        else--recv_count<=3
+              io_re<='0';
+              recv_count<=recv_count+1;
+              fifo_read_wait<=0;
+            end if;
+        else
           recv_data<=recv_buf;
           rcv_processed<='1';
           empty<='0';
         end if;
-      else --rcv_processed
+      else
         if re='1' then
           recv_count<=0;
           rcv_processed<='0';
           empty<='1';
-          recv_data<=x"ffffffff";
         end if;
-      end if;  --rcv_processed
+      end if;
     end if;
   end process;
   
   debug:process(io_recv_data,re)
   begin
-    if rising_edge(re) then
-      report "iore:" & integer'image (conv_integer(io_recv_data));
-    end if;
+		if rising_edge(re) then
+			report "iore:" & integer'image (conv_integer(io_recv_data));
+		end if;
   end process;
 end pohe;
  

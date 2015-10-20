@@ -45,4 +45,5 @@ begin
   dummy<=send_data;
   SND:sender_wrapper port map (clk,dummy,WE,full,serial_send);
   RCV:receiver_wrapper port map(clk,serial_recv_buffer,RE,empty,recv_data);
+
 end RTL;
