@@ -41,7 +41,7 @@ architecture RTL of IO_module is
   signal dummy:std_logic_vector(7 downto 0);
   signal serial_recv_buffer:std_logic;
 begin
-	serial_recv_buffer<=serial_recv;
+  serial_recv_buffer<=serial_recv;
   dummy<=send_data;
   SND:sender_wrapper port map (clk,dummy,WE,full,serial_send);
   RCV:receiver_wrapper port map(clk,serial_recv_buffer,RE,empty,recv_data);

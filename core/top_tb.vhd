@@ -95,7 +95,7 @@ ARCHITECTURE behavior OF top_tb IS
    constant MCLK1_period : time := 15 ns;
 
 
-   	 constant ROMMAX:Integer:=10;
+			constant ROMMAX:Integer:=10;
    type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
    constant rom:rom_t:=(
 	  conv_std_logic_vector(0,32),
