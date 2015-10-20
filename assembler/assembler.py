@@ -80,3 +80,7 @@ class Assembler:
 				func = self.INST_TABLE[operation]
 				bytecode = func(operands, label_dict, i)
 				file_out.write(bytecode)
+
+			for i, line in enumerate(data_lines):
+				bytecode = Parser.parse_data(line)
+				file_out.write(bytecode)

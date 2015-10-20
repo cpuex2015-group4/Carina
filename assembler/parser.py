@@ -48,7 +48,7 @@ class Parser:
 				".globl" not in l,
 				text_lines)
 
-		new_data_lines = filter(lambda l: ".data" not in l, text_lines)
+		new_data_lines = filter(lambda l: ".data" not in l, data_lines)
 
 		header = "".join([
 			# magic number
@@ -161,6 +161,25 @@ class Parser:
 			return (line, [])
 		else:
 			return (match[0][0], match[0][1].split(", "))
+
+	@staticmethod
+	def parse_data(line):
+		"""
+		Parse assembly data line and emit bytecode respond to the data.
+
+		Parameters
+		----------
+		line: str
+			assembly line (without label)
+
+		Returns
+		----------
+		bytecode: str
+			bytecode respond to data
+		"""
+		match = re.findall(r"\s*\.long\s+(0x[0-9a-fA-F]+)", line)
+		assert len(match) == 1, "wrong syntax near .long"
+		return utils.bin2bytes(utils.hex2bin(match[0]))
 
 	@staticmethod
 	def parse_operand(operand, operand_type, label_dict=None, line_num=0):
