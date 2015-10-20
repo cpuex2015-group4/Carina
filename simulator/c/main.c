@@ -1,6 +1,8 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define SAFE_DELETE(x) {free(x);(x)=NULL;}
 
 typedef unsigned int instruction;
 
@@ -15,16 +17,22 @@ typedef struct simulator_{
 	unsigned int entry_point;
 }simulator;
 
-simulator init_sim()
+simulator *init_sim()
 {
-	simulator sim;
-	sim.pc = 0;
-	sim.reg = (int*)malloc(sizeof(int) * 32);
-	memset(sim.reg, 0, (sizeof(int) * 32));
+	simulator *sim = (simulator *)malloc(sizeof(simulator));
+	sim->pc = 0;
+	sim->reg = (int*)malloc(sizeof(int) * 32);
+	memset(sim->reg, 0, (sizeof(int) * 32));
 	//stackpointer = reg[29]
-	sim.reg[29] = 1000;
-	sim.mem = malloc(1000000);
+	sim->reg[29] = 1000;
+	sim->mem = malloc(1000000);
 	return sim;
+}
+
+void free_sim(simulator *sim) {
+	SAFE_DELETE(sim->reg);
+	SAFE_DELETE(sim->mem);
+	SAFE_DELETE(sim);
 }
 
 void print_int2bin(unsigned int n)
@@ -120,7 +128,7 @@ void load_instruction(simulator* sim, FILE* fp)
 	sim->inst_mem = malloc(sizeof(unsigned char) * binary_size);
 	memset(sim->inst_mem, 0, binary_size);
 	sim->inst_cnt = (binary_size - 16) / 4;
-	printf("binary_size = %d, inst_cnt = %d\n", binary_size, sim->inst_cnt);
+	//printf("binary_size = %d, inst_cnt = %d\n", binary_size, sim->inst_cnt);
 	int i;
 	int OFFSET = 16;
 
@@ -129,7 +137,7 @@ void load_instruction(simulator* sim, FILE* fp)
 	sim->entry_point = load_char(sim->entry_point, buf[14], 2);
 	sim->entry_point = load_char(sim->entry_point, buf[15], 3);
 	sim->entry_point /= 4;
-	printf("entry_point = %d\n", sim->entry_point);
+	//printf("entry_point = %d\n", sim->entry_point);
 
 	for(i = 0; i * 4 + OFFSET < binary_size; i++){
 		(sim->inst_mem)[i] = load_char(sim->inst_mem[i], buf[i * 4 + 0 + OFFSET], 0);
@@ -140,15 +148,15 @@ void load_instruction(simulator* sim, FILE* fp)
 
   for(i=0; i < sim->inst_cnt; i++){
 		if(i % 4 == 0){
-			puts("");
+//			puts("");
 		}
-		printf("%02X ", inst2char(sim->inst_mem[i], 0)&0xff);
-		printf("%02X ", inst2char(sim->inst_mem[i], 1)&0xff);
-		printf("%02X ", inst2char(sim->inst_mem[i], 2)&0xff);
-		printf("%02X ", inst2char(sim->inst_mem[i], 3)&0xff);
+		//printf("%02X ", inst2char(sim->inst_mem[i], 0)&0xff);
+		//printf("%02X ", inst2char(sim->inst_mem[i], 1)&0xff);
+		//printf("%02X ", inst2char(sim->inst_mem[i], 2)&0xff);
+		//printf("%02X ", inst2char(sim->inst_mem[i], 3)&0xff);
   }
-	printf("\n");
-	printf("instruction loaded\n");
+	//printf("\n");
+	//printf("instruction loaded\n");
 	return;
 }
 
@@ -375,7 +383,7 @@ int inst_sub(simulator* sim_p, instruction inst)
 
 int inst_hlt(simulator* sim_p, instruction inst)
 {
-	print_reg(sim_p);
+	//print_reg(sim_p);
 	return 0;
 }
 
@@ -469,6 +477,9 @@ void simulate(simulator* sim_p)
 			continue;
 		}
 	}
+
+	// print %v0
+	printf("%d\n", sim_p->reg[2]);
 }
 
 int main(int argc, char* argvs[])
@@ -480,9 +491,10 @@ int main(int argc, char* argvs[])
 		exit(EXIT_FAILURE);
 	}
 
-	simulator sim = init_sim();
-	load_instruction(&sim, fp_binary);
-	simulate(&sim);
+	simulator *sim = init_sim();
+	load_instruction(sim, fp_binary);
+	simulate(sim);
 	fclose(fp_binary);
+	free_sim(sim);
 	return 0;
 }

@@ -2,7 +2,9 @@ MAKE=make
 PYTHON=python
 TEST=test
 TARGET=default
-MINCAML=./min-caml/min-caml
+MINCAML_DIR=./min-caml
+MINCAML=$(MINCAML_DIR)/min-caml
+CSIM_DIR=./simulator/c
 DEPENDENCY_MODULES=.install.txt
 
 $(TARGET):
@@ -14,7 +16,9 @@ $(TEST):
 	git submodule update
 	pip install -r $(DEPENDENCY_MODULES)
 	@echo "--------------------\ngenerating min-caml compiler ...\n--------------------"
-	@cd min-caml; $(MAKE) clean; ./to_carina; $(MAKE) min-caml; cd ..
+	@cd $(MINCAML_DIR); $(MAKE) clean; ./to_carina; $(MAKE) min-caml
+	@echo "--------------------\ngenerating csim ...\n--------------------"
+	@cd $(CSIM_DIR); $(MAKE)
 	@echo "--------------------\ntest begin ...\n--------------------"
 	@nosetests -v
 	@$(MAKE) clean
