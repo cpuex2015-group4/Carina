@@ -18,4 +18,4 @@ You can run the test using Python unit test tool `nose`.
 Test procedure is written in `Makefile`, so all you have to do is execute `make test`.
 
 All tests are written in `run_test.py`. In this Python script, there are a few assertion methods.
-_At the moment, the testing module is comparing the content of %v0 (return value of main routine) and the expected value_.
+**At the moment, the testing module is comparing the content of %v0 (return value of main routine) and the expected value**.
