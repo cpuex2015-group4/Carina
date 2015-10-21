@@ -32,10 +32,13 @@ def pysim(name):
 	sim = Simulator(name + ".o")
 	return sim.simulate()
 
-def float2bin(f):
-	v = struct.pack('>f', f)
-	v = struct.unpack('>i', v)[0]
-	return format(v, '032b')
+def float_eq(f1, f2):
+	# floating point value must be compared based on binary
+	def float2bin(f):
+		v = struct.pack('>f', f)
+		v = struct.unpack('>i', v)[0]
+		return format(v, '032b')
+	return float2bin(f1) == float2bin(f2)
 
 def test_recfib13():
 	# calculate recursive-fib(13)
@@ -65,7 +68,7 @@ def test_fadd():
 	tb = "tests/fadd"
 	compile(tb)
 	expected = 2.9
-	assert float2bin(pysim(tb)[1]) == float2bin(expected)
+	assert float_eq(pysim(tb)[1], expected)
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
