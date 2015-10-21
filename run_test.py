@@ -38,7 +38,10 @@ def float_eq(f1, f2):
 		v = struct.pack('>f', f)
 		v = struct.unpack('>i', v)[0]
 		return format(v, '032b')
-	return float2bin(f1) == float2bin(f2)
+
+	assert len(f1) == 32
+	print f1, float2bin(f2)
+	return f1 == float2bin(f2)
 
 def test_recfib13():
 	# calculate recursive-fib(13)
