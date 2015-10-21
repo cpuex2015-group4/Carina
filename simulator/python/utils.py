@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import struct
+
 #if minus, dissolve it
 def bin2int(binary):
 	def turn_binary(binary):
@@ -14,6 +16,18 @@ def bin2int(binary):
 		return -(int(turn_binary(binary[1:]), 2) + 1)
 	else:
 		return int(binary, 2)
+
+def byte2int(bytecode):
+	return sum([ord(c) * 256**(3-i) for i, c in enumerate(bytecode)])
+
+def reg2float(v):
+	v = struct.pack('>i', int(v, 2))
+	return struct.unpack('>f', v)[0]
+
+def float2reg(f):
+	v = struct.pack('>f', f)
+	v = struct.unpack('>i', v)[0]
+	return format(v, '032b')
 
 def word2int(bytecodes):
 	"""

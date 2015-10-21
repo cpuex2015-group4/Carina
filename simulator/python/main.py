@@ -32,5 +32,5 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	sim = Simulator(args.filename)
-	v0 = sim.simulate(verbose = args.verbose)
-	print("RESULT = {}".format(v0))
+	v0, f0 = sim.simulate(verbose = args.verbose)
+	print("%v0 = {}\n%f0 = {}".format(v0, f0))

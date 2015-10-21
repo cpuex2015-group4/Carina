@@ -30,10 +30,17 @@ class Instruction:
 		Operation : %rt <- %rs + $imm
 		Format    : [ 001000 | %rs | %rt |    $imm    ]
 		"""
+		imm_pattern = re.compile(r"\$-?\d+")
+		match = imm_pattern.match(operands[2])
+		if match is not None:
+			imm_bin = Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
+		else:
+			# operand may be label
+			imm_bin = utils.imm2bin(label_dict[operands[2]])
 		inst_bin = "001000" +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
-				Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
+				imm_bin
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
@@ -367,7 +374,7 @@ class Instruction:
 		match = addressing_pattern.match(operands[1])
 		if match is not None:
 			# use addressing mode
-			inst_bin = "100011" +\
+			inst_bin = "110001" +\
 					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
 					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
