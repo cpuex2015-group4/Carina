@@ -43,7 +43,11 @@ class Assembler:
 		"inv.s" : Instruction.finv,
 		"sub.s" : Instruction.fsub,
 		"lw.s" : Instruction.flw,
-		"sw.s" : Instruction.flw,
+		"sw.s" : Instruction.fsw,
+		"c.eq.s" : Instruction.feq,
+		"c.lt.s" : Instruction.flt,
+		"c.le.s" : Instruction.fle,
+		"move.s" : Instruction.fmove,
 	}
 
 	def assemble(self, filename):

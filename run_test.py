@@ -46,7 +46,7 @@ def test_recfib13():
 	compile("tests/fib")
 	expected = 233
 	assert csim(tb) == expected
-	assert pysim(tb)[0] == expected
+	assert int(pysim(tb), 2) == expected
 
 def test_ack_3_2():
 	# calculate ack(3,2)
@@ -54,7 +54,7 @@ def test_ack_3_2():
 	compile(tb)
 	expected = 29
 #	assert csim(tb) == expected  # TODO: infinity loop!!!
-	assert pysim(tb)[0] == expected
+	assert int(pysim(tb), 2) == expected
 
 def test_gcd_216_3375():
 	# caluculate gcd(216, 3375)
@@ -62,13 +62,13 @@ def test_gcd_216_3375():
 	compile(tb)
 	expected = 27
 #	assert csim(tb) == expected
-	assert pysim(tb)[0] == expected
+	assert int(pysim(tb), 2) == expected
 
 def test_fadd():
 	tb = "tests/fadd"
 	compile(tb)
 	expected = 2.9
-	assert float_eq(pysim(tb)[1], expected)
+	assert float_eq(pysim(tb), expected)
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]

@@ -12,6 +12,7 @@ $ python /path/to/this_script [exec-file-name]
 import sys
 from argparse import ArgumentParser
 from simulator import Simulator
+import utils
 
 if __name__ == "__main__":
 	desc = u'{0} [Args] [Options]\nDetailed options -h or --help'.format(__file__)
@@ -32,5 +33,5 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	sim = Simulator(args.filename)
-	v0, f0 = sim.simulate(verbose = args.verbose)
-	print("%v0 = {}\n%f0 = {}".format(v0, f0))
+	v0 = sim.simulate(verbose = args.verbose)
+	print("===== RESULT =====\nbin  : {}\nint  : {}\nfloat: {}".format(v0, int(v0, 2), utils.reg2float(v0)))
