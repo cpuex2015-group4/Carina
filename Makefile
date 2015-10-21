@@ -13,7 +13,7 @@ $(TARGET):
 .PHONY: $(TEST)
 $(TEST):
 	@echo "--------------------\nresolving test dependecies ...\n--------------------"
-#	git submodule update
+	git submodule update
 	pip install -r $(DEPENDENCY_MODULES)
 	@echo "--------------------\ngenerating min-caml compiler ...\n--------------------"
 	@cd $(MINCAML_DIR); $(MAKE) clean; ./to_carina; $(MAKE) min-caml
