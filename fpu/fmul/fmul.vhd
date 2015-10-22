@@ -23,7 +23,7 @@ architecture struct of fmul is
 		expoO1  : out std_logic_vector (7 downto 0);
 		expoO2  : out std_logic_vector (7 downto 0);
 		uFlag1  : out std_logic;
-		uFlag2  : out std_logic;
+		uFlag2  : out std_logic);
   end component;
 	  
 
@@ -79,4 +79,5 @@ begin
 	                 expoO2;
   output_f.mant <= "00000000000000000000000" when infFlag = '1' or zeroFlag = '1' else
 	                 mantO;
+  output <= output_f.sign & output_f.expo & output_f.mant;
 end struct;
