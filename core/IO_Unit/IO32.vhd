@@ -46,8 +46,7 @@ architecture pohe of IO32 is
   signal send_buf,recv_buf:std_logic_vector(31 downto 0):=x"ffffffff";
 begin
   io:io_module port map (clk,io_we,io_re,io_send_data,io_recv_data,io_full,io_empty,serial_send,serial_recv);
-
-  full<= snd_processing; 
+ 
   main :process(clk)
   begin
     if rising_edge(clk) then
@@ -78,12 +77,14 @@ begin
         else
           io_we<='0';
           snd_processing<='0';
+          full<='0';
         end if;
       else  --snd_processing=0
         if we='1' then
           send_buf<=send_data;
           send_count<=0;
           snd_processing<='1';
+          full<='1';
         end if;
       end if;
 

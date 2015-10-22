@@ -1,0 +1,161 @@
+[33mcommit d341d801a515787d2ad25453a4051bb83ecd5fd1[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Tue Oct 20 23:09:53 2015 +0900
+
+    add todo
+
+[33mcommit 54fc46eb4d24edf3914a5ab2c7db140cc6ae45f8[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Tue Oct 20 23:06:11 2015 +0900
+
+    io_module tested in jikki
+
+[33mcommit 7255debcb11310d64494a64004ade9d228ab1e02[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Tue Oct 20 20:56:12 2015 +0900
+
+    Revert "ucf"
+    
+    This reverts commit 758237e686937b050f456ea9ee973b68e852ab19.
+    
+    this commit included no improvement.
+    and add only bugs
+
+[33mcommit 758237e686937b050f456ea9ee973b68e852ab19[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Sun Oct 18 23:30:54 2015 +0900
+
+    ucf
+
+[33mcommit 1bb4a76cd538064d3b62b94155d573ae32776a56[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Fri Oct 16 05:38:22 2015 +0900
+
+    testing loader
+
+[33mcommit 66fd624f903d95eccd27e243a121bb013b83715d[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Fri Oct 16 02:28:52 2015 +0900
+
+    fix some bugs in the loader
+
+[33mcommit 728578ab5f75e3b88fbce7ec75c9c189793651f7[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+qDate:   Thu Oct 15 20:14:55 2015 +0900
+
+    logo
+
+[33mcommit 14567a41ad8b0ac785e635ca2b50fb2852096678[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Thu Oct 15 13:27:44 2015 +0900
+
+    loader OK
+
+[33mcommit acadf1ea0399398cbbbfd23ae3e870b10c7331be[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Wed Oct 14 05:07:30 2015 +0900
+
+    the loader works on simulator
+
+[33mcommit 6ab940e13bf8d160bac482e1abd871e3a02199b0[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Wed Oct 14 03:29:27 2015 +0900
+
+    io bug fixed
+
+[33mcommit 79c5b9ad570c5b9cdfd33baa71845166f85326d0[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Mon Oct 12 22:20:14 2015 +0900
+
+    bram and io. untested
+
+[33mcommit a542a81bb709c3fd3d8bb048244cce8949414897[m
+Merge: 5d71d6c 4bbb55b
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Mon Oct 12 16:51:54 2015 +0900
+
+    io unit and loader
+
+[33mcommit 5d71d6c9ca6ae38fb162c53892ce953aedd18ec9[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Mon Oct 12 16:44:31 2015 +0900
+
+    loader
+
+[33mcommit 4bbb55b05d70975026dac3e8699e119f0be0e0f0[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Mon Oct 12 16:16:50 2015 +0900
+
+    io
+
+[33mcommit 7d2f60f6ab204945a072a32947818a6ec54d38d1[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Mon Oct 12 03:08:24 2015 +0900
+
+    io hack
+
+[33mcommit d3737b40d8cac515e460f313e9b8d31b6b81ede8[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Sat Oct 10 13:38:47 2015 +0900
+
+    t prcat
+
+[33mcommit 78fb530f6bdc03fdbbebd6eff8e6c121817469cd[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Fri Oct 9 15:50:22 2015 +0900
+
+    tukurikake
+
+[33mcommit e04188d561ecd42802daa39e839c14acc6513bed[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Fri Oct 9 10:19:31 2015 +0900
+
+    loop fib ugoita
+
+[33mcommit dcfd42c5fe13ae81ca64df59a095dbb7d50eedda[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Fri Oct 9 01:35:42 2015 +0900
+
+    kihon coreset except for jmp,b,io,mem
+
+[33mcommit bb628545a0f027f23c1e20ba017866309f1d2039[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Fri Oct 9 01:29:50 2015 +0900
+
+    kihon coreset except for jmp,b,io,mem
+
+[33mcommit 87ad3c2e53975e1d42bfe5fb3206d0ad1a6106df[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Fri Oct 9 01:27:59 2015 +0900
+
+    kihon coreset except for jmp,b,io,mem
+
+[33mcommit fa4c35efa9f7357cca521d55939c8781b7c5a41d[m
+Author: Yuki Imai <yuki08281993@gmail.com>
+Date:   Thu Oct 8 14:28:35 2015 +0900
+
+    first commit
+
+[33mcommit d85d6096bfefffa7b3f188f7a5db8b00c8a11d7b[m
+Author: levelfour <levelfourslv@gmail.com>
+Date:   Thu Oct 8 14:17:09 2015 +0900
+
+    .gitignore
+
+[33mcommit dad254f50bf188613b7081cd03e62dc414fa8401[m
+Author: Mod4 <musesc.ll@gmail.com>
+Date:   Thu Oct 8 13:55:41 2015 +0900
+
+    test commit
+
+[33mcommit 6e46acddf3dfe6ef36732dd0cff8df15d0f11fe7[m
+Author: Hiroki Konishi <ind.med.swim.ut.713k@gmail.com>
+Date:   Tue Oct 6 18:44:15 2015 +0900
+
+    assembler added
+
+[33mcommit 4e365fd5f5bcd75e4ebdf0b39559a2987043c9a0[m
+Author: Fukumu Tsutsumi <levelfourslv@gmail.com>
+Date:   Tue Oct 6 18:28:18 2015 +0900
+
+    Initial commit

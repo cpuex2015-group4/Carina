@@ -65,10 +65,11 @@ architecture RTL of top is
 --core
 	signal DEBUG_inner:top_debug_out;
 
-
+  
 
 --debug
-
+signal recved:boolean:=false; 
+  
 begin
   ZA    <="00000000000000000000";
   XWA  <='0';
@@ -94,5 +95,26 @@ begin
   );
   io: IO32 port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX,'1');
 
-  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,DEBUG_inner);
+
+  io_send_data<=io_recv_data;
+  process(clk)
+  begin
+    if rising_edge(clk) then
+      if recved then
+        io_re<='0';
+        if io_full='1' then
+          io_we<='0';
+          
+          recved<=false;
+        end if;
+      else
+        if io_empty = '0' then
+          io_we<='1';
+          io_re<='1';
+          recved<=true;
+        end if;
+      end if;
+    end if;
+  end process;
+--  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,DEBUG_inner);
 end RTL;
