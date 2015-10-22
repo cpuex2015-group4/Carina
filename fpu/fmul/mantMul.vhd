@@ -2,15 +2,15 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
-entity mantMul is
+entity mantmul is
   port (
 	  mantA : in  std_logic_vector (22 downto 0);
 		mantB : in  std_logic_vector (22 downto 0);
 		mantO : out std_logic_vector (22 downto 0);
 		shift : out std_logic);
-end mantMul;
+end mantmul;
 
-architecture struct of mantMul is
+architecture struct of mantmul is
   signal mantAex : std_logic_vector (23 downto 0);
 	signal mantBex : std_logic_vector (23 downto 0);
 	
@@ -26,7 +26,7 @@ begin
 	ansHL <= mantAex(23 downto 11) * mantBex(10 downto  0);
 	ansLH <= mantAex(10 downto  0) * mantBex(23 downto 11);
 
-	ans   <= ansHH + ansHL(25 downto 11) + ansLH(25 downto 11) + 2;
+	ans   <= ansHH + ansHL(23 downto 11) + ansLH(23 downto 11) + 2;
 
   mantO <= ans(24 downto 2) when ans(25) = '1' else
 	         ans(23 downto 1);

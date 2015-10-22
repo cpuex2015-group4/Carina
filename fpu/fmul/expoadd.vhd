@@ -1,4 +1,4 @@
-library ieee:
+library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
@@ -16,8 +16,8 @@ architecture struct of expoadd is
   signal added1 : std_logic_vector (8 downto 0);
 	signal added2 : std_logic_vector (8 downto 0);
 begin
-  added1   <= "0" & expoA + "0" & expoB + "100000001";
-	added2   <= "0" & expoA + "0" & expoB + "100000010";
+  added1   <= ("0" & expoA) + ("0" & expoB) - "001111111";
+	added2   <= ("0" & expoA) + ("0" & expoB) - "010000000";
 	expoO1   <= added1(7 downto 0);
 	expoO2   <= added2(7 downto 0);
 	-- 最上位ビットが1かつその次が0->アンダーフロー

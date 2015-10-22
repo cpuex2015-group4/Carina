@@ -26,6 +26,13 @@ architecture struct of fmul is
 		uFlag2  : out std_logic);
   end component;
 	  
+  component mantMul port (
+	  mantA : in  std_logic_vector (22 downto 0);
+		mantB : in  std_logic_vector (22 downto 0);
+		mantO : out std_logic_vector (22 downto 0);
+		shift : out std_logic);
+  end component;
+
 
 	signal inputA_f : float;
 	signal inputB_f : float;
@@ -68,7 +75,8 @@ begin
 
 
 -- オーバーフロー、アンダーフローに関する処理が怪しいので明日以降見直し
-	zeroFlag <= '0';
+	zeroFlag <= '1' when inputA_f.expo = "0" or inputB_f.expo = "0" else
+              '0';
 	infFlag  <= '0';
 	
 	output_f.sign <= inputA_f.sign xor inputB_f.sign when zeroFlag = '0' else
