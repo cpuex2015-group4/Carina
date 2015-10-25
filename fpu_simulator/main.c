@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<math.h>
 
 typedef union myfloat_{
@@ -86,9 +87,16 @@ unsigned int get_msb1_idx(unsigned int ui)
 	return -1;
 }
 
-unsigned int step4(unsigned int tmp)
+
+unsigned int step4(unsigned int tmp, int* is_underflow)
 {
-	return get_binary_unsigned(tmp, get_msb1_idx(tmp) + 1, get_msb1_idx(tmp) + 24);
+	int msb1_idx = get_msb1_idx(tmp);
+	if (msb1_idx == 6){
+		*is_underflow = 1;
+	}else{
+		*is_underflow = 0;
+	}
+	return get_binary_unsigned(tmp, msb1_idx + 1, msb1_idx + 24);
 }
 
 
@@ -128,39 +136,36 @@ myfloat fmul(myfloat mf1, myfloat mf2)
 	unsigned int tmp = (fraction1_higher13bit * fraction2_higher13bit) + ((fraction1_higher13bit * fraction2_lower11bit) >> 11 ) + ((fraction2_higher13bit * fraction1_lower11bit) >> 11) + 2;
 
 	//step4
-	tmp = step4(tmp);
+	int is_underflow;
+	tmp = step4(tmp, &is_underflow);
 
 	//step5
 	unsigned int exponent1 = get_exponent(mf1);
 	unsigned int exponent2 = get_exponent(mf2);
-	unsigned int exponent_ans = (exponent1) + (exponent2) - 127;
+	unsigned int exponent_ans = is_underflow ? exponent1 + exponent2 - 126 : exponent1 + exponent2 - 127; 
 
 	unsigned int sign1 = get_sign(mf1);
 	unsigned int sign2 = get_sign(mf2);
 	unsigned int sign_ans = (sign1 | sign2) - (sign1 & sign2);
 
 	myfloat mf_ans;
-	puts("-----------------");
-	print_int2bin(sign_ans << 31);
-	print_int2bin(exponent_ans << 23);
-	print_int2bin(tmp);
-	puts("-----------------");
 	mf_ans.muint = (sign_ans << 31 | (exponent_ans << 23) | tmp);
-	print_int2bin(mf_ans.muint);
-	//mf_ans.muint = bit_round(mf_ans.muint);
 	return mf_ans;
-
 }
 
-int main(void)
+int main(int argc, char* argvs[])
 {
+	/*
+	 * Args:
+	 *	float1 float2
+	 */
 	myfloat mf1;
-	mf1.mfloat = 2.6f;
+	mf1.mfloat = atof(argvs[1]);
 	myfloat mf2;
-	mf2.mfloat = 8.9f;
+	mf2.mfloat = atof(argvs[2]);
 	myfloat mf_ans = fmul(mf1, mf2);
 	mf_ans.muint = unset_bit(mf_ans.muint, 0);
-	printf("%f\n", mf_ans.mfloat);
-	printf("%f\n", mf1.mfloat * mf2.mfloat);
+	printf("my fmul : %f\n", mf_ans.mfloat);
+	printf("c  fmul : %f\n", mf1.mfloat * mf2.mfloat);
 	return 0;
 }
