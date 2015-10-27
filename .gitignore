@@ -1,7 +1,10 @@
 *.pyc
 *.swp
 *.o
+*.s
 *~
 core/working
 core/hakeisimu
 #*#
+__pycache__
+.python-version
