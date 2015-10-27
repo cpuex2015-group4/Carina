@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import re
 import utils
 from parser import Parser
 from parser import Operandtype
@@ -29,10 +30,17 @@ class Instruction:
 		Operation : %rt <- %rs + $imm
 		Format    : [ 001000 | %rs | %rt |    $imm    ]
 		"""
+		imm_pattern = re.compile(r"\$-?\d+")
+		match = imm_pattern.match(operands[2])
+		if match is not None:
+			imm_bin = Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
+		else:
+			# operand may be label
+			imm_bin = utils.imm2bin(label_dict[operands[2]])
 		inst_bin = "001000" +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
-				Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
+				imm_bin
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
@@ -121,10 +129,20 @@ class Instruction:
 		Operation : %rt <- Mem[%rs + $imm]
 		Format    : [ 100011 | %rs | %rt |    $imm    ]
 		"""
-		inst_bin = "100011" +\
-				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
-				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
-				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
+		addressing_pattern = re.compile(r"(-?\d+)?\(.*\)")
+		match = addressing_pattern.match(operands[1])
+		if match is not None:
+			# use addressing mode
+			inst_bin = "100011" +\
+					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
+					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
+		else:
+			# loading address value
+			inst_bin = "100011" +\
+					utils.reg2bin("%gp") +\
+					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+					Parser.parse_operand(operands[1], Operandtype.LABEL_RELATIVE, label_dict)[1]
 		return utils.bin2bytes(inst_bin) 
 
 	@staticmethod
@@ -248,16 +266,25 @@ class Instruction:
 
 	@staticmethod
 	def move(operands, label_dict, line_num):
+		"""
+		(Syntax Sugar)
+		"""
 		return Instruction.add([operands[0], "%zero", operands[1]], label_dict, line_num) 
 
 	@staticmethod
 	def subi(operands, label_dict, line_num):
+		"""
+		(Syntax Sugar)
+		"""
 		def imm_inverse(imm):
 			return imm.replace("$", "$-")
 		return Instruction.addi([operands[0], operands[1], imm_inverse(operands[2])], label_dict, line_num)
 
 	@staticmethod
 	def li(operands, label_dict, line_num):
+		"""
+		(Syntax Sugar)
+		"""
 		return Instruction.addi([operands[0], "%zero", operands[1]], label_dict, line_num)
 
 	@staticmethod
@@ -265,3 +292,108 @@ class Instruction:
 		inst_bin = "11111111111111111111111111111111"
 		return utils.bin2bytes(inst_bin)
 
+	@staticmethod
+	def bclt(operands, label_dict, line_num):
+		"""
+		Operation : if(FPCond) %pc <- %pc + 1 + $addr;
+		Format : [ 010001 | 01000 | 00001 | $addr ]
+		"""
+		inst_bin = "0100010100000001" +\
+				Parser.parse_operand(operands[0], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def bclf(operands, label_dict, line_num):
+		"""
+		Operation : if(!FPCond) %pc <- %pc + 1 + $addr;
+		Format : [ 010001 | 01000 | 00000 | $addr ]
+		"""
+		inst_bin = "0100010100000000" +\
+				Parser.parse_operand(operands[0], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def fadd(operands, label_dict, line_num):
+		"""
+		Operation : %fd <- %fs +. %ft
+		Format : [ 010001 | 10000 | %ft | %fs | %fd | 000000 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"000000"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def fmul(operands, label_dict, line_num):
+		"""
+		Operation : %fd <- %fs *. %ft
+		Format : [ 010001 | 10000 | %ft | %fs | %fd | 000010 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"000010"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def finv(operands, label_dict, line_num):
+		"""
+		Operation : %fd <- 1 /. %ft
+		Format : [ 010001 | 10000 | %ft | --- | %fd | 000011 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"000011"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def fsub(operands, label_dict, line_num):
+		"""
+		Operation : %fd <- %fs -. %ft
+		Format : [ 010001 | 10000 | %ft | %fs | %fd | 000001 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"000001"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def flw(operands, label_dict, line_num):
+		"""
+		Operation : %ft <- Mem[%rs + $imm]
+		Format    : [ 110001 | %rs | %ft |    $imm    ]
+		"""
+		addressing_pattern = re.compile(r"(-?\d+)?\(.*\)")
+		match = addressing_pattern.match(operands[1])
+		if match is not None:
+			# use addressing mode
+			inst_bin = "110001" +\
+					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
+					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
+		else:
+			# loading address value
+			inst_bin = "110001" +\
+					utils.reg2bin("%gp") +\
+					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+					Parser.parse_operand(operands[1], Operandtype.LABEL_RELATIVE, label_dict)[1]
+		return utils.bin2bytes(inst_bin) 
+
+	@staticmethod
+	def fsw(operands, label_dict, line_num):
+		"""
+		Operation : Mem[%rs + $imm] <- %ft
+		Format    : [ 111001 | %rs | %ft |    $imm    ]
+		"""
+		inst_bin = "111001" +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
+		return utils.bin2bytes(inst_bin)

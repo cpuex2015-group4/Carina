@@ -23,15 +23,18 @@ class Parser:
 	"""
 
 	@staticmethod
-	def read_header(lines, label_dict):
+	def read_header(text_lines, data_lines, label_dict):
 		"""
 		Returns
 		----------
 		header: bytes
 			bytecodes of header for the executable
 
-		new_lines: list
-			assembly lines removed of pseudo instruction
+		new_text_lines: list
+			assembly .text lines removed of pseudo instruction
+
+		new_data_lines: list
+			assembly .data lines removed of pseudo instruction
 		"""
 		entry_point = "_min_caml_start"
 
@@ -40,22 +43,58 @@ class Parser:
 
 		epaddr = label_dict[entry_point] * 4
 
+		new_text_lines = filter(lambda l:
+				".text" not in l and
+				".globl" not in l,
+				text_lines)
+
+		new_data_lines = filter(lambda l: ".data" not in l, data_lines)
+
 		header = "".join([
 			# magic number
 			"CARN",
 			# text size
-			utils.bin2bytes(format(0, "032b")),
+			utils.bin2bytes(format(len(new_text_lines), "032b")),
 			# data size
-			utils.bin2bytes(format(0, "032b")),
+			utils.bin2bytes(format(len(new_data_lines), "032b")),
 			# entry point
 			utils.bin2bytes(format(epaddr, "032b"))])
-		new_lines = filter(lambda l:
-				".text" not in l and
-				".data" not in l and
-				".globl" not in l,
-				lines)
 
-		return (header, new_lines)
+		return (header, new_text_lines, new_data_lines)
+
+	@staticmethod
+	def read_section(lines):
+		"""
+		Separate raw assembly lines to .text section lines and .data section lines.
+
+		Parameters
+		----------
+		lines: str list
+			raw assembly lines
+
+		Returns
+		----------
+		text_lines: str list
+			.text section lines
+
+		data_lines: str list
+			.data section lines
+		"""
+
+		assert lines.count(".text\n") < 2 and lines.count(".data\n") < 2, \
+			"assembly source can only have less than one .text and .data section."
+
+		assert lines.count(".text\n") == 1, "assembly source must have one .text section."
+
+		text_index = lines.index(".text\n")
+		if ".data\n" in lines:
+			data_index = lines.index(".data\n")
+			if text_index < data_index:
+				return (lines[text_index:data_index], lines[data_index:])
+			else:
+				return (lines[text_index:], lines[data_index:text_index])
+		else:
+			return (lines, [])
 
 	@staticmethod
 	def read_label(lines):
@@ -116,12 +155,31 @@ class Parser:
 			list of operands
 		"""
 
-		match = re.findall(r"\s*([a-z]+?)\s+(.*)", line)
+		match = re.findall(r"\s*([a-z\.]+?)\s+(.*)", line)
 
 		if len(match) == 0:
 			return (line, [])
 		else:
 			return (match[0][0], match[0][1].split(", "))
+
+	@staticmethod
+	def parse_data(line):
+		"""
+		Parse assembly data line and emit bytecode respond to the data.
+
+		Parameters
+		----------
+		line: str
+			assembly line (without label)
+
+		Returns
+		----------
+		bytecode: str
+			bytecode respond to data
+		"""
+		match = re.findall(r"\s*\.long\s+(0x[0-9a-fA-F]+)", line)
+		assert len(match) == 1, "wrong syntax near .long"
+		return utils.bin2bytes(utils.hex2bin(match[0]))
 
 	@staticmethod
 	def parse_operand(operand, operand_type, label_dict=None, line_num=0):

@@ -21,20 +21,26 @@ class Simulator:
 		self.entry_point = 0
 		self.pc = 0
 		self.reg = {}
+		self.freg = {}
 		self.inst_mem = []
 		self.mem = {}
+		self.fpcond = 0
 
 		with open(filename, "rb") as file_in:
 			self.binary = file_in.read()
 			self.load_header()
 			self.load_instruction()
+			self.load_data()
 
 		for i in range(32):
 			# init registers
 			self.reg[format(i, "05b")] = "0"*32 
+			self.freg[format(i, "05b")] = "0"*32
 
+		# heap pointer
+		self.reg["11100"] = format(self.text_size, '032b')
 		# stack pointer 
-		self.reg["11101"] = format(100, "032b")
+		self.reg["11101"] = format(0x8000, "032b")
 		self.pc = self.entry_point / 4
 
 	
@@ -60,7 +66,7 @@ class Simulator:
 			if(res == 0): break
 	
 		# return the content of %v0
-		return int(self.reg["00010"], 2)
+		return int(self.reg["00010"], 2), utils.reg2float(self.freg["00000"])
 
 	def load_header(self):
 		"""
@@ -71,8 +77,8 @@ class Simulator:
 
 		assert self.binary[0:4] == "CARN", "the target file must have a valid magic number at the head."
 
-		self.data_size   = utils.word2int(self.binary[4:8])
-		self.text_size   = utils.word2int(self.binary[8:12])
+		self.text_size   = utils.word2int(self.binary[4:8])
+		self.data_size   = utils.word2int(self.binary[8:12])
 		self.entry_point = utils.word2int(self.binary[12:16])
 
 	def load_instruction(self):
@@ -80,15 +86,26 @@ class Simulator:
 		Read instructions from the target binary and load them to the memory.
 		Each single memory cell can be stored 32bit data.
 		"""
-		for i in range(16, len(self.binary), 4):
+		for i in range(self.text_size):
 			# convert each word to hex encoded value
-			inst = utils.word2hex(self.binary[i:i+4])
+			offset = i * 4 + 16
+			inst = utils.word2hex(self.binary[offset:offset+4])
 			self.inst_mem.append(inst)
+
+	def load_data(self):
+		"""
+		Load data (floating point values table) from the target binary to the simulator memory.
+		"""
+		for i in range(16 + self.text_size * 4, len(self.binary), 4):
+			data = self.binary[i:i+4]
+			self.mem.setdefault(format(i - 16, '032b'), format(utils.byte2int(data), '032b'))
 
 	def fetch_instruction(self, inst):
 		inst_bin = format(int(inst, 16), '032b')
 		operation_bin = inst_bin[0:6]
 		funct_bin = inst_bin[26:]
+		fpuop_bin = inst_bin[0:11]
+		fbranch_bin = inst_bin[0:16]
 		if(operation_bin == "000000" and funct_bin == "100000"):
 			return Simulator.add(self, inst_bin)
 		elif(operation_bin == "001000"):
@@ -128,6 +145,22 @@ class Simulator:
 			return Simulator.sub(self, inst_bin)
 		elif(operation_bin == "111111" and funct_bin == "111111"):
 			return Simulator.hlt(self, inst_bin)
+		elif(fbranch_bin == "0100010100000001"):
+			return Simulator.bclt(self, inst_bin)
+		elif(fbranch_bin == "0100010100000000"):
+			return Simulator.bclf(self, inst_bin)
+		elif(fpuop_bin == "01000110000" and funct_bin == "000000"):
+			return Simulator.fadd(self, inst_bin)
+		elif(fpuop_bin == "01000110000" and funct_bin == "000001"):
+			return Simulator.fsub(self, inst_bin)
+		elif(fpuop_bin == "01000110000" and funct_bin == "000010"):
+			return Simulator.fmul(self, inst_bin)
+		elif(fpuop_bin == "01000110000" and funct_bin == "000011"):
+			return Simulator.finv(self, inst_bin)
+		elif(operation_bin == "110001"):
+			return Simulator.flw(self, inst_bin)
+		elif(operation_bin == "111001"):
+			return Simulator.fsw(self, inst_bin)
 		else:
 			raise ValueError("no match with any instruction for bytecode `{}`".format(inst_bin))
 
@@ -138,6 +171,14 @@ class Simulator:
 	@staticmethod
 	def decode_I(inst_bin):
 		return inst_bin[6:11], inst_bin[11:16], inst_bin[16:]
+
+	@staticmethod
+	def decode_FR(inst_bin):
+		return inst_bin[11:16], inst_bin[16:21], inst_bin[21:26]
+
+	@staticmethod
+	def decode_FI(inst_bin):
+		return inst_bin[11:16], inst_bin[16:]
 
 	@classmethod
 	def add(cls, sim, inst_bin):
@@ -201,10 +242,7 @@ class Simulator:
 	@classmethod
 	def lw(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
-		try:
-			sim.reg[reg_t_bin] = sim.mem[format(4 * (utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin)), "032b")]
-		except Exception as ex:
-			raise ex
+		sim.reg[reg_t_bin] = sim.mem[format(4 * (utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin)), "032b")]
 		sim.pc += 1
 		return 1
 
@@ -283,3 +321,63 @@ class Simulator:
 		pprint.pprint(sim.reg)
 		pprint.pprint(sim.mem)
 		return 0
+
+	@classmethod
+	def bclt(cls, sim, inst_bin):
+		_, imm = cls.decode_FI(inst_bin)
+		if(sim.fpcond == 1):
+			sim.pc = sim.pc + utils.bin2int(imm)
+		else:
+			sim.pc = sim.pc + 1
+		return 1
+
+	@classmethod
+	def bclf(cls, sim, inst_bin):
+		_, imm = cls.decode_FI(inst_bin)
+		if(sim.fpcond == 0):
+			sim.pc = sim.pc + utils.bin2int(imm)
+		else:
+			sim.pc = sim.pc + 1
+		return 1
+
+	@classmethod
+	def fadd(cls, sim, inst_bin):
+		ft, fs, fd = cls.decode_FR(inst_bin)
+		sim.freg[fd] = utils.float2reg(utils.reg2float(sim.freg[fs]) + utils.reg2float(sim.freg[ft]))
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def fsub(cls, sim, inst_bin):
+		ft, fs, fd = cls.decode_FR(inst_bin)
+		sim.freg[fd] = utils.float2reg(utils.reg2float(sim.freg[fs]) - utils.reg2float(sim.freg[ft]))
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def fmul(cls, sim, inst_bin):
+		ft, fs, fd = cls.decode_FR(inst_bin)
+		sim.freg[fd] = utils.float2reg(utils.reg2float(sim.freg[fs]) * utils.reg2float(sim.freg[ft]))
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def finv(cls, sim, inst_bin):
+		ft, _, fd = cls.decode_FR(inst_bin)
+		sim.freg[fd] = utils.float2reg(1. /  utils.reg2float(sim.freg[ft]))
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def flw(cls, sim, inst_bin):
+		rs, ft, imm = cls.decode_I(inst_bin)
+		sim.freg[ft] = sim.mem[format(4 * utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')]
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def fsw(cls, sim, inst_bin):
+		rs, ft, imm = cls.decode_I(inst_bin)
+		sim.mem[sim.reg[rs] + utils.bin2int(imm)] = format(sim.freg[ft], '032b')
+		sim.pc += 1
+		return 1
