@@ -23,9 +23,11 @@ architecture kaisensionoodle of loader is
   signal text_size:datat;
   signal data_offset:datat;
   signal data_size:datat;
-  signal i:integer:=0;
+  signal entry_point:datat;
+  signal i:datat:=x"00000000";
   signal justread:boolean:=false;
 begin
+  data_offset<=data_size;
   main:process(clk)
   begin
    if rising_edge(clk) then
@@ -35,18 +37,18 @@ begin
         if i<4 then
           if justread then
             IO_RE<='0';
-            i<=i+1;
+            i<=i+x"00000001";
             justread<=false;
           else
             if IO_empty='0' then
               IO_RE<='1';
               case (i) is
-                when 1 =>
+                when x"00000001" =>
                   text_size<=IO_recv_data;
-                when 2 =>
-                  data_offset<=IO_recv_data;
-                when 3 =>
+                when x"00000002" =>
                   data_size<=IO_recv_data;
+                when x"00000003" =>
+                  entry_point<=IO_recv_data;
                 when others =>
                   --assert false
                  --   report "crazy i in loader_HEADER:" & integer'image(i);
@@ -55,9 +57,9 @@ begin
             end if;
           end if;
         else
-          report "i,tsize,doft,dsize=" & integer'image (i) & ","& integer'image(conv_integer(text_size)) & ","  &
+          report "i,tsize,doft,dsize=" & integer'image (conv_integer(i)) & ","& integer'image(conv_integer(text_size)) & ","  &
             integer'image(conv_integer(data_offset)) & "," & integer'image(conv_integer(data_size));
-          i<=0;
+          i<=x"00000000";
           state<=TEXT_RECEIVING;
         end if;
       when TEXT_RECEIVING=>
@@ -65,15 +67,15 @@ begin
           if justread then
             io_re<='0';
             justread<=false;
-            i<=i+1;
+            i<=i+x"00000001";
             BRAM_WE<="0";
           else
             if IO_empty='0' then
-              report "text_recv:i,tsize,doft,dsize=" & integer'image (i) & ","& integer'image(conv_integer(text_size)) & ","  &
+              report "text_recv:i,tsize,doft,dsize=" & integer'image (conv_integer(i)) & ","& integer'image(conv_integer(text_size)) & ","  &
               integer'image(conv_integer(data_offset)) & "," & integer'image(conv_integer(data_size));
-              report "write_inst@" & integer'image(i) & ":" & integer'image(conv_integer(io_recv_data));
+              report "write_inst@" & integer'image(conv_integer(i)) & ":" & integer'image(conv_integer(io_recv_data));
               din<=IO_recv_data;
-              addr<=CONV_STD_LOGIC_VECTOR(i,14);
+              addr<=i(13 downto 0);
               justread<=true;
               BRAM_WE<="1";
               io_re<='1';
@@ -81,19 +83,19 @@ begin
           end if;
         else
           state<=DATA_RECEIVING;
-          i<=conv_integer(data_offset);
+          i<=data_offset;
         end if;
       when DATA_RECEIVING =>
         if i<conv_integer(data_offset+data_size) then
           if justread then
             BRAM_WE<="0";
             io_re<='0';
-            i<=i+1;
+            i<=i+x"00000001";
             justread<=false;
           else
             if IO_empty='0' then
-              report "data_receiving@" & integer'image(i) & ":" & integer'IMAGE(conv_integer(io_recv_data)) ;     
-              addr<=CONV_STD_LOGIC_VECTOR(i,14);
+              report "data_receiving@" & integer'image(conv_integer(i)) & ":" & integer'IMAGE(conv_integer(io_recv_data)) ;     
+              addr<=i(13 downto 0);
               din<=IO_recv_data;
               io_re<='1';
 				  justread<=true;
