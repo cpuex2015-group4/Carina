@@ -19,6 +19,7 @@ package p_type is
   subtype functt is std_logic_vector(5 downto 0);
   subtype imdt is std_logic_vector(15 downto 0);
   subtype addrt is std_logic_vector( 25 downto 0);
+  subtype memaddrt is std_logic_vector(19 downto 0);
   type reg_filet is array(0 to 31) of datat;  
   type PC_controlt is (j,jr,b,normal);  
    type INST_TYPE is (I,R,J);
@@ -36,6 +37,7 @@ package p_type is
     funct:functt;
     immediate:imdt;
     addr:addrt;
+    memaddr:memaddrt;
   end record;
 
   type data_file is record
@@ -67,7 +69,7 @@ package p_type is
   type ALU_CONTROLT is (ALUADD,ALUSUB,ALUAND,ALUOR,ALUSLT,ALUNOR,ALUSLL,ALUSLR);
 
   function make_alu_control(opecode:opet;funct:functt) return ALU_CONTROLT;
-  
+  function sign_extension(imd:imdt) return memaddrt;  
   
   type top_debug_out is record  
     data1:datat;
@@ -192,6 +194,13 @@ package body p_type is
     end if;
     return AC;
   end make_alu_control;
+
+  function sign_extension(imd:imdt) return memaddrt is
+    variable s:std_logic;
+  begin
+    s:=imd(15);
+    return s & s & s & s & imd;
+  end sign_extension;
   
 ---- Example 1
 --  function <function_name>  (signal <signal_name> : in <type_declaration>  ) return <type_declaration> is

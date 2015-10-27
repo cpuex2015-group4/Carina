@@ -50,6 +50,9 @@ architecture RTL of top is
 	IO_recv_data: in std_logic_vector(31 downto 0);
 	IO_WE,IO_RE: out std_logic;
 	IO_send_data:out std_logic_vector(31 downto 0);
+	SRAM_ADDR:out std_logic_vector(19 downto 0);
+	SRAM_DATA:inout datat;
+	SRAM_WE:out std_logic;
 	DEBUG :out top_debug_out
 	);
   end component;
@@ -58,30 +61,30 @@ architecture RTL of top is
   signal iclk:std_logic:='0';
   signal clk:std_logic:='0';
   
---IO
+--IO\
   signal IO_empty,IO_full,IO_WE,IO_RE:std_logic:='0';
   signal IO_recv_data,IO_send_data:datat:=x"00000000";
 
 --core
 	signal DEBUG_inner:top_debug_out;
 
-  
+--sram
+ 
+
 
 --debug
 signal recved:boolean:=false; 
 begin
-  ZA    <="00000000000000000000";
-  XWA  <='0';
-  XE1   <='0';
-  E2A   <='0';
-  XE3   <='0';
-  XGA   <='0';
-  XZCKE <='0';
-  ADVA  <='0';
-  XLBO  <='0';
-  ZZA   <='0';
-  XFT   <='0';
-  XZBE  <="0000";
+  XE1<='0';
+  E2A<='1';
+  XE3<='0';
+  XGA<='0';
+  XZCKE<='0';
+  ADVA<='0';
+  XLBO<='1';
+  ZZA<='0';
+  XFT<='1';
+  XZBE<="0000";
   ZCLKMA <=clk & clk;
   --DEBUG<=DEBUG_inner;
   ib: IBUFG port map(
@@ -114,5 +117,5 @@ begin
 --      end if;
 --    end if;
 --  end process;
-  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,DEBUG_inner);
+  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,ZA,ZD,XWA,DEBUG_inner);
 end RTL;

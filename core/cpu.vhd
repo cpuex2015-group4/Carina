@@ -12,6 +12,13 @@ port (
   IO_recv_data: in std_logic_vector(31 downto 0);
   IO_WE,IO_RE: out std_logic:='0';
   IO_send_data:out std_logic_vector(31 downto 0):=x"00000000";
+
+  --SRAM
+  SRAM_ADDR:out std_logic_vector(19 downto 0):="00000000000000000000";
+  SRAM_DATA:inout datat:="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+  SRAM_WE:out std_logic:='0';
+
+  --DEBUG
   DEBUG :out top_debug_out
 );
 end cpu;
@@ -86,12 +93,14 @@ signal result:datat;
 
 
  --loader
-      signal loader_activate: std_logic:='0';
-      signal loader_addr: BRAM_ADDRT;
-      signal loader_din: datat;
-      signal loader_IO_RE,loaded: std_logic:='0';
+  signal loader_activate: std_logic:='0';
+  signal loader_addr: BRAM_ADDRT;
+  signal loader_din: datat;
+  signal loader_IO_RE,loaded: std_logic:='0';
 	
- 
+-- 
+  constant memory_wait:std_logic_vector(2 downto 0):="011";
+  signal memory_count:std_logic_vector(2 downto 0):="000";
   
   signal count:integer:=0;
 begin
@@ -244,6 +253,10 @@ begin
             when jr =>
               data.newPC<=reg_file(CONV_INTEGER(inst.rs));
           end case;
+
+          --memaddr
+          inst.memaddr<=data.operand1(19 downto 0)+sign_extension(inst.immediate);
+          
         when MEM =>
           if control.IORead='1' then
 			   if IO_empty='0'then
@@ -252,11 +265,37 @@ begin
 					exe_state<=WB;
 				end if;
           elsif control.IOWrite='1' then
-			   if IO_full='0' then
+            if IO_full='0' then
               IO_we<='1';
               IO_send_data<=data.operand2;
-	   			exe_state<=WB;
-				end if;
+              exe_state<=WB;
+            end if;
+          elsif control.Memwrite='1' then
+            case (memory_count) is
+              when "000" =>
+                SRAM_ADDR<=inst.memaddr;
+                SRAM_WE<='1';
+                SRAM_DATA<=reg_file(CONV_INTEGER(inst.rt));
+                memory_count<=memory_count+"001";
+              when others=>
+                SRAM_WE<='0';
+                SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+                memory_count<="000";
+                exe_state<=WB;
+            end case;
+          elsif control.MemRead='1' then
+            case (memory_count) is
+              when "000" =>
+                SRAM_ADDR<=inst.memaddr;
+                SRAM_DATA<=reg_file(CONV_INTEGER(inst.rt));
+                memory_count<=memory_count+"001";
+              when memory_wait =>
+                memory_count<="000";
+                data.result<=SRAM_DATA;
+                exe_state<=WB;
+              when others=>
+                memory_count<=memory_count+"001";
+            end case;
           else
 			    exe_state<=WB;
 			 end if;

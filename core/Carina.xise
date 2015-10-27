@@ -102,7 +102,6 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="187"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="12"/>
     </file>
-    <file xil_pn:name="loader_for_test.vhd" xil_pn:type="FILE_VHDL"/>
     <file xil_pn:name="loader.vhd" xil_pn:type="FILE_VHDL">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="186"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="7"/>
