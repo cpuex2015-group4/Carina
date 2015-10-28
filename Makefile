@@ -5,6 +5,7 @@ TARGET=default
 MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
 CSIM_DIR=./simulator/c
+FSIM_DIR=./simulator/fpu
 DEPENDENCY_MODULES=.install.txt
 
 $(TARGET):
@@ -19,6 +20,8 @@ $(TEST):
 	@cd $(MINCAML_DIR); $(MAKE) clean; ./to_carina; $(MAKE) min-caml
 	@echo "--------------------\ngenerating csim ...\n--------------------"
 	@cd $(CSIM_DIR); $(MAKE)
+	@echo "--------------------\ngenerating fpu sim ...\n--------------------"
+	@cd $(FSIM_DIR); $(MAKE)
 	@echo "--------------------\ntest begin ...\n--------------------"
 	@nosetests -v
 	@$(MAKE) clean

@@ -73,6 +73,12 @@ def test_fadd():
 	expected = 2.9
 	assert float_eq(pysim(tb), expected)
 
+def test_fmul():
+	tb = "tests/fmul"
+	compile(tb)
+	expected = 2.25
+	assert float_eq(pysim(tb), expected)
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))

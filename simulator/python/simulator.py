@@ -3,6 +3,7 @@
 
 import pprint
 import utils
+from fpu_module import FpuModule as fpu
 
 class Simulator:
 	"""
@@ -345,7 +346,7 @@ class Simulator:
 	@classmethod
 	def fadd(cls, sim, inst_bin):
 		ft, fs, fd = cls.decode_FR(inst_bin)
-		sim.freg[fd] = utils.float2reg(utils.reg2float(sim.freg[fs]) + utils.reg2float(sim.freg[ft]))
+		sim.freg[fd] = format(fpu.fadd(int(sim.freg[fs], 2), int(sim.freg[ft], 2)), '032b')
 		sim.pc += 1
 		return 1
 
@@ -359,7 +360,7 @@ class Simulator:
 	@classmethod
 	def fmul(cls, sim, inst_bin):
 		ft, fs, fd = cls.decode_FR(inst_bin)
-		sim.freg[fd] = utils.float2reg(utils.reg2float(sim.freg[fs]) * utils.reg2float(sim.freg[ft]))
+		sim.freg[fd] = format(fpu.fmul(int(sim.freg[fs], 2), int(sim.freg[ft], 2)), '032b')
 		sim.pc += 1
 		return 1
 
