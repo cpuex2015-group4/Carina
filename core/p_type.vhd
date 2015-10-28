@@ -95,7 +95,7 @@ package body p_type is
   function make_control (opecode:opet;funct:functt) return control_file is
     variable control:control_file;
   begin
-    if opecode ="000000" OR opecode="011011" then
+    if opecode ="000000" OR opecode="011011" or opecode="000100" or opecode="000101" then
       control.RegDst:='0';
       control.ALUSrc:='0';
     else

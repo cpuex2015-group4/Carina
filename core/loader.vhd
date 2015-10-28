@@ -13,6 +13,7 @@ entity loader is
     addr:out BRAM_ADDRT:="00000000000000";
     din:out datat:=x"00000000";
     bram_we:out std_logic_vector(0 downto 0):="0";
+    entry:out datat;
     IO_RE,loaded: out std_logic:='0'
   );
 end loader;
@@ -28,6 +29,7 @@ architecture kaisensionoodle of loader is
   signal justread:boolean:=false;
 begin
   data_offset<=data_size;
+  entry<=entry_point;
   main:process(clk)
   begin
    if rising_edge(clk) then

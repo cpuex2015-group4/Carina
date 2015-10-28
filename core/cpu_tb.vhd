@@ -1,4 +1,4 @@
---------------------------------------------------------------------------------
+--3------------------------------------------------------------------------------
 -- Company: 
 -- Engineer:
 --
@@ -51,6 +51,11 @@ ARCHITECTURE behavior OF cpu_tb IS
          IO_WE : OUT  std_logic;
          IO_RE : OUT  std_logic;
          IO_send_data : OUT  std_logic_vector(31 downto 0);
+           --SRAM
+  SRAM_ADDR:out std_logic_vector(19 downto 0);
+  SRAM_DATA:inout datat;
+  SRAM_WE:out std_logic;
+
          DEBUG : OUT  top_debug_out
         );
     END COMPONENT;
@@ -62,6 +67,10 @@ ARCHITECTURE behavior OF cpu_tb IS
    signal IO_full : std_logic := '0';
    signal IO_recv_data : std_logic_vector(31 downto 0) := (others => '0');
 
+
+    signal SRAM_ADDR: std_logic_vector(19 downto 0);
+    signal SRAM_DATA:datat;
+    signal SRAM_WE:std_logic;
  	--Outputs
    signal IO_WE : std_logic;
    signal IO_RE : std_logic;
@@ -71,17 +80,17 @@ ARCHITECTURE behavior OF cpu_tb IS
    -- Clock period definitions
    constant clk_period : time := 15 ns;
    
-	 constant ROMMAX:Integer:=6;
-   type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
-   constant rom:rom_t:=(
-    "00100000000000010000000000000000",
-    "00100000000000100000000000000001",
-    "00000000001000100001100000100000",
-    "00000000000000100000100000100000",
-    "00000000000000110001000000100000",
-	 "01101100000000110000000000000000",
-    "00001000000000000000000000000010");
-BEGIN
+    constant ROMMAX:Integer:=15;
+       type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
+    constant rom:rom_t:=(
+	  conv_std_logic_vector(0,32),
+	  conv_std_logic_vector(12,32),
+  	  conv_std_logic_vector(0,32),
+	  conv_std_logic_vector(5,32),
+    x"6c080000",X"6c080000",x"6c080000",x"6c080000",x"6c080000",
+      x"2001000A", --kouhan is the number);
+      x"20020000",x"00221020",x"2021FFFF",x"1420FFFD",x"6c020000",x"FFFFFFFF"
+  );  BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: cpu PORT MAP (
@@ -92,6 +101,13 @@ BEGIN
           IO_WE => IO_WE,
           IO_RE => IO_RE,
           IO_send_data => IO_send_data,
+
+  --SRAM
+          SRAM_ADDR=>SRAM_ADDR,
+          SRAM_DATA=>SRAM_DATA,
+          SRAM_WE=>SRAM_WE,
+
+          
           DEBUG => DEBUG
         );
 
@@ -128,17 +144,7 @@ BEGIN
 		--wait until rising_edge(clk);
 		
 		io_empty<='0';
-		io_recv_data<=conv_std_logic_vector(0,32);
-      wait for clk_period;
-		io_recv_data<=conv_std_logic_vector(7,32);
-		wait for clk_period;
-		io_recv_data<=conv_std_logic_vector(100,32);
-		wait for clk_period;
-		io_recv_data<=conv_std_logic_vector(0,32);
-		wait for clk_period;
-      io_empty<='1';
-      wait for clk_period*10;
-		
+
       for I in 0 to ROMMAX loop
 			 io_recv_data<=rom(I);
 			 io_empty<='0';

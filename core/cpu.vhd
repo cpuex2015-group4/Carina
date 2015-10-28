@@ -59,6 +59,7 @@ architecture RTL of cpu is
       addr:out BRAM_ADDRT;
       din:out datat;
       bram_we:out std_logic_vector(0 downto 0);
+      entry:out datat;
       IO_RE,loaded: out std_logic:='0'
     );            
   end component;
@@ -89,7 +90,7 @@ signal alu_control:alu_controlt;
 --signal alu_control:alu_controlt;
 --signal shamt:regt;
 signal result:datat;
---signal isZero:std_logic;
+signal isZero:std_logic;
 
 
  --loader
@@ -97,7 +98,7 @@ signal result:datat;
   signal loader_addr: BRAM_ADDRT;
   signal loader_din: datat;
   signal loader_IO_RE,loaded: std_logic:='0';
-	
+  signal entry_point:datat;
 -- 
   constant memory_wait:std_logic_vector(2 downto 0):="011";
   signal memory_count:std_logic_vector(2 downto 0):="000";
@@ -117,7 +118,7 @@ begin
     alu_control=>alu_control,
     shamt=>inst.shamt,
     result=>result,
-    isZero=>control.isZero);
+    isZero=>isZero);
 
   lod:loader port map(
     clk=>clk,
@@ -127,6 +128,7 @@ begin
 	 addr=>loader_addr,
 	 din=>inst_in,
 	 bram_we=>inst_we,
+     entry=>entry_point,
 	 io_re=>loader_io_re,
 	 loaded=>loaded);
       
@@ -163,10 +165,11 @@ begin
       if loaded='1' then
 			io_send_data<=x"52435644";
 			IO_WE<='1';
+            PC<=entry_point;
         core_state<=EXE_READY;
-      else
-        io_send_data<=io_recv_data;
-        io_we<=loader_io_re;
+--      else
+--        io_send_data<=io_recv_data;
+--        io_we<=loader_io_re;
       end if;
     when EXE_READY=>
 			io_we<='0';
@@ -227,7 +230,11 @@ begin
           if controlv.ALUSrc='0' then
             data.operand2<=reg_file(CONV_INTEGER(instv.rt));
           else
-            data.operand2<="0000000000000000" & instv.immediate;
+            if instv.immediate(15) ='0' then
+              data.operand2<="0000000000000000" & instv.immediate;
+            else
+              data.operand2<="1111111111111111" & instv.immediate;
+            end if;
           end if;
           control<=controlv;
         when EX =>
@@ -244,9 +251,11 @@ begin
               data.newPC<=PC+1;
             when b=>
               if inst.immediate(15)='0' then
-                data.newPC<=PC+1+("0000000000000000" + inst.immediate);
+                report "PLUS";
+                data.newPC<=PC+1+("0000000000000000" & inst.immediate);
               else
-                data.newPC<=PC+1+("1111111111111111" + inst.immediate);
+                report "MINUS";
+                data.newPC<=PC+1+("1111111111111111" & inst.immediate);
               end if;
             when j=>
               data.newPC<="0000000000000000"&inst.immediate;
@@ -258,6 +267,7 @@ begin
           inst.memaddr<=data.operand1(19 downto 0)+sign_extension(inst.immediate);
           
         when MEM =>
+          control.iszero<=iszero;
           if control.IORead='1' then
 			   if IO_empty='0'then
 					data.result<=IO_recv_data;
