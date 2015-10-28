@@ -395,5 +395,48 @@ class Instruction:
 		inst_bin = "111001" +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
-				Parser.parse_operand(operands[1], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT, label_dict)[1]
 		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def feq(operands, label_dict, line_num):
+		"""
+		Operation : FPcond = (%fs == %ft) ? 1 : 0
+		Format : [ 010001 | 10000 | %ft | %fs | --- | 110010 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"110010"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def flt(operands, label_dict, line_num):
+		"""
+		Operation : FPcond = (%fs < %ft) ? 1 : 0
+		Format : [ 010001 | 10000 | %ft | %fs | --- | 111100 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"111100"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def fle(operands, label_dict, line_num):
+		"""
+		Operation : FPcond = (%fs <= %ft) ? 1 : 0
+		Format : [ 010001 | 10000 | %ft | %fs | --- | 111110 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"111110"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def fmove(operands, label_dict, line_num):
+		"""
+		(Syntax Sugar)
+		"""
+		return Instruction.fadd([operands[0], "%f0", operands[1]], label_dict, line_num) 

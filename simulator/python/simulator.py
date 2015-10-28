@@ -66,7 +66,7 @@ class Simulator:
 			if(res == 0): break
 	
 		# return the content of %v0
-		return int(self.reg["00010"], 2), utils.reg2float(self.freg["00000"])
+		return self.reg["00010"]
 
 	def load_header(self):
 		"""
@@ -161,6 +161,8 @@ class Simulator:
 			return Simulator.flw(self, inst_bin)
 		elif(operation_bin == "111001"):
 			return Simulator.fsw(self, inst_bin)
+		elif(fpuop_bin == "01000110000"):
+			return Simulator.fcmp(self, inst_bin)
 		else:
 			raise ValueError("no match with any instruction for bytecode `{}`".format(inst_bin))
 
@@ -378,6 +380,20 @@ class Simulator:
 	@classmethod
 	def fsw(cls, sim, inst_bin):
 		rs, ft, imm = cls.decode_I(inst_bin)
-		sim.mem[sim.reg[rs] + utils.bin2int(imm)] = format(sim.freg[ft], '032b')
+		sim.mem[format(4 * utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')] = sim.freg[ft]
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def fcmp(cls, sim, inst_bin):
+		ft, fs, op = cls.decode_FR(inst_bin)
+		f1 = utils.reg2float(ft)
+		f2 = utils.reg2float(fs)
+		if op == "110010":    # eq
+			sim.fpcond = 1 if f1 == f2 else 0
+		elif op == "111100":  # lt
+			sim.fpcond = 1 if f1 < f2 else 0
+		elif op == "111110":  # le
+			sim.fpcond = 1 if f1 <= f2 else 0
 		sim.pc += 1
 		return 1
