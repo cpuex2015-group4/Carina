@@ -299,7 +299,7 @@ class Instruction:
 		Format : [ 010001 | 01000 | 00001 | $addr ]
 		"""
 		inst_bin = "0100010100000001" +\
-				Parser.parse_operand(operands[0], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
+				Parser.parse_operand(operands[0], Operandtype.LABEL_RELATIVE, label_dict)[1]
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
@@ -419,7 +419,7 @@ class Instruction:
 		inst_bin = "01000110000" +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
-				"111100"
+				"00000111100"
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
