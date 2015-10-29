@@ -4,12 +4,20 @@ TEST=test
 TARGET=default
 MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
+LIBMINCAML=$(MINCAML_DIR)/libmincaml.S
+AS=$(PYTHON) ./assembler/main.py
 CSIM_DIR=./simulator/c
 FSIM_DIR=./simulator/fpu
 DEPENDENCY_MODULES=.install.txt
 
 $(TARGET):
 	@echo "This Makefile is for test. Please use \`make $(TEST)\`."
+
+# the rule to make binary (compile -> cat with library -> assemble)
+%.o: %.ml
+	$(MINCAML) $*
+	cat $(LIBMINCAML) >> $*.s
+	$(AS) $*.s
 
 .PHONY: $(TEST)
 $(TEST):
