@@ -52,7 +52,7 @@ architecture RTL of cpu is
       isZero:out std_logic
       );
   end component;
-  component loader 
+  component loader
     port (
       clk,IO_empty,activate: in std_logic;
       IO_recv_data: in std_logic_vector(31 downto 0);
@@ -60,16 +60,21 @@ architecture RTL of cpu is
       din:out datat;
       bram_we:out std_logic_vector(0 downto 0);
       entry:out datat;
-      IO_RE,loaded: out std_logic:='0'
-    );            
+      IO_RE,loaded: out std_logic:='0';
+      reset:in std_logic:='0'
+      );
   end component;
 
 
   constant ZERO:datat:=x"00000000";
 --zentaiseigyo kei
- 
+
   signal PC :datat:=ZERO;
   signal reg_file:reg_filet:=(others=>ZERO);
+  signal fpu_reg_file:reg_filet:=(others=>ZERO);
+  signal FPCOND:std_logic:='0';
+
+
   signal core_state:CORE_STATE_TYPE:=INIT;
   signal exe_state:EXE_STATE_TYPE:=F;
   signal inst_in:datat;
@@ -80,6 +85,8 @@ architecture RTL of cpu is
   signal data:data_file;
   signal control:control_file;
   signal io_re_cpu:std_logic:='0';
+
+  signal loader_reset:std_logic:='1';
 signal alu_control:alu_controlt;
 
   --debug
@@ -130,7 +137,8 @@ begin
 	 bram_we=>inst_we,
      entry=>entry_point,
 	 io_re=>loader_io_re,
-	 loaded=>loaded);
+	 loaded=>loaded,
+     reset=>loader_reset);
       
   alu_control<=make_alu_control(inst.opecode,inst.funct);
   
@@ -147,6 +155,7 @@ begin
   if rising_edge(clk) then  
   case (core_state) is
     when INIT=>
+      loader_reset<='0';
       if io_full='0' then
         io_we<='1';
         io_send_data<=x"4341524e";
@@ -218,6 +227,12 @@ begin
           instv.immediate:=inst_out(15 downto 0);
           instv.addr:=inst_out(25 downto 0); 
           exe_state<=EX;
+			 if inst_out=x"FFFFFFFF" then
+--				core_state<=HALTED;
+ 			core_state<=INIT;
+            loader_reset<='1';
+            exe_state<=F;
+			end if;
 			 
           controlv:=make_control(instv.opecode,instv.funct);
           if controlv.RegDst='0' then

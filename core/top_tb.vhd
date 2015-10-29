@@ -110,17 +110,27 @@ ARCHITECTURE behavior OF top_tb IS
 --	 "01101100000000110000000000000000",
 --    "00001000000000000000000000000010");
 
-    constant ROMMAX:Integer:=15;
+--    constant ROMMAX:Integer:=15;
+--       type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
+--    constant rom:rom_t:=(
+--	  conv_std_logic_vector(0,32),
+--	  conv_std_logic_vector(12,32),
+--  	  conv_std_logic_vector(0,32),
+--	  conv_std_logic_vector(5,32),
+--    x"6c080000",X"6c080000",x"6c080000",x"6c080000",x"6c080000",
+--      x"2001000A", --kouhan is the number);
+--      x"20020000",x"00021020",x"2021FFFF",x"1420FFFD",x"6c020000",x"FFFFFFFF"
+--  );
+
+
+    constant ROMMAX:Integer:=6;
        type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
     constant rom:rom_t:=(
 	  conv_std_logic_vector(0,32),
-	  conv_std_logic_vector(12,32),
+	  conv_std_logic_vector(3,32),
   	  conv_std_logic_vector(0,32),
-	  conv_std_logic_vector(5,32),
-    x"6c080000",X"6c080000",x"6c080000",x"6c080000",x"6c080000",
-      x"2001000A", --kouhan is the number);
-      x"20020000",x"00021020",x"2021FFFF",x"1420FFFD",x"6c020000",x"FFFFFFFF"
-  );  
+	  conv_std_logic_vector(0,32),
+    x"68206c01",X"70010000",x"08000000"  );    
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)

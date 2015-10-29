@@ -14,7 +14,8 @@ entity loader is
     din:out datat:=x"00000000";
     bram_we:out std_logic_vector(0 downto 0):="0";
     entry:out datat;
-    IO_RE,loaded: out std_logic:='0'
+    IO_RE,loaded: out std_logic:='0';
+    reset:in std_logic:='0'
   );
 end loader;
 
@@ -33,6 +34,14 @@ begin
   main:process(clk)
   begin
    if rising_edge(clk) then
+     if reset='1' then
+       bram_we<="0";
+       IO_RE<='0';
+       loaded<='0';
+       i<=x"00000000";
+       state<=header;
+       justread<=false;
+       else
     case (state) is
       when HEADER=>
 --		 report "head";
@@ -110,6 +119,7 @@ begin
       when FINISHED=>
         loaded<='1';
     end case;
+    end if;
    end if;
   end process;
   
