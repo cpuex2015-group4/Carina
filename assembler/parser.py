@@ -118,14 +118,15 @@ class Parser:
 		new_lines = []
 		line_num_offset = 0
 		for i,line in enumerate(lines):
-			if (".data" in line) or (".text" in line) or (".globl" in line):
-				new_lines.append(line)
-				line_num_offset -= 1
-				continue
-			#ignore comment
+			# ignore comment
 			line = re.sub(r"#.*", "", line)
 			line = line.strip()
 			if line == "":
+				line_num_offset -= 1
+				continue
+
+			if (".data" in line) or (".text" in line) or (".globl" in line):
+				new_lines.append(line)
 				line_num_offset -= 1
 				continue
 			if ":" in line:
