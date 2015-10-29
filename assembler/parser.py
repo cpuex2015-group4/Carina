@@ -81,20 +81,36 @@ class Parser:
 			.data section lines
 		"""
 
-		assert lines.count(".text\n") < 2 and lines.count(".data\n") < 2, \
-			"assembly source can only have less than one .text and .data section."
+		assert lines.count(".text\n") >= 1, "assembly source must have one .text section."
 
-		assert lines.count(".text\n") == 1, "assembly source must have one .text section."
+		textpat = re.compile(r"\s*\.text")
+		datapat = re.compile(r"\s*\.data")
+		offsets = []
 
-		text_index = lines.index(".text\n")
-		if ".data\n" in lines:
-			data_index = lines.index(".data\n")
-			if text_index < data_index:
-				return (lines[text_index:data_index], lines[data_index:])
-			else:
-				return (lines[text_index:], lines[data_index:text_index])
-		else:
-			return (lines, [])
+		for (i, line) in enumerate(lines):
+			if textpat.match(line):
+				offsets.append(('text', i))
+			elif datapat.match(line):
+				offsets.append(('data', i))
+
+		text_lines = []
+		data_lines = []
+		section = "text"
+		offset = 0
+		for (sec, pos) in offsets:
+			if (section, sec) == ("text", "data"):
+				text_lines.extend(lines[offset:pos])
+				section, offset = sec, pos
+			elif (section, sec) == ("data", "text"):
+				data_lines.extend(lines[offset:pos])
+				section, offset = sec, pos
+
+		if section == "text":
+			text_lines.extend(lines[offset:])
+		elif section == "data":
+			data_lines.extend(lines[offset:])
+
+		return text_lines, data_lines
 
 	@staticmethod
 	def read_label(lines):
