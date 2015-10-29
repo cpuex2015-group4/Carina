@@ -192,11 +192,11 @@ begin
           DEBUG.data<=data;
           DEBUG.data1<=reg_file(1);
           DEBUG.data2<=reg_file(2);
+          DEBUG.data3<=reg_file(31);
           DEBUG.exe_state<=exe_state;
           DEBUG.core_state<=core_state;
           DEBUG.PC<=PC;
           DEBUG.inst<=inst;
-          DEBUG.data3<=reg_file(3);
           DEBUG.alucont<=alu_control;
   --/debug
 
@@ -329,8 +329,9 @@ begin
                 end if;
               end if;
               exe_state<=F;
-              if inst.opecode=x"03" then  --jump and link
+              if inst.opecode="000011" then  --jump and link
                 reg_file(31)<=PC+x"00000001";
+                report "j_l";
               end if;
               case (control.PC_control) is
                 when normal =>
