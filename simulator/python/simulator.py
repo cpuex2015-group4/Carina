@@ -386,9 +386,10 @@ class Simulator:
 
 	@classmethod
 	def fcmp(cls, sim, inst_bin):
-		ft, fs, op = cls.decode_FR(inst_bin)
-		f1 = utils.reg2float(ft)
-		f2 = utils.reg2float(fs)
+		ft, fs, _ = cls.decode_FR(inst_bin)
+		op = inst_bin[26:32]
+		f1 = utils.reg2float(sim.freg[ft])
+		f2 = utils.reg2float(sim.freg[fs])
 		if op == "110010":    # eq
 			sim.fpcond = 1 if f1 == f2 else 0
 		elif op == "111100":  # lt

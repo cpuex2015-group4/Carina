@@ -407,7 +407,7 @@ class Instruction:
 		inst_bin = "01000110000" +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
-				"110010"
+				"00000110010"
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
