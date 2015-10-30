@@ -64,12 +64,12 @@ package p_type is
   end record;
 
 
-  function make_control (opecode:opet;funct:functt) return control_file;
+  function make_control (opecode:opet;fmt:regt;funct:functt) return control_file;
 
   type ALU_CONTROLT is (ALUADD,ALUSUB,ALUAND,ALUOR,ALUSLT,ALUNOR,ALUSLL,ALUSLR);
 
-  function make_alu_control(opecode:opet;funct:functt) return ALU_CONTROLT;
-  function sign_extension(imd:imdt) return memaddrt;  
+  function make_alu_control(opecode:opet; funct:functt) return ALU_CONTROLT;
+  function sign_extension(imd:imdt) return memaddrt;
   
   type top_debug_out is record  
     data1:datat;
@@ -92,7 +92,7 @@ package p_type is
 end p_type;
 
 package body p_type is
-  function make_control (opecode:opet;funct:functt) return control_file is
+  function make_control (opecode:opet;fmt:regt;funct:functt) return control_file is
     variable control:control_file;
   begin
     if opecode ="000000" OR opecode="011011" or opecode="000100" or opecode="000101"  then
@@ -104,13 +104,13 @@ package body p_type is
     end if;
 
     if opecode="000000" or opecode="001000" or opecode="0001010"
-      or opecode = "001011" or opecode ="001100" or opecode = "011010" or opecode = "100011" then
+      or opecode = "001011" or opecode ="001100" or opecode = "011010" or opecode = "100011" or opecode="110001" then
       control.RegWrite:='1';
     else
       control.RegWrite:='0';
     end if;
 
-    if opecode=x"30" or opecode=x"23" then
+    if opecode=x"30" or opecode=x"23" or opecode=x"31" then
       control.MemRead:='1';
       control.MemToReg:='1';
     else
@@ -118,20 +118,26 @@ package body p_type is
       control.MemToReg:='0';
     end if;
 
-    if opecode=x"2b" then
+    if opecode=x"2b" or opecode=x"39" then
       control.MemWrite:='1';
     else
       control.MemWrite:='0';
     end if;
 
     case (opecode) is
-      when "000100" | "000101" =>
+      when "000100" | "000101"   =>
         control.PC_control:=b;
       when "000010" | "000011" =>
         control.PC_control:=j;
       when "000000" =>
         if funct="001000" then
           control.PC_control:=jr;
+        else
+          control.PC_control:=normal;
+        end if;
+      when "010001" =>
+        if fmt="01000" then
+          control.PC_control:=b;
         else
           control.PC_control:=normal;
         end if;

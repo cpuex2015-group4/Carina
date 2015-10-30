@@ -233,7 +233,7 @@ begin
                 loader_reset<='1';
                 exe_state<=F;
               end if;
-              controlv:=make_control(instv.opecode,instv.funct);
+              controlv:=make_control(instv.opecode,instv.rs,instv.funct);
               if controlv.RegDst='0' then
                 instv.reg_dest:=instv.rd;
               else
@@ -296,7 +296,11 @@ begin
                   when "000" =>
                     SRAM_ADDR<=inst.memaddr;
                     SRAM_WE<='1';
-                    SRAM_DATA<=reg_file(CONV_INTEGER(inst.rt));
+                    if inst.opecode/="110001" then
+                      SRAM_DATA<=reg_file(CONV_INTEGER(inst.rt));
+                    else
+                      SRAM_DATA<=fpu_reg_file(CONV_INTEGER(inst.rt));
+                    end if;
                     memory_count<=memory_count+"001";
                   when others=>
                     SRAM_WE<='0';
@@ -308,7 +312,7 @@ begin
                 case (memory_count) is
                   when "000" =>
                     SRAM_ADDR<=inst.memaddr;
-                    SRAM_DATA<=reg_file(CONV_INTEGER(inst.rt));
+                    SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
                     memory_count<=memory_count+"001";
                   when memory_wait =>
                     memory_count<="000";
@@ -325,7 +329,11 @@ begin
               IO_we<='0';
               if control.RegWrite='1' then
                 if inst.reg_dest /= x"00000" then
-                  reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
+                  if inst.opecode(5 downto 4)="11" then
+                    fpu_reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
+                  else
+                    reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
+                  end if;
                 end if;
               end if;
               exe_state<=F;
@@ -340,7 +348,9 @@ begin
                   vPC:=data.newPC;
                 when b =>
                   if (inst.opecode="000100" and control.isZero='1') or
-                    (inst.opecode="000101" and control.isZero='0') then
+                    (inst.opecode="000101" and control.isZero='0') or
+                    (inst.opecode="010001" and inst.rs="01000" and ((inst.rt="00001" and FPCond='1')or (inst.rt="00000" and FPCond='0')))
+                  then
                     vPC:=data.newPC;
                   else
                     vPC:=PC+x"00000001";
