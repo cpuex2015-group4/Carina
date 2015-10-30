@@ -16,8 +16,10 @@ $(TARGET):
 # the rule to make binary (compile -> cat with library -> assemble)
 %.o: %.ml
 	$(MINCAML) $*
-	cat $(LIBMINCAML) >> $*.s
-	$(AS) $*.s
+	if [ $$? -eq 0 ]; then \
+		cat $(LIBMINCAML) >> $*.s; \
+		$(AS) $*.s; \
+	fi
 
 .PHONY: $(TEST)
 $(TEST):
@@ -25,7 +27,7 @@ $(TEST):
 	git submodule update
 	pip install -r $(DEPENDENCY_MODULES)
 	@echo "--------------------\ngenerating min-caml compiler ...\n--------------------"
-	@cd $(MINCAML_DIR); $(MAKE) clean; ./to_carina; $(MAKE) min-caml
+	@cd $(MINCAML_DIR); ./to_carina; $(MAKE) min-caml
 	@echo "--------------------\ngenerating csim ...\n--------------------"
 	@cd $(CSIM_DIR); $(MAKE)
 	@echo "--------------------\ngenerating fpu sim ...\n--------------------"
