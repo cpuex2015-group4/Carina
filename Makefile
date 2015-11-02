@@ -14,7 +14,7 @@ $(TARGET):
 	@echo "This Makefile is for test. Please use \`make $(TEST)\`."
 
 # the rule to make binary (compile -> cat with library -> assemble)
-%.o: %.ml
+%.o: %.ml $(LIBMINCAML)
 	$(MINCAML) $*
 	if [ $$? -eq 0 ]; then \
 		cat $(LIBMINCAML) >> $*.s; \

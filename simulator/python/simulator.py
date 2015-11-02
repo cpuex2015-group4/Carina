@@ -66,8 +66,8 @@ class Simulator:
 			# halting at `hlt` instruction
 			if(res == 0): break
 	
-		# return the content of %v0
-		return self.reg["00010"]
+		# return the content of %v0 and %f1
+		return (self.reg["00010"], self.freg["00001"])
 
 	def load_header(self):
 		"""
@@ -99,7 +99,7 @@ class Simulator:
 		"""
 		for i in range(16 + self.text_size * 4, len(self.binary), 4):
 			data = self.binary[i:i+4]
-			self.mem.setdefault(format(i - 16, '032b'), format(utils.byte2int(data), '032b'))
+			self.mem.setdefault(format((i - 16)/4, '032b'), format(utils.byte2int(data), '032b'))
 
 	def fetch_instruction(self, inst):
 		inst_bin = format(int(inst, 16), '032b')
@@ -244,7 +244,7 @@ class Simulator:
 	@classmethod
 	def lw(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
-		sim.reg[reg_t_bin] = sim.mem[format(4 * (utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin)), "032b")]
+		sim.reg[reg_t_bin] = sim.mem[format(utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin), "032b")]
 		sim.pc += 1
 		return 1
 
@@ -306,7 +306,7 @@ class Simulator:
 	@classmethod
 	def sw(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
-		sim.mem[format(4 * (utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin)), "032b")] = sim.reg[reg_t_bin]
+		sim.mem[format(utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin), "032b")] = sim.reg[reg_t_bin]
 		sim.pc += 1
 		return 1
 
@@ -373,14 +373,14 @@ class Simulator:
 	@classmethod
 	def flw(cls, sim, inst_bin):
 		rs, ft, imm = cls.decode_I(inst_bin)
-		sim.freg[ft] = sim.mem[format(4 * utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')]
+		sim.freg[ft] = sim.mem[format(utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')]
 		sim.pc += 1
 		return 1
 
 	@classmethod
 	def fsw(cls, sim, inst_bin):
 		rs, ft, imm = cls.decode_I(inst_bin)
-		sim.mem[format(4 * utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')] = sim.freg[ft]
+		sim.mem[format(utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')] = sim.freg[ft]
 		sim.pc += 1
 		return 1
 
