@@ -27,10 +27,11 @@ def csim(name):
 	rv = p.stdout.readlines()[0]
 	return int(rv)
 
-def pysim(name):
+def pysim(name, t = "int"):
 	# execute on python simulator
 	sim = Simulator(name + ".o")
-	return sim.simulate()
+	d = {"int": 0, "float": 1}
+	return sim.simulate()[d[t]]
 
 def float_eq(f1, f2):
 	# floating point value must be compared based on binary
@@ -71,13 +72,13 @@ def test_fadd():
 	tb = "tests/fadd"
 	compile(tb)
 	expected = 2.9
-	assert float_eq(pysim(tb), expected)
+	assert float_eq(pysim(tb, "float"), expected)
 
 def test_fmul():
 	tb = "tests/fmul"
 	compile(tb)
 	expected = 2.25
-	assert float_eq(pysim(tb), expected)
+	assert float_eq(pysim(tb, "float"), expected)
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
