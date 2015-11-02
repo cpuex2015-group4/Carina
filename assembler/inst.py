@@ -345,8 +345,8 @@ class Instruction:
 		Format : [ 010001 | 10000 | %ft | --- | %fd | 000011 ]
 		"""
 		inst_bin = "01000110000" +\
-				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000" +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				"000011"
 		return utils.bin2bytes(inst_bin)

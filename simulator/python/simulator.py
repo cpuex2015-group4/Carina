@@ -66,8 +66,8 @@ class Simulator:
 			# halting at `hlt` instruction
 			if(res == 0): break
 	
-		# return the content of %v0
-		return self.reg["00010"]
+		# return the content of %v0 and %f1
+		return (self.reg["00010"], self.freg["00001"])
 
 	def load_header(self):
 		"""
