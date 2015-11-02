@@ -37,6 +37,9 @@ class Instruction:
 		else:
 			# operand may be label
 			imm_bin = utils.imm2bin(label_dict[operands[2]])
+
+		assert len(imm_bin) <= 16, "too large integer operand"
+
 		inst_bin = "001000" +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
