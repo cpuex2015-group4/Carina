@@ -4,6 +4,7 @@ typedef unsigned int instruction;
 typedef struct simulator_{
 	int pc;
 	int* reg;
+  float* f_reg;
   int fpcond;
   int Hi;
   int Lo; 
@@ -21,6 +22,7 @@ simulator *init_sim()
 	sim->pc = 0;
   sim->fpcond = 0;
 	sim->reg = (int*)malloc(sizeof(int) * 32);
+  sim->reg = (float*)malloc(sizeof(float) * 32);
 	memset(sim->reg, 0, (sizeof(int) * 32));
 	//stackpointer = reg[29]
 	sim->reg[29] = 1000;
@@ -30,6 +32,7 @@ simulator *init_sim()
 
 void free_sim(simulator *sim) {
 	SAFE_DELETE(sim->reg);
+	SAFE_DELETE(sim->f_reg);
 	SAFE_DELETE(sim->mem);
 	SAFE_DELETE(sim);
 }
@@ -109,9 +112,9 @@ typedef struct operands_{
   int shamt;
   int imm;
   int adress;
-  unsigned int ft;
-  unsigned int fs;
-  unsigned int fd;
+  unsigned int ft_idx;
+  unsigned int fs_idx;
+  unsigned int fd_idx;
 }operands;
 
 operands decode_R(inst)
@@ -143,16 +146,16 @@ operands decode_J(inst)
 operands decode_FR(inst)
 {
   operands ops;
-  ops.ft = get_binary_signed(inst, 11, 16);
-  ops.fs = get_binary_signed(inst, 16, 21);
-  ops.fd = get_binary_signed(inst, 21, 26);
+  ops.ft_idx = get_binary_signed(inst, 11, 16);
+  ops.fs_idx = get_binary_signed(inst, 16, 21);
+  ops.fd_idx = get_binary_signed(inst, 21, 26);
   return ops;
 }
 
 operands decode_FI(inst)
 {
   operands ops;
-  ops.ft = get_binary_signed(inst, 11, 16);
+  ops.ft_idx = get_binary_signed(inst, 11, 16);
   ops.imm = get_binary_signed(inst, 16, 32);
   return ops;
 }
@@ -377,6 +380,8 @@ int inst_div(simulator* sim_p, instruction inst)
 
 int inst_adds(simulator* sim_p, instruction inst)
 {
+  operands ops = decode_FR(inst);
+  float ft =  
   return 1;
 }
 

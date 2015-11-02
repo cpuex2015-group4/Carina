@@ -55,3 +55,16 @@ int get_binary_signed(int n, int start, int end)
 	n = n >> (32 - len);
 	return n;
 }
+
+struct float_ui_{
+  float f;
+  unsigned int ui;
+}
+
+float ui2float(unsigned int ui)
+{
+  struct float_ui_ f_ui;
+  f_ui.ui = ui;
+  return float_ui_.f;
+}
+   
