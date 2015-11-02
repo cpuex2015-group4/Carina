@@ -44,6 +44,8 @@ class Assembler:
 		"sub.s" : Instruction.fsub,
 		"lw.s" : Instruction.flw,
 		"sw.s" : Instruction.fsw,
+		"mult" : Instruction.mult,
+		"div" : Instruction.div,
 		"c.eq.s" : Instruction.feq,
 		"c.lt.s" : Instruction.flt,
 		"c.le.s" : Instruction.fle,

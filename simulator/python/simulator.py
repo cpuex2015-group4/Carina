@@ -149,6 +149,10 @@ class Simulator:
 			return Simulator.bclt(self, inst_bin)
 		elif(fbranch_bin == "0100010100000000"):
 			return Simulator.bclf(self, inst_bin)
+		elif(operation_bin == "000000" and funct_bin == "011000"):
+			return Simulator.mult(self, inst_bin)
+		elif(operation_bin == "000000" and funct_bin == "011010"):
+			return Simulator.div(self, inst_bin)
 		elif(fpuop_bin == "01000110000" and funct_bin == "000000"):
 			return Simulator.fadd(self, inst_bin)
 		elif(fpuop_bin == "01000110000" and funct_bin == "000001"):
@@ -340,6 +344,20 @@ class Simulator:
 			sim.pc = sim.pc + utils.bin2int(imm)
 		else:
 			sim.pc = sim.pc + 1
+		return 1
+
+	@classmethod
+	def mult(cls, sim, inst_bin):
+		reg_s_bin, reg_t_bin, reg_d_bin, _ = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) * utils.bin2int(sim.reg[reg_t_bin]), "032b")
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def div(cls, sim, inst_bin):
+		reg_s_bin, reg_t_bin, reg_d_bin, _ = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) / utils.bin2int(sim.reg[reg_t_bin]), "032b")
+		sim.pc += 1
 		return 1
 
 	@classmethod

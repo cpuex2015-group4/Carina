@@ -316,6 +316,32 @@ class Instruction:
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
+	def mult(operands, label_dict, line_num):
+		"""
+		Operation : %rd <- %rs * %rt
+		Format    : [ 000000 | %rs | %rt | %rd | --- | 011000 ]
+		"""
+		inst_bin = "000000" +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000011000"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def div(operands, label_dict, line_num):
+		"""
+		Operation : %rd <- %rs / %rt
+		Format    : [ 000000 | %rs | %rt | %rd | --- | 010010 ]
+		"""
+		inst_bin = "000000" +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000011010"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
 	def fadd(operands, label_dict, line_num):
 		"""
 		Operation : %fd <- %fs +. %ft
