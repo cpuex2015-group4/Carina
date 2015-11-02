@@ -59,12 +59,29 @@ int get_binary_signed(int n, int start, int end)
 struct float_ui_{
   float f;
   unsigned int ui;
+};
+
+struct float_i_{
+  float f;
+  int i;
+};
+
+float int2float(int i){
+  struct float_i_ fi;
+  fi.i = i;
+  return fi.f;
+}
+
+int flaot2int(float f){
+  struct float_i_ fi;
+  fi.f = f;
+  return fi.i;
 }
 
 float ui2float(unsigned int ui)
 {
   struct float_ui_ f_ui;
   f_ui.ui = ui;
-  return float_ui_.f;
+  return f_ui.f;
 }
    

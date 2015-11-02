@@ -22,7 +22,7 @@ simulator *init_sim()
 	sim->pc = 0;
   sim->fpcond = 0;
 	sim->reg = (int*)malloc(sizeof(int) * 32);
-  sim->reg = (float*)malloc(sizeof(float) * 32);
+  sim->f_reg = (float*)malloc(sizeof(float) * 32);
 	memset(sim->reg, 0, (sizeof(int) * 32));
 	//stackpointer = reg[29]
 	sim->reg[29] = 1000;
@@ -381,42 +381,93 @@ int inst_div(simulator* sim_p, instruction inst)
 int inst_adds(simulator* sim_p, instruction inst)
 {
   operands ops = decode_FR(inst);
-  float ft =  
+  float ft = sim_p->f_reg[ops.ft_idx];
+  float fs = sim_p->f_reg[ops.fs_idx];
+  float fd = ft + fs;
+  sim_p->f_reg[ops.fd_idx] = fd;
+  sim_p->pc++;
   return 1;
 }
 
 int inst_cs(simulator* sim_p, instruction inst, int option)
 {
+  /*
+   * option
+   * -----------
+   *  0->EQ
+   *  1->LT
+   *  2->LE
+   */
+  operands ops = decode_FR(inst);
+  float ft = sim_p->f_reg[ops.ft_idx];
+  float fs = sim_p->f_reg[ops.fs_idx];
+  if(option == 0 && fs == ft){
+    sim_p->fpcond = 1;
+  }else if(option == 1 && fs > ft){
+    sim_p->fpcond = 1;
+  }else if(option == 2 && fs >= ft){
+    sim_p->fpcond = 1;
+  }else{
+    sim_p->fpcond = 0;
+  }
+  sim_p->pc++;
   return 1;
 }
 
 int inst_muls(simulator* sim_p, instruction inst)
 {
+  operands ops = decode_FR(inst);
+  float ft = sim_p->f_reg[ops.ft_idx];
+  float fs = sim_p->f_reg[ops.fs_idx];
+  float fd = ft * fs;
+  sim_p->f_reg[ops.fd_idx] = fd;
+  sim_p->pc++;
   return 1;
 }
 
 int inst_invs(simulator* sim_p, instruction inst)
 {
+  operands ops = decode_FR(inst);
+  float ft = sim_p->f_reg[ops.ft_idx];
+  float fs = sim_p->f_reg[ops.fs_idx];
+  float fd = ft / fs;
+  sim_p->f_reg[ops.fd_idx] = fd;
+  sim_p->pc++;
   return 1;
 }
 
 int inst_subs(simulator* sim_p, instruction inst)
 {
+  operands ops = decode_FR(inst);
+  float ft = sim_p->f_reg[ops.ft_idx];
+  float fs = sim_p->f_reg[ops.fs_idx];
+  float fd = ft - fs;
+  sim_p->f_reg[ops.fd_idx] = fd;
+  sim_p->pc++;
   return 1;
 }
 
 int inst_lws(simulator* sim_p, instruction inst)
 {
+  operands ops = decode_I(inst);
+  float ft = int2float(sim_p->mem[sim_p->reg[ops.reg_s_idx] + ops.imm]);
+  sim_p->f_reg[ops.ft_idx] = ft;
+  sim_p->pc++;
   return 1;
 }
 
 int inst_mult(simulator* sim_p, instruction inst)
 {
+  //not used??
   return 1;
 }
 
 int inst_sws(simulator* sim_p, instruction inst)
 {
+  operands ops = decode_I(inst);
+  float ft = sim_p->f_reg[ops.reg_t_idx];
+  sim_p->mem[sim_p->reg[ops.reg_s_idx] + ops.imm] = flaot2int(ft);
+  sim_p->pc++;
   return 1;
 }
 
