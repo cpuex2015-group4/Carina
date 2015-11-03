@@ -21,12 +21,12 @@ def byte2int(bytecode):
 	return sum([ord(c) * 256**(3-i) for i, c in enumerate(bytecode)])
 
 def reg2float(v):
-	v = struct.pack('>i', int(v, 2))
+	v = struct.pack('>I', int(v, 2))
 	return struct.unpack('>f', v)[0]
 
 def float2reg(f):
 	v = struct.pack('>f', f)
-	v = struct.unpack('>i', v)[0]
+	v = struct.unpack('>I', v)[0]
 	return format(v, '032b')
 
 def word2int(bytecodes):

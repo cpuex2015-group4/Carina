@@ -37,6 +37,9 @@ class Instruction:
 		else:
 			# operand may be label
 			imm_bin = utils.imm2bin(label_dict[operands[2]])
+
+		assert len(imm_bin) <= 16, "too large integer operand"
+
 		inst_bin = "001000" +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
@@ -299,7 +302,7 @@ class Instruction:
 		Format : [ 010001 | 01000 | 00001 | $addr ]
 		"""
 		inst_bin = "0100010100000001" +\
-				Parser.parse_operand(operands[0], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
+				Parser.parse_operand(operands[0], Operandtype.LABEL_RELATIVE, label_dict, line_num)[1]
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
@@ -309,7 +312,33 @@ class Instruction:
 		Format : [ 010001 | 01000 | 00000 | $addr ]
 		"""
 		inst_bin = "0100010100000000" +\
-				Parser.parse_operand(operands[0], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
+				Parser.parse_operand(operands[0], Operandtype.LABEL_RELATIVE, label_dict, line_num)[1]
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def mult(operands, label_dict, line_num):
+		"""
+		Operation : %rd <- %rs * %rt
+		Format    : [ 000000 | %rs | %rt | %rd | --- | 011000 ]
+		"""
+		inst_bin = "000000" +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000011000"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def div(operands, label_dict, line_num):
+		"""
+		Operation : %rd <- %rs / %rt
+		Format    : [ 000000 | %rs | %rt | %rd | --- | 010010 ]
+		"""
+		inst_bin = "000000" +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000011010"
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
@@ -345,8 +374,8 @@ class Instruction:
 		Format : [ 010001 | 10000 | %ft | --- | %fd | 000011 ]
 		"""
 		inst_bin = "01000110000" +\
-				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000" +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				"000011"
 		return utils.bin2bytes(inst_bin)
@@ -395,5 +424,48 @@ class Instruction:
 		inst_bin = "111001" +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[0] +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
-				Parser.parse_operand(operands[1], Operandtype.LABEL_ABSOLUTE, label_dict)[1]
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT, label_dict)[1]
 		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def feq(operands, label_dict, line_num):
+		"""
+		Operation : FPcond = (%fs == %ft) ? 1 : 0
+		Format : [ 010001 | 10000 | %ft | %fs | --- | 110010 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000110010"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def flt(operands, label_dict, line_num):
+		"""
+		Operation : FPcond = (%fs < %ft) ? 1 : 0
+		Format : [ 010001 | 10000 | %ft | %fs | --- | 111100 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000111100"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def fle(operands, label_dict, line_num):
+		"""
+		Operation : FPcond = (%fs <= %ft) ? 1 : 0
+		Format : [ 010001 | 10000 | %ft | %fs | --- | 111110 ]
+		"""
+		inst_bin = "01000110000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000111110"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def fmove(operands, label_dict, line_num):
+		"""
+		(Syntax Sugar)
+		"""
+		return Instruction.fadd([operands[0], "%f0", operands[1]], label_dict, line_num) 

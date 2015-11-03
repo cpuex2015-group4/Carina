@@ -3,6 +3,7 @@
 
 import pprint
 import utils
+from fpu_module import FpuModule as fpu
 
 class Simulator:
 	"""
@@ -37,8 +38,6 @@ class Simulator:
 			self.reg[format(i, "05b")] = "0"*32 
 			self.freg[format(i, "05b")] = "0"*32
 
-		# heap pointer
-		self.reg["11100"] = format(self.text_size, '032b')
 		# stack pointer 
 		self.reg["11101"] = format(0x8000, "032b")
 		self.pc = self.entry_point / 4
@@ -65,8 +64,8 @@ class Simulator:
 			# halting at `hlt` instruction
 			if(res == 0): break
 	
-		# return the content of %v0
-		return int(self.reg["00010"], 2), utils.reg2float(self.freg["00000"])
+		# return the content of %v0 and %f1
+		return (self.reg["00010"], self.freg["00001"])
 
 	def load_header(self):
 		"""
@@ -98,7 +97,7 @@ class Simulator:
 		"""
 		for i in range(16 + self.text_size * 4, len(self.binary), 4):
 			data = self.binary[i:i+4]
-			self.mem.setdefault(format(i - 16, '032b'), format(utils.byte2int(data), '032b'))
+			self.mem.setdefault(format((i - 16) / 4, '032b'), format(utils.byte2int(data), '032b'))
 
 	def fetch_instruction(self, inst):
 		inst_bin = format(int(inst, 16), '032b')
@@ -113,7 +112,6 @@ class Simulator:
 		elif(operation_bin == "000000" and funct_bin == "100100"):
 			return Simulator.and_(self, inst_bin)
 		elif(operation_bin == "000100"):
-			print utils.bin2int(self.reg["01000"]), utils.bin2int(self.reg["01001"])
 			return Simulator.beq(self, inst_bin)
 		elif(operation_bin == "000101"):
 			return Simulator.bne(self, inst_bin)
@@ -149,6 +147,10 @@ class Simulator:
 			return Simulator.bclt(self, inst_bin)
 		elif(fbranch_bin == "0100010100000000"):
 			return Simulator.bclf(self, inst_bin)
+		elif(operation_bin == "000000" and funct_bin == "011000"):
+			return Simulator.mult(self, inst_bin)
+		elif(operation_bin == "000000" and funct_bin == "011010"):
+			return Simulator.div(self, inst_bin)
 		elif(fpuop_bin == "01000110000" and funct_bin == "000000"):
 			return Simulator.fadd(self, inst_bin)
 		elif(fpuop_bin == "01000110000" and funct_bin == "000001"):
@@ -161,6 +163,8 @@ class Simulator:
 			return Simulator.flw(self, inst_bin)
 		elif(operation_bin == "111001"):
 			return Simulator.fsw(self, inst_bin)
+		elif(fpuop_bin == "01000110000"):
+			return Simulator.fcmp(self, inst_bin)
 		else:
 			raise ValueError("no match with any instruction for bytecode `{}`".format(inst_bin))
 
@@ -242,7 +246,7 @@ class Simulator:
 	@classmethod
 	def lw(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
-		sim.reg[reg_t_bin] = sim.mem[format(4 * (utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin)), "032b")]
+		sim.reg[reg_t_bin] = sim.mem[format(utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin), "032b")]
 		sim.pc += 1
 		return 1
 
@@ -304,7 +308,7 @@ class Simulator:
 	@classmethod
 	def sw(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
-		sim.mem[format(4 * (utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin)), "032b")] = sim.reg[reg_t_bin]
+		sim.mem[format(utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin), "032b")] = sim.reg[reg_t_bin]
 		sim.pc += 1
 		return 1
 
@@ -317,9 +321,9 @@ class Simulator:
 
 	@staticmethod
 	def hlt(sim, inst_bin):
-		print("HALT\n{}".format("=" * 20))
-		pprint.pprint(sim.reg)
-		pprint.pprint(sim.mem)
+		#print("HALT\n{}".format("=" * 20))
+		#pprint.pprint(sim.reg)
+		#pprint.pprint(sim.mem)
 		return 0
 
 	@classmethod
@@ -341,9 +345,23 @@ class Simulator:
 		return 1
 
 	@classmethod
+	def mult(cls, sim, inst_bin):
+		reg_s_bin, reg_t_bin, reg_d_bin, _ = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) * utils.bin2int(sim.reg[reg_t_bin]), "032b")
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def div(cls, sim, inst_bin):
+		reg_s_bin, reg_t_bin, reg_d_bin, _ = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) / utils.bin2int(sim.reg[reg_t_bin]), "032b")
+		sim.pc += 1
+		return 1
+
+	@classmethod
 	def fadd(cls, sim, inst_bin):
 		ft, fs, fd = cls.decode_FR(inst_bin)
-		sim.freg[fd] = utils.float2reg(utils.reg2float(sim.freg[fs]) + utils.reg2float(sim.freg[ft]))
+		sim.freg[fd] = format(fpu.fadd(int(sim.freg[fs], 2), int(sim.freg[ft], 2)), '032b')
 		sim.pc += 1
 		return 1
 
@@ -357,7 +375,7 @@ class Simulator:
 	@classmethod
 	def fmul(cls, sim, inst_bin):
 		ft, fs, fd = cls.decode_FR(inst_bin)
-		sim.freg[fd] = utils.float2reg(utils.reg2float(sim.freg[fs]) * utils.reg2float(sim.freg[ft]))
+		sim.freg[fd] = format(fpu.fmul(int(sim.freg[fs], 2), int(sim.freg[ft], 2)), '032b')
 		sim.pc += 1
 		return 1
 
@@ -371,13 +389,28 @@ class Simulator:
 	@classmethod
 	def flw(cls, sim, inst_bin):
 		rs, ft, imm = cls.decode_I(inst_bin)
-		sim.freg[ft] = sim.mem[format(4 * utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')]
+		sim.freg[ft] = sim.mem[format(utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')]
 		sim.pc += 1
 		return 1
 
 	@classmethod
 	def fsw(cls, sim, inst_bin):
 		rs, ft, imm = cls.decode_I(inst_bin)
-		sim.mem[sim.reg[rs] + utils.bin2int(imm)] = format(sim.freg[ft], '032b')
+		sim.mem[format(utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')] = sim.freg[ft]
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def fcmp(cls, sim, inst_bin):
+		ft, fs, _ = cls.decode_FR(inst_bin)
+		op = inst_bin[26:32]
+		f1 = utils.reg2float(sim.freg[ft])
+		f2 = utils.reg2float(sim.freg[fs])
+		if op == "110010":    # eq
+			sim.fpcond = 1 if f1 == f2 else 0
+		elif op == "111100":  # lt
+			sim.fpcond = 1 if f1 < f2 else 0
+		elif op == "111110":  # le
+			sim.fpcond = 1 if f1 <= f2 else 0
 		sim.pc += 1
 		return 1

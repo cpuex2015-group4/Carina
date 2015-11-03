@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define SAFE_DELETE(x) {free(x);(x)=NULL;}
+#define IS_DEBUG 0
 
 typedef unsigned int instruction;
 
@@ -232,7 +233,7 @@ int inst_bne(simulator* sim_p, instruction inst)
 int inst_j(simulator* sim_p, instruction inst)
 {
 	int imm = get_binary_signed(inst, 6, 32);
-	sim_p->pc += imm;
+	sim_p->pc = imm;
 	return 1;
 }
 
@@ -390,62 +391,63 @@ int inst_hlt(simulator* sim_p, instruction inst)
 
 int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_binary, unsigned char function_binary)
 {
+  if(IS_DEBUG){printf("%d\n", sim_p->pc);}
 	if(operation_binary == 0 && function_binary == 32){
-		//puts("add");
+		if(IS_DEBUG){puts("add");}
 		return inst_add(sim_p, inst);
 	}else if(operation_binary == 8){
-		//puts("addi");
+		if(IS_DEBUG){puts("addi");}
 		return inst_addi(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 36){
-		//puts("and_");
+		if(IS_DEBUG){puts("and_");}
 		return inst_and(sim_p, inst);
 	}else if(operation_binary == 4){
-		//puts("beq");
+		if(IS_DEBUG){puts("beq");}
 		return inst_beq(sim_p, inst);
 	}else if(operation_binary == 5){
-		//puts("bne");
+		if(IS_DEBUG){puts("bne");}
 		return inst_bne(sim_p, inst);
 	}else if(operation_binary == 2){
-		//puts("j");
+		if(IS_DEBUG){puts("j");}
 		return inst_j(sim_p, inst);
 	}else if(operation_binary == 3){
-		//puts("jal");
+		if(IS_DEBUG){puts("jal");}
 		return inst_jal(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 8){
-		//puts("jr");
+		if(IS_DEBUG){puts("jr");}
 		return inst_jr(sim_p, inst);
 	}else if(operation_binary == 35){
-		//puts("lw");
+		if(IS_DEBUG){puts("lw");}
 		return inst_lw(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 39){
-		//puts("nor");
+		if(IS_DEBUG){puts("nor");}
 		return inst_nor(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 37){
-		//puts("or_");
+		if(IS_DEBUG){puts("or_");}
 		return inst_or(sim_p, inst);
 	}else if(operation_binary == 13){
-		//puts("ori");
+		if(IS_DEBUG){puts("ori");}
 		return inst_ori(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 42){
-		//puts("slt");
+		if(IS_DEBUG){puts("slt");}
 		return inst_slt(sim_p, inst);
 	}else if(operation_binary == 10){
-		//puts("slti");
+		if(IS_DEBUG){puts("slti");}
 		return inst_slti(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 0){
-		//puts("sll");
+		if(IS_DEBUG){puts("sll");}
 		return inst_sll(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 2){
-		//puts("srl");
+		if(IS_DEBUG){puts("srl");}
 		return inst_srl(sim_p, inst);
 	}else if(operation_binary == 43){
-		//puts("sw");
+		if(IS_DEBUG){puts("sw");}
 		return inst_sw(sim_p, inst);
 	}else if(operation_binary == 0 && function_binary == 34){
-		//puts("sub");
+		if(IS_DEBUG){puts("sub");}
 		return inst_sub(sim_p, inst);
 	}else if(operation_binary == 63 && function_binary == 63){
-		//puts("hlt");
+		if(IS_DEBUG){puts("hlt");}
 		return inst_hlt(sim_p, inst);
 	}
 	return 0;
@@ -470,7 +472,7 @@ void simulate(simulator* sim_p)
 		operation_binary = get_binary_unsigned(inst, 0, 6);
 		function_binary = get_binary_unsigned(inst, 26, 32);
 		res = simulate_inst(sim_p, inst, operation_binary, function_binary);
-		//print_reg(sim_p);
+    if(IS_DEBUG){print_reg(sim_p);}
 		if(res == 0){
 			break;
 		}else{

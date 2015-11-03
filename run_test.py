@@ -27,10 +27,11 @@ def csim(name):
 	rv = p.stdout.readlines()[0]
 	return int(rv)
 
-def pysim(name):
+def pysim(name, t = "int"):
 	# execute on python simulator
 	sim = Simulator(name + ".o")
-	return sim.simulate()
+	d = {"int": 0, "float": 1}
+	return sim.simulate()[d[t]]
 
 def float_eq(f1, f2):
 	# floating point value must be compared based on binary
@@ -38,7 +39,10 @@ def float_eq(f1, f2):
 		v = struct.pack('>f', f)
 		v = struct.unpack('>i', v)[0]
 		return format(v, '032b')
-	return float2bin(f1) == float2bin(f2)
+
+	assert len(f1) == 32
+	print f1, float2bin(f2)
+	return f1 == float2bin(f2)
 
 def test_recfib13():
 	# calculate recursive-fib(13)
@@ -46,29 +50,35 @@ def test_recfib13():
 	compile("tests/fib")
 	expected = 233
 	assert csim(tb) == expected
-	assert pysim(tb)[0] == expected
+	assert int(pysim(tb), 2) == expected
 
 def test_ack_3_2():
 	# calculate ack(3,2)
 	tb = "tests/ack"
 	compile(tb)
 	expected = 29
-#	assert csim(tb) == expected  # TODO: infinity loop!!!
-	assert pysim(tb)[0] == expected
+	assert csim(tb) == expected  # TODO: infinity loop!!!
+	assert int(pysim(tb), 2) == expected
 
 def test_gcd_216_3375():
 	# caluculate gcd(216, 3375)
 	tb = "tests/gcd"
 	compile(tb)
 	expected = 27
-#	assert csim(tb) == expected
-	assert pysim(tb)[0] == expected
+	assert csim(tb) == expected
+	assert int(pysim(tb), 2) == expected
 
 def test_fadd():
 	tb = "tests/fadd"
 	compile(tb)
 	expected = 2.9
-	assert float_eq(pysim(tb)[1], expected)
+	assert float_eq(pysim(tb, "float"), expected)
+
+def test_fmul():
+	tb = "tests/fmul"
+	compile(tb)
+	expected = 2.25
+	assert float_eq(pysim(tb, "float"), expected)
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
