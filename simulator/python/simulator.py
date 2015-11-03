@@ -38,8 +38,6 @@ class Simulator:
 			self.reg[format(i, "05b")] = "0"*32 
 			self.freg[format(i, "05b")] = "0"*32
 
-		# heap pointer
-		self.reg["11100"] = format(self.text_size, '032b')
 		# stack pointer 
 		self.reg["11101"] = format(0x8000, "032b")
 		self.pc = self.entry_point / 4
@@ -99,7 +97,7 @@ class Simulator:
 		"""
 		for i in range(16 + self.text_size * 4, len(self.binary), 4):
 			data = self.binary[i:i+4]
-			self.mem.setdefault(format((i - 16)/4, '032b'), format(utils.byte2int(data), '032b'))
+			self.mem.setdefault(format((i - 16) / 4, '032b'), format(utils.byte2int(data), '032b'))
 
 	def fetch_instruction(self, inst):
 		inst_bin = format(int(inst, 16), '032b')

@@ -73,11 +73,14 @@ class Assembler:
 			# build the correspondence between label and address
 			(text_label_dict, text_lines) = Parser.read_label(text_lines)
 			(data_label_dict, data_lines) = Parser.read_label(data_lines)
-			label_dict = {k: v for d in [text_label_dict, data_label_dict] for k, v in d.items()}
 
 			# build header
-			(header, text_lines, data_lines) = Parser.read_header(text_lines, data_lines, label_dict)
+			(header, text_lines, data_lines) = Parser.read_header(text_lines, data_lines, text_label_dict)
 			file_out.write(header)
+
+			# merge label dict
+			data_label_dict = {k: v + len(text_lines) for k, v in data_label_dict.items()}
+			label_dict = {k: v for d in [text_label_dict, data_label_dict] for k, v in d.items()}
 
 			for i, line in enumerate(text_lines):
 				# Each line correspond to one assembly instruction,
