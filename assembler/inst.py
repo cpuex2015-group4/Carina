@@ -469,3 +469,25 @@ class Instruction:
 		(Syntax Sugar)
 		"""
 		return Instruction.fadd([operands[0], "%f0", operands[1]], label_dict, line_num) 
+
+	@staticmethod
+	def in_(operands, label_dict, line_num):
+		"""
+		Operation : RS232C receiver
+		Format : [ 011010 | ----- | %rt | -----(16bit) ]
+		"""
+		inst_bin = "01101000000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"0000000000000000"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def out(operands, label_dict, line_num):
+		"""
+		Operation : RS232C receiver
+		Format : [ 011011 | 00000 | %rt | -----(16bit) ]
+		"""
+		inst_bin = "01101100000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"0000000000000000"
+		return utils.bin2bytes(inst_bin)

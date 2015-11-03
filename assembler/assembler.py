@@ -50,6 +50,8 @@ class Assembler:
 		"c.lt.s" : Instruction.flt,
 		"c.le.s" : Instruction.fle,
 		"move.s" : Instruction.fmove,
+		"in" : Instruction.in_,
+		"out" : Instruction.out,
 	}
 
 	def assemble(self, filename):
