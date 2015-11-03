@@ -93,14 +93,24 @@ ARCHITECTURE behavior OF cpu_tb IS
 --  );
 
 
-        constant ROMMAX:Integer:=14;
+--        constant ROMMAX:Integer:=14;
+--       type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
+--    constant rom:rom_t:=(
+--	  conv_std_logic_vector(0,32),
+--	  conv_std_logic_vector(11,32),
+--  	  conv_std_logic_vector(0,32),
+--	  conv_std_logic_vector(0,32),
+--    x"20040050",x"0c000009",x"2004004f",x"0c000009",x"20040048",x"0c000009",x"20040045",x"0c000009",x"ffffffff",x"6c040000",x"03e00008"  );    
+
+    
+        constant ROMMAX:Integer:=9;
        type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
     constant rom:rom_t:=(
 	  conv_std_logic_vector(0,32),
-	  conv_std_logic_vector(11,32),
-  	  conv_std_logic_vector(0,32),
+	  conv_std_logic_vector(3,32),
+  	  conv_std_logic_vector(3,32),
 	  conv_std_logic_vector(0,32),
-    x"20040050",x"0c000009",x"2004004f",x"0c000009",x"20040048",x"0c000009",x"20040045",x"0c000009",x"ffffffff",x"6c040000",x"03e00008"  );    
+      x"8c0500aa",x"6c050000",x"ffffffff",x"cafecafe",x"deaddead",x"beefbeef");    
 
 
 BEGIN

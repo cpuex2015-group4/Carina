@@ -103,14 +103,15 @@ package body p_type is
       control.ALUSrc:='1';
     end if;
 
-    if opecode="000000" or opecode="001000" or opecode="0001010"
+    if opecode="000000" or opecode="001000" or opecode="001010"
       or opecode = "001011" or opecode ="001100" or opecode = "011010" or opecode = "100011" or opecode="110001" then
       control.RegWrite:='1';
     else
       control.RegWrite:='0';
     end if;
 
-    if opecode=x"30" or opecode=x"23" or opecode=x"31" then
+    if opecode="110000" or opecode="100011" or opecode="110001" then
+      report "mem_read";
       control.MemRead:='1';
       control.MemToReg:='1';
     else
@@ -118,7 +119,7 @@ package body p_type is
       control.MemToReg:='0';
     end if;
 
-    if opecode=x"2b" or opecode=x"39" then
+    if opecode="101011" or opecode="111001" then
       control.MemWrite:='1';
     else
       control.MemWrite:='0';

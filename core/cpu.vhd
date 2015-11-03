@@ -16,7 +16,7 @@ port (
   --SRAM
   SRAM_ADDR:out std_logic_vector(19 downto 0):="00000000000000000000";
   SRAM_DATA:inout datat:="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
-  SRAM_WE:out std_logic:='0';
+  SRAM_WE:out std_logic:='1';
 
   --DEBUG
   DEBUG :out top_debug_out
@@ -59,6 +59,9 @@ architecture RTL of cpu is
       addr:out BRAM_ADDRT;
       din:out datat;
       bram_we:out std_logic_vector(0 downto 0);
+      SRAM_ADDR:out std_logic_vector(19 downto 0):="00000000000000000000";
+      SRAM_DATA:inout datat:="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+      SRAM_WE:out std_logic:='1';
       entry:out datat;
       IO_RE,loaded: out std_logic:='0';
       reset:in std_logic:='0'
@@ -85,8 +88,7 @@ architecture RTL of cpu is
   signal data:data_file;
   signal control:control_file;
   signal io_re_cpu:std_logic:='0';
-
-  signal loader_reset:std_logic:='1';
+  
 signal alu_control:alu_controlt;
 
   --debug
@@ -106,8 +108,14 @@ signal isZero:std_logic;
   signal loader_din: datat;
   signal loader_IO_RE,loaded: std_logic:='0';
   signal entry_point:datat;
+  signal loader_reset:std_logic:='1';
+  signal loader_SRAM_ADDR: std_logic_vector(19 downto 0):="00000000000000000000";
+  signal loader_SRAM_DATA: datat:="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+  signal loader_SRAM_WE:std_logic:='1';
+
 -- 
-  constant memory_wait:std_logic_vector(2 downto 0):="011";
+  constant memory_write_wait:std_logic_vector(2 downto 0):="010";
+  constant memory_read_wait:std_logic_vector(2 downto 0):="011";
   signal memory_count:std_logic_vector(2 downto 0):="000";
   
   signal count:integer:=0;
@@ -135,6 +143,9 @@ begin
 	 addr=>loader_addr,
 	 din=>inst_in,
 	 bram_we=>inst_we,
+    sram_addr=>loader_sram_addr,
+    sram_data=>loader_sram_data,
+    sram_we=>loader_sram_we,
      entry=>entry_point,
 	 io_re=>loader_io_re,
 	 loaded=>loaded,
@@ -170,6 +181,11 @@ begin
           DEBUG.PC<=CONV_STD_LOGIC_VECTOR(count,32);
           DEBUG.control<=control;
       --/debug
+
+
+          sram_data<=loader_sram_data;
+          sram_addr<=loader_sram_addr;
+          sram_we<=loader_sram_we;
           loader_activate<='1';
           if loaded='1' then
 			io_send_data<=x"52435644";
@@ -295,26 +311,27 @@ begin
                 case (memory_count) is
                   when "000" =>
                     SRAM_ADDR<=inst.memaddr;
-                    SRAM_WE<='1';
-                    if inst.opecode/="110001" then
-                      SRAM_DATA<=reg_file(CONV_INTEGER(inst.rt));
-                    else
-                      SRAM_DATA<=fpu_reg_file(CONV_INTEGER(inst.rt));
-                    end if;
-                    memory_count<=memory_count+"001";
-                  when others=>
                     SRAM_WE<='0';
-                    SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+                    memory_count<=memory_count+"001";
+                    sram_data<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+                  when memory_write_wait =>
+                    sram_we<='1';
                     memory_count<="000";
+                    sram_data<=reg_file(conv_integer(inst.rt));
                     exe_state<=WB;
+                  when others=>
+                    SRAM_WE<='1';
+                    SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+                    memory_count<=memory_count+"001";
                 end case;
               elsif control.MemRead='1' then
+                report "memread";
                 case (memory_count) is
                   when "000" =>
                     SRAM_ADDR<=inst.memaddr;
                     SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
                     memory_count<=memory_count+"001";
-                  when memory_wait =>
+                  when memory_read_wait =>
                     memory_count<="000";
                     data.result<=SRAM_DATA;
                     exe_state<=WB;
@@ -327,6 +344,7 @@ begin
             when WB =>
               IO_re_cpu<='0';
               IO_we<='0';
+              SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
               if control.RegWrite='1' then
                 if inst.reg_dest /= x"00000" then
                   if inst.opecode(5 downto 4)="11" then

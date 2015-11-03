@@ -69,7 +69,7 @@ architecture RTL of top is
 	signal DEBUG_inner:top_debug_out;
 
 --sram
- 
+  signal latch_sram:std_logic_vector(31 downto 0):="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
 
 
 --debug

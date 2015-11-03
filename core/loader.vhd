@@ -13,6 +13,9 @@ entity loader is
     addr:out BRAM_ADDRT:="00000000000000";
     din:out datat:=x"00000000";
     bram_we:out std_logic_vector(0 downto 0):="0";
+    SRAM_ADDR:out std_logic_vector(19 downto 0):="00000000000000000000";
+    SRAM_DATA:inout datat:="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+    SRAM_WE:out std_logic:='1';
     entry:out datat;
     IO_RE,loaded: out std_logic:='0';
     reset:in std_logic:='0'
@@ -28,8 +31,12 @@ architecture kaisensionoodle of loader is
   signal entry_point:datat;
   signal i:datat:=x"00000000";
   signal justread:boolean:=false;
+  signal recvdata:datat:=x"00000000";
+
+  constant sram_wait:std_logic_vector(2 downto 0):="010";
+  signal sram_count:std_logic_vector(2 downto 0):="000";
 begin
-  data_offset<=data_size;
+  data_offset<=text_size;
   entry<=entry_point;
   main:process(clk)
   begin
@@ -99,18 +106,30 @@ begin
       when DATA_RECEIVING =>
         if i<conv_integer(data_offset+data_size) then
           if justread then
-            BRAM_WE<="0";
             io_re<='0';
-            i<=i+x"00000001";
-            justread<=false;
+            case (sram_count) is
+                  when "000" =>
+                    SRAM_ADDR<=i(19 downto 0);
+                    SRAM_WE<='0';
+                    sram_count<=sram_count+"001";
+                    sram_data<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+                  when sram_wait =>
+                    sram_we<='1';
+                    sram_count<="000";
+                    sram_data<=recvdata;
+                    justread<=false;
+                    i<=i+x"00000001";
+                  when others=>
+                    SRAM_WE<='1';
+                    SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+                    sram_count<=sram_count+"001";
+            end case;
           else
             if IO_empty='0' then
               report "data_receiving@" & integer'image(conv_integer(i)) & ":" & integer'IMAGE(conv_integer(io_recv_data)) ;     
-              addr<=i(13 downto 0);
-              din<=IO_recv_data;
+              recvdata<=IO_recv_data;
               io_re<='1';
-				  justread<=true;
-				  bram_we<="1";
+              justread<=true;
             end if;
           end if;
         else
