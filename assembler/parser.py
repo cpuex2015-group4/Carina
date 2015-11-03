@@ -177,7 +177,7 @@ class Parser:
 		if len(match) == 0:
 			return (line, [])
 		else:
-			return (match[0][0], match[0][1].split(", "))
+			return (match[0][0], match[0][1].split(","))
 
 	@staticmethod
 	def parse_data(line):
