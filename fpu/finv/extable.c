@@ -25,11 +25,11 @@ int main(int argc, char *argv[]){
 	printf("MEMORY_INITIALIZATION_RADIX=2;\nMEMORY_INITIALIZATION_VECTOR=\n");
 	for(a = 512; a < 1024; a++){
 		// calcrate initial number x0(24bit)
-		i = (((uint64_t)1 << 32)/a + (((uint64_t)1 << 32)/(a+1)));
-		if(i % 2 == 1){
-			i = i / 2 + 1;
+		i = (((uint64_t)1 << 32)/a + (((uint64_t)1 << 32)/(a+(uint64_t)1)));
+		if(i & (uint64_t)1 == 1){
+			i = i >> 1 + (uint64_t)1;
 		}else{
-			i = i / 2;
+			i = i >> 1;
 		}
 		// calcrate constant c(24bit)
 		c = 2*i - ((((a*i) >> 9)*i) >> 23);

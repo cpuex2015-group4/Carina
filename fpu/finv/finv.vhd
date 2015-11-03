@@ -29,9 +29,10 @@ architecture struct of finv is
 
   signal rom_en   : std_logic := '0';
   signal rom_addr : std_logic_vector ( 9 downto 0);
-  signal rom_data : std_logic_vector (35 downto 0);
+  signal rom_data : std_logic_vector (31 downto 0);
 	signal const    : std_logic_vector (22 downto 0);
 	signal grad     : std_logic_vector (12 downto 0);
+	signal mant     : std_logic_vector (23 downto 0);
 
 begin
   input_f.sign <= input(31);
@@ -45,9 +46,14 @@ begin
 		addr => rom_addr,
 		data => rom_data);
 
+	mant <= rom(31 downto 8) - rom_data(7 downto 0) * input_f.mant(12 downto 0);
+
+-- Underflowの場合を追加すべき
   output_f.sign <= input_f.sign;
-	output_f.expo <= ; -- 指数部を計算
-	output_f.mant <= ; -- ニュートン法からfinvmanを計算
+	output_f.expo <= 254 - input_f.expo when mant(23) = 1 else
+	                 253 - input_f.expo; -- 指数部を計算
+	output_f.mant <= mant(22 downto 0)       when mant(23) = 1 else
+	                 mant(21 downto 0) & "0"; -- ニュートン法からfinvmanを計算
 
   output <= output_f.sign & output_f.expo & output_f.mant;
 end struct;

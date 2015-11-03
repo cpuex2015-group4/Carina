@@ -32,14 +32,14 @@ int main(int argc, char *argv[]){
 	a = 650;
 	b = 8864;
     // calcrate initial number x0(24bit)
-    i = (((uint64_t)1 << 32)/a + (((uint64_t)1 << 32)/(a+1)));
-		if(i % 2 == 1){
-		  i = i / 2 + 1;
+    i = (((uint64_t)1 << 32)/a + (((uint64_t)1 << 32)/(a+(uint64_t)1)));
+		if((i & (uint64_t)1) == 1){
+		  i = (i >> 1) + (uint64_t)1;
 		}else{
-		  i = i / 2;
+		  i = (i >> 1);
 		}
 		// calcrate constant c(24bit)
-		c = 2*i - ((((a*i) >> 9)*i) >> 23);
+		c = 2*i - ((a*i*i) >> 32);
 
 		// calcrate gradient g(8bit)
 		g = (i*i) >> 40;
