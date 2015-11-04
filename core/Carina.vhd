@@ -41,19 +41,19 @@ architecture RTL of top is
       full,empty:out              std_logic;
       serial_send:out             std_logic;
       serial_recv:in              std_logic;
-		word_access:in 				 std_logic
+      word_access:in 				 std_logic
       );
   end component;
   component cpu 
 	port (
-	clk,IO_empty,IO_full: in std_logic;
-	IO_recv_data: in std_logic_vector(31 downto 0);
-	IO_WE,IO_RE: out std_logic;
-	IO_send_data:out std_logic_vector(31 downto 0);
-	SRAM_ADDR:out std_logic_vector(19 downto 0);
-	SRAM_DATA:inout datat;
-	SRAM_WE:out std_logic;
-	DEBUG :out top_debug_out
+      clk,IO_empty,IO_full: in std_logic;
+      IO_recv_data: in std_logic_vector(31 downto 0);
+      IO_WE,IO_RE: out std_logic;
+      IO_send_data:out std_logic_vector(31 downto 0);
+      SRAM_ADDR:out std_logic_vector(19 downto 0);
+      SRAM_DATA:inout datat;
+      SRAM_WE:out std_logic;
+      DEBUG :out top_debug_out
 	);
   end component;
 
@@ -69,7 +69,7 @@ architecture RTL of top is
 	signal DEBUG_inner:top_debug_out;
 
 --sram
- 
+  signal latch_sram:std_logic_vector(31 downto 0):="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
 
 
 --debug

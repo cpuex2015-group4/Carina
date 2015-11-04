@@ -142,8 +142,7 @@ class Instruction:
 					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
 		else:
 			# loading address value
-			inst_bin = "100011" +\
-					utils.reg2bin("%gp") +\
+			inst_bin = "10001100000" +\
 					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 					Parser.parse_operand(operands[1], Operandtype.LABEL_RELATIVE, label_dict)[1]
 		return utils.bin2bytes(inst_bin) 
@@ -316,6 +315,32 @@ class Instruction:
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
+	def mult(operands, label_dict, line_num):
+		"""
+		Operation : %rd <- %rs * %rt
+		Format    : [ 000000 | %rs | %rt | %rd | --- | 011000 ]
+		"""
+		inst_bin = "000000" +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000011000"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def div(operands, label_dict, line_num):
+		"""
+		Operation : %rd <- %rs / %rt
+		Format    : [ 000000 | %rs | %rt | %rd | --- | 010010 ]
+		"""
+		inst_bin = "000000" +\
+				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[2], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000011010"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
 	def fadd(operands, label_dict, line_num):
 		"""
 		Operation : %fd <- %fs +. %ft
@@ -383,8 +408,7 @@ class Instruction:
 					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
 		else:
 			# loading address value
-			inst_bin = "110001" +\
-					utils.reg2bin("%gp") +\
+			inst_bin = "11000100000" +\
 					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 					Parser.parse_operand(operands[1], Operandtype.LABEL_RELATIVE, label_dict)[1]
 		return utils.bin2bytes(inst_bin) 
@@ -443,3 +467,25 @@ class Instruction:
 		(Syntax Sugar)
 		"""
 		return Instruction.fadd([operands[0], "%f0", operands[1]], label_dict, line_num) 
+
+	@staticmethod
+	def in_(operands, label_dict, line_num):
+		"""
+		Operation : RS232C receiver
+		Format : [ 011010 | ----- | %rt | -----(16bit) ]
+		"""
+		inst_bin = "01101000000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"0000000000000000"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
+	def out(operands, label_dict, line_num):
+		"""
+		Operation : RS232C receiver
+		Format : [ 011011 | 00000 | %rt | -----(16bit) ]
+		"""
+		inst_bin = "01101100000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"0000000000000000"
+		return utils.bin2bytes(inst_bin)

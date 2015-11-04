@@ -177,7 +177,7 @@ class Parser:
 		if len(match) == 0:
 			return (line, [])
 		else:
-			return (match[0][0], match[0][1].split(", "))
+			return (match[0][0], map(lambda s: s.strip(), match[0][1].split(",")))
 
 	@staticmethod
 	def parse_data(line):
@@ -247,7 +247,7 @@ class Parser:
 			return (None, address_bin)
 		elif operand_type == Operandtype.LABEL_RELATIVE:
 			target_line_num = label_dict[operand]
-			offset = target_line_num - line_num
+			offset = target_line_num - line_num - 1
 			offset_bin = utils.offset2bin(offset)
 			return (None, offset_bin)
 		elif operand_type == Operandtype.LABEL_ABSOLUTE:

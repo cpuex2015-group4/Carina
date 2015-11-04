@@ -38,8 +38,6 @@ class Simulator:
 			self.reg[format(i, "05b")] = "0"*32 
 			self.freg[format(i, "05b")] = "0"*32
 
-		# heap pointer
-		self.reg["11100"] = format(self.text_size, '032b')
 		# stack pointer 
 		self.reg["11101"] = format(0x8000, "032b")
 		self.pc = self.entry_point / 4
@@ -99,7 +97,7 @@ class Simulator:
 		"""
 		for i in range(16 + self.text_size * 4, len(self.binary), 4):
 			data = self.binary[i:i+4]
-			self.mem.setdefault(format((i - 16)/4, '032b'), format(utils.byte2int(data), '032b'))
+			self.mem.setdefault(format((i - 16) / 4, '032b'), format(utils.byte2int(data), '032b'))
 
 	def fetch_instruction(self, inst):
 		inst_bin = format(int(inst, 16), '032b')
@@ -149,6 +147,10 @@ class Simulator:
 			return Simulator.bclt(self, inst_bin)
 		elif(fbranch_bin == "0100010100000000"):
 			return Simulator.bclf(self, inst_bin)
+		elif(operation_bin == "000000" and funct_bin == "011000"):
+			return Simulator.mult(self, inst_bin)
+		elif(operation_bin == "000000" and funct_bin == "011010"):
+			return Simulator.div(self, inst_bin)
 		elif(fpuop_bin == "01000110000" and funct_bin == "000000"):
 			return Simulator.fadd(self, inst_bin)
 		elif(fpuop_bin == "01000110000" and funct_bin == "000001"):
@@ -207,7 +209,7 @@ class Simulator:
 	def beq(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
 		if sim.reg[reg_s_bin] == sim.reg[reg_t_bin]:
-			sim.pc += utils.bin2int(imm_bin)
+			sim.pc += utils.bin2int(imm_bin) + 1
 		else:
 			sim.pc += 1
 		return 1
@@ -216,7 +218,7 @@ class Simulator:
 	def bne(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
 		if sim.reg[reg_s_bin] != sim.reg[reg_t_bin]:
-			sim.pc += utils.bin2int(imm_bin)
+			sim.pc += utils.bin2int(imm_bin) + 1
 		else:
 			sim.pc += 1
 		return 1
@@ -328,7 +330,7 @@ class Simulator:
 	def bclt(cls, sim, inst_bin):
 		_, imm = cls.decode_FI(inst_bin)
 		if(sim.fpcond == 1):
-			sim.pc = sim.pc + utils.bin2int(imm)
+			sim.pc += utils.bin2int(imm) + 1
 		else:
 			sim.pc = sim.pc + 1
 		return 1
@@ -337,9 +339,23 @@ class Simulator:
 	def bclf(cls, sim, inst_bin):
 		_, imm = cls.decode_FI(inst_bin)
 		if(sim.fpcond == 0):
-			sim.pc = sim.pc + utils.bin2int(imm)
+			sim.pc += utils.bin2int(imm) + 1
 		else:
 			sim.pc = sim.pc + 1
+		return 1
+
+	@classmethod
+	def mult(cls, sim, inst_bin):
+		reg_s_bin, reg_t_bin, reg_d_bin, _ = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) * utils.bin2int(sim.reg[reg_t_bin]), "032b")
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def div(cls, sim, inst_bin):
+		reg_s_bin, reg_t_bin, reg_d_bin, _ = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) / utils.bin2int(sim.reg[reg_t_bin]), "032b")
+		sim.pc += 1
 		return 1
 
 	@classmethod
