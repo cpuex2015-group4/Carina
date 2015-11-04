@@ -247,7 +247,7 @@ class Parser:
 			return (None, address_bin)
 		elif operand_type == Operandtype.LABEL_RELATIVE:
 			target_line_num = label_dict[operand]
-			offset = target_line_num - line_num
+			offset = target_line_num - line_num - 1
 			offset_bin = utils.offset2bin(offset)
 			return (None, offset_bin)
 		elif operand_type == Operandtype.LABEL_ABSOLUTE:

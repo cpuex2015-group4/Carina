@@ -142,8 +142,7 @@ class Instruction:
 					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
 		else:
 			# loading address value
-			inst_bin = "100011" +\
-					utils.reg2bin("%gp") +\
+			inst_bin = "10001100000" +\
 					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 					Parser.parse_operand(operands[1], Operandtype.LABEL_RELATIVE, label_dict)[1]
 		return utils.bin2bytes(inst_bin) 
@@ -409,8 +408,7 @@ class Instruction:
 					Parser.parse_operand(operands[1], Operandtype.REGISTER_INDIRECT)[1]
 		else:
 			# loading address value
-			inst_bin = "110001" +\
-					utils.reg2bin("%gp") +\
+			inst_bin = "11000100000" +\
 					Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 					Parser.parse_operand(operands[1], Operandtype.LABEL_RELATIVE, label_dict)[1]
 		return utils.bin2bytes(inst_bin) 

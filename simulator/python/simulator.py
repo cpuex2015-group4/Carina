@@ -209,7 +209,7 @@ class Simulator:
 	def beq(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
 		if sim.reg[reg_s_bin] == sim.reg[reg_t_bin]:
-			sim.pc += utils.bin2int(imm_bin)
+			sim.pc += utils.bin2int(imm_bin) + 1
 		else:
 			sim.pc += 1
 		return 1
@@ -218,7 +218,7 @@ class Simulator:
 	def bne(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
 		if sim.reg[reg_s_bin] != sim.reg[reg_t_bin]:
-			sim.pc += utils.bin2int(imm_bin)
+			sim.pc += utils.bin2int(imm_bin) + 1
 		else:
 			sim.pc += 1
 		return 1
@@ -330,7 +330,7 @@ class Simulator:
 	def bclt(cls, sim, inst_bin):
 		_, imm = cls.decode_FI(inst_bin)
 		if(sim.fpcond == 1):
-			sim.pc = sim.pc + utils.bin2int(imm)
+			sim.pc += utils.bin2int(imm) + 1
 		else:
 			sim.pc = sim.pc + 1
 		return 1
@@ -339,7 +339,7 @@ class Simulator:
 	def bclf(cls, sim, inst_bin):
 		_, imm = cls.decode_FI(inst_bin)
 		if(sim.fpcond == 0):
-			sim.pc = sim.pc + utils.bin2int(imm)
+			sim.pc += utils.bin2int(imm) + 1
 		else:
 			sim.pc = sim.pc + 1
 		return 1
