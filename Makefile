@@ -12,8 +12,15 @@ DEPENDENCY_MODULES=.install.txt
 MINRT=raytracer/raytracer
 
 $(TARGET): $(MINCAML)
-	$(MINCAML) $(MINRT)
 	$(AS) $(MINRT).s
+
+$(MINRT).s: $(MINRT).ml
+	$(MINCAML) $(MINRT)
+	if [ $$? -eq 0 ]; then \
+		cat $(LIBMINCAML) >> $(MINRT).s; \
+	else \
+		rm $(MINRT).s; \
+	fi
 
 # the rule to make binary (compile -> cat with library -> assemble)
 %.o: %.ml $(LIBMINCAML)
