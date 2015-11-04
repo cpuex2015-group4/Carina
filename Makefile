@@ -1,7 +1,7 @@
 MAKE=make
 PYTHON=python
 TEST=test
-TARGET=default
+TARGET=min-rt
 MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
 LIBMINCAML=$(MINCAML_DIR)/libmincaml.S
@@ -9,9 +9,11 @@ AS=$(PYTHON) ./assembler/main.py
 CSIM_DIR=./simulator/c
 FSIM_DIR=./simulator/fpu
 DEPENDENCY_MODULES=.install.txt
+MINRT=raytracer/raytracer
 
-$(TARGET):
-	@echo "This Makefile is for test. Please use \`make $(TEST)\`."
+$(TARGET): $(MINCAML)
+	$(MINCAML) $(MINRT)
+	$(AS) $(MINRT).s
 
 # the rule to make binary (compile -> cat with library -> assemble)
 %.o: %.ml $(LIBMINCAML)
@@ -44,4 +46,4 @@ $(MINCAML):
 
 .PHONY: clean
 clean:
-	@rm -rf *.pyc tests/*.s tests/*.o assembler/*.pyc simulator/*.pyc
+	@rm -rf *.pyc tests/*.s tests/*.o assembler/*.pyc simulator/*.pyc raytracer/*.s raytracer/*.o
