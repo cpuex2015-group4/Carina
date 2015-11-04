@@ -14,6 +14,7 @@ int main(int argc, char* argvs[])
 		exit(EXIT_FAILURE);
 	}
 
+
 	simulator *sim = init_sim();
 	load_instruction(sim, fp_binary);
 	simulate(sim);
