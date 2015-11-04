@@ -11,7 +11,7 @@ FSIM_DIR=./simulator/fpu
 DEPENDENCY_MODULES=.install.txt
 MINRT=raytracer/raytracer
 
-$(TARGET): $(MINCAML)
+$(TARGET): $(MINCAML) $(MINRT).s
 	$(AS) $(MINRT).s
 
 $(MINRT).s: $(MINRT).ml
