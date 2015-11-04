@@ -1,9 +1,3 @@
-let rec fispos x = x > 0.0 in
-let rec fisneg x = x < 0.0 in
-let rec fiszero x = (x = 0.0) in
-let rec fhalf x = x *. 0.5 in
-let rec fsqr x = x *. x in
-
 (**************** グローバル変数の宣言 ****************)
 
 (* オブジェクトの個数 *)
