@@ -279,7 +279,10 @@ class Instruction:
 		(Syntax Sugar)
 		"""
 		def imm_inverse(imm):
-			return imm.replace("$", "$-")
+			if re.match(r"\$-\d+", imm):
+				return imm.replace("$-", "$")
+			else:
+				return imm.replace("$", "$-")
 		return Instruction.addi([operands[0], operands[1], imm_inverse(operands[2])], label_dict, line_num)
 
 	@staticmethod
