@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
 	uint32_t gr; // 9bit gradient(+hidden bit)
 	union hoge out;
 
-  input.f  = 1.1111111;
+  input.f  = 1.2734;
 	one.f    = 1.0;
 	answer.f = one.f / input.f;
 
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 	gradient.f = x0.f * x0.f;
 
 	gr = fromdownto(gradient.i, 22, 14) + 0x200;
-	out.i = constant.i + ((a1 * gr) >> 10);
+	out.i = constant.i - ((a1 * gr) >> 10);
     
 //	}
   printbit("input   ", input.i, 31, 0);

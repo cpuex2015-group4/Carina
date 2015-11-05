@@ -98,9 +98,8 @@ int main(int argc, char *argv[]){
 		gradient.f = x0.f * x0.f;
 
 		gr = fromdownto(gradient.i, 22, 14) + 0x200;
-		out.i = constant.i + ((a1 * gr) >> 10);
 
-		printbit("output  ", out.i, 22, 0);
+		printbit("constant", constant.i, 22, 0);
 		printbit("gradient", gr   ,  8, 0);
 		if(key == 0x3ff){
 		  printf(";");
