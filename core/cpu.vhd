@@ -12,14 +12,14 @@ port (
   IO_recv_data: in std_logic_vector(31 downto 0);
   IO_WE,IO_RE: out std_logic:='0';
   IO_send_data:out std_logic_vector(31 downto 0):=x"00000000";
-
+  word_access:out std_logic:='1';
   --SRAM
   SRAM_ADDR:out std_logic_vector(19 downto 0):="00000000000000000000";
   SRAM_DATA:inout datat:="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
   SRAM_WE:out std_logic:='1';
 
   --DEBUG
-  DEBUG :out top_debug_out
+ DEBUG :out top_debug_out
 );
 end cpu;
 
@@ -198,6 +198,7 @@ begin
           end if;
         when EXE_READY=>
           io_we<='0';
+          word_access<='0';
           report "exe ready";
           core_state<=EXECUTING;    --data source no kirikae
         when EXECUTING =>
@@ -244,9 +245,9 @@ begin
               instv.addr:=inst_out(25 downto 0); 
               exe_state<=EX;
               if inst_out=x"FFFFFFFF" then
---               core_state<=HALTED;
-                core_state<=INIT;
+               core_state<=HALTED;
                 loader_reset<='1';
+                word_access<='1';
                 exe_state<=F;
               end if;
               controlv:=make_control(instv.opecode,instv.rs,instv.funct);
@@ -378,6 +379,8 @@ begin
           end case;
         when HALTED =>
       -- do nothing;
+       core_state<=INIT;
+
       end case;
     end if;
   end process;
