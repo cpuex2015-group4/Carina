@@ -1,3 +1,5 @@
+char* REG_ARR[] = {""};
+
 typedef unsigned int instruction;
 
 typedef struct simulator_{
@@ -31,8 +33,8 @@ simulator *init_sim()
 	memset(sim->reg, 0, (sizeof(int) * 32));
 	//memset(sim->f_reg, 0, (sizeof(float) * 32));
 	//stackpointer = reg[29]
-	sim->reg[29] = 1000;
-	sim->mem = malloc(1000000);
+	sim->reg[29] = 100;
+	sim->mem = calloc(sizeof(int), MEM_SIZE);
 	return sim;
 }
 
@@ -41,6 +43,17 @@ void free_sim(simulator *sim) {
 	SAFE_DELETE(sim->f_reg);
 	SAFE_DELETE(sim->mem);
 	SAFE_DELETE(sim);
+}
+
+void print_mem(simulator* sim)
+{
+	int i;
+	for(i = 0; i < MEM_SIZE; i++){
+		if(sim->mem[i] != 0){
+			printf("mem[%d] = %d\n", i, sim->mem[i]);
+		}
+	}
+	return;
 }
 
 void print_reg(simulator* sim)
@@ -162,9 +175,42 @@ typedef struct operands_{
 	unsigned int fd_idx;
 }operands;
 
+
+void print_operands(operands ops, int option)
+{
+	/*
+	 * option
+	 * --------
+	 * 0 - decode_R
+	 * 1 - decode_I
+	 * 2 - decode_J
+	 * 3 - decode_FR
+	 * 4 - decode_FI
+	 */
+	if(!IS_DEBUG){
+		printf("\n");
+	}else{
+		switch(option){
+			case 0:
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+		}
+		printf("\n");
+	}
+	return;	
+}
+
 operands decode_R(inst)
 {
 	operands ops;
+	print_operands(ops, 0);
 	ops.reg_s_idx = get_binary_unsigned(inst, 6, 11);
 	ops.reg_t_idx = get_binary_unsigned(inst, 11, 16);
 	ops.reg_d_idx = get_binary_unsigned(inst, 16, 21);
@@ -175,6 +221,7 @@ operands decode_R(inst)
 operands decode_I(inst)
 {
 	operands ops;
+	print_operands(ops, 1);
 	ops.reg_s_idx = get_binary_unsigned(inst, 6, 11);
 	ops.reg_t_idx = get_binary_unsigned(inst, 11, 16);
 	ops.imm = get_binary_signed(inst, 16, 32);
@@ -184,6 +231,7 @@ operands decode_I(inst)
 operands decode_J(inst)
 {
 	operands ops;
+	print_operands(ops, 2);
 	ops.imm = get_binary_signed(inst, 6, 32);
 	return ops;
 }
@@ -191,6 +239,7 @@ operands decode_J(inst)
 operands decode_FR(inst)
 {
 	operands ops;
+	print_operands(ops, 3);
 	ops.ft_idx = get_binary_signed(inst, 11, 16);
 	ops.fs_idx = get_binary_signed(inst, 16, 21);
 	ops.fd_idx = get_binary_signed(inst, 21, 26);
@@ -200,6 +249,7 @@ operands decode_FR(inst)
 operands decode_FI(inst)
 {
 	operands ops;
+	print_operands(ops, 4);
 	ops.ft_idx = get_binary_signed(inst, 11, 16);
 	ops.imm = get_binary_signed(inst, 16, 32);
 	return ops;
@@ -207,6 +257,7 @@ operands decode_FI(inst)
 
 int inst_add(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("add");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -218,6 +269,7 @@ int inst_add(simulator* sim_p, instruction inst)
 
 int inst_addi(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("addi");}
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	sim_p->reg[ops.reg_t_idx] = ops.imm + reg_s;
@@ -227,6 +279,7 @@ int inst_addi(simulator* sim_p, instruction inst)
 
 int inst_and(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("and");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -238,6 +291,7 @@ int inst_and(simulator* sim_p, instruction inst)
 
 int inst_beq(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("beq");}
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -251,6 +305,7 @@ int inst_beq(simulator* sim_p, instruction inst)
 
 int inst_bne(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("bne");}
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -264,29 +319,33 @@ int inst_bne(simulator* sim_p, instruction inst)
 
 int inst_j(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("j");}
 	operands ops = decode_J(inst);
-	sim_p->pc = ops.imm;
+	sim_p->pc = ops.imm/4;
 	return 1;
 }
 
 int inst_jal(simulator* sim_p, instruction inst)
 {
-	sim_p->reg[31] = (sim_p->pc + 1);
+	if(IS_DEBUG){printf("jal");}
+	sim_p->reg[31] = ((sim_p->pc + 1)*4);
 	operands ops = decode_J(inst);
-	sim_p->pc = ops.imm;
+	sim_p->pc = ops.imm/4;
 	return 1;
 }
 
 int inst_jr(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("jr");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
-	sim_p->pc = reg_s;
+	sim_p->pc = reg_s/4;
 	return 1;
 }
 
 int inst_lw(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("lw");}
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	sim_p->reg[ops.reg_t_idx] = sim_p->mem[reg_s + ops.imm];
@@ -296,6 +355,7 @@ int inst_lw(simulator* sim_p, instruction inst)
 
 int inst_nor(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("nor");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -306,6 +366,7 @@ int inst_nor(simulator* sim_p, instruction inst)
 
 int inst_or(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("or");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -316,6 +377,7 @@ int inst_or(simulator* sim_p, instruction inst)
 
 int inst_ori(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("ori");}
 	operands ops = decode_I(inst);
 	int imm = get_binary_signed(inst, 16, 32);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
@@ -326,6 +388,7 @@ int inst_ori(simulator* sim_p, instruction inst)
 
 int inst_slt(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("slt");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -340,6 +403,7 @@ int inst_slt(simulator* sim_p, instruction inst)
 
 int inst_slti(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("slti");}
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	if(reg_s < ops.imm){
@@ -353,6 +417,7 @@ int inst_slti(simulator* sim_p, instruction inst)
 
 int inst_sll(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("sll");}
 	operands ops = decode_R(inst);
 	int reg_t = sim_p->reg[ops.reg_t_idx];
 	sim_p->reg[ops.reg_d_idx] = reg_t << ops.shamt;
@@ -362,16 +427,17 @@ int inst_sll(simulator* sim_p, instruction inst)
 
 int inst_srl(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("srl");}
 	operands ops = decode_R(inst);
 	int reg_t = sim_p->reg[ops.reg_t_idx];
 	sim_p->reg[ops.reg_d_idx] = reg_t >> ops.shamt;
 	sim_p->pc++;
 	return 1;
-
 }
 
 int inst_sw(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("sw");}
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -382,6 +448,7 @@ int inst_sw(simulator* sim_p, instruction inst)
 
 int inst_sub(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("sub");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -393,6 +460,7 @@ int inst_sub(simulator* sim_p, instruction inst)
 
 int inst_bclt(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("bclt");}
 	operands ops = decode_FI(inst);
 	if(sim_p->fpcond){
 		sim_p->pc += ops.imm;
@@ -403,6 +471,7 @@ int inst_bclt(simulator* sim_p, instruction inst)
 }
 int inst_bclf(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("bclf");}
 	operands ops = decode_FI(inst);
 	if(!sim_p->fpcond){
 		sim_p->pc += ops.imm;
@@ -414,6 +483,7 @@ int inst_bclf(simulator* sim_p, instruction inst)
 
 int inst_div(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("div");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -425,6 +495,7 @@ int inst_div(simulator* sim_p, instruction inst)
 
 int inst_adds(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("adds");}
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
@@ -436,6 +507,7 @@ int inst_adds(simulator* sim_p, instruction inst)
 
 int inst_cs(simulator* sim_p, instruction inst, int option)
 {
+	if(IS_DEBUG){printf("cs");}
 	/*
 	 * option
 	 * -----------
@@ -461,6 +533,7 @@ int inst_cs(simulator* sim_p, instruction inst, int option)
 
 int inst_muls(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("muls");}
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
@@ -472,6 +545,7 @@ int inst_muls(simulator* sim_p, instruction inst)
 
 int inst_invs(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("invs");}
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
@@ -483,6 +557,7 @@ int inst_invs(simulator* sim_p, instruction inst)
 
 int inst_subs(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("subs");}
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
@@ -494,6 +569,7 @@ int inst_subs(simulator* sim_p, instruction inst)
 
 int inst_lws(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("lws");}
 	operands ops = decode_I(inst);
 	float ft = int2float(sim_p->mem[sim_p->reg[ops.reg_s_idx] + ops.imm]);
 	sim_p->f_reg[ops.reg_t_idx] = ft;
@@ -503,12 +579,14 @@ int inst_lws(simulator* sim_p, instruction inst)
 
 int inst_mult(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("mult");}
 	//not used??
 	return 1;
 }
 
 int inst_sws(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("sws");}
 	operands ops = decode_I(inst);
 	float ft = sim_p->f_reg[ops.reg_t_idx];
 	sim_p->mem[sim_p->reg[ops.reg_s_idx] + ops.imm] = float2int(ft);
@@ -519,9 +597,11 @@ int inst_sws(simulator* sim_p, instruction inst)
 
 int inst_hlt(simulator* sim_p, instruction inst)
 {
+	if(IS_DEBUG){printf("hlt");}
 	//print_reg(sim_p);
 	if(IS_DEBUG){
 		print_f_reg(sim_p);
+		print_mem(sim_p);
 		printf("dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
 	}
 	return 0;
@@ -532,166 +612,102 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 {
 	sim_p->dynamic_inst_cnt++;
 	//if(IS_DEBUG){printf("%d\n", sim_p->pc);}
-	if(operation_binary == 0 && function_binary == 32){ 
-		if(IS_DEBUG){puts("add");}
+	if(operation_binary == 0 && function_binary == 32) 
 		return inst_add(sim_p, inst);
-	}
 
-	if(operation_binary == 8){ 
-		if(IS_DEBUG){puts("addi");}
+	if(operation_binary == 8) 
 		return inst_addi(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 36){ 
-		if(IS_DEBUG){puts("and_");}
+	if(operation_binary == 0 && function_binary == 36) 
 		return inst_and(sim_p, inst);
-	}
 
-	if(operation_binary == 4){ 
-		if(IS_DEBUG){puts("beq");}
+	if(operation_binary == 4) 
 		return inst_beq(sim_p, inst);
-	}
 
-	if(operation_binary == 5){ 
-		if(IS_DEBUG){puts("bne");}
+	if(operation_binary == 5) 
 		return inst_bne(sim_p, inst);
-	}
 
-	if(operation_binary == 2){ 
-		if(IS_DEBUG){puts("j");}
+	if(operation_binary == 2) 
 		return inst_j(sim_p, inst);
-	}
 
-	if(operation_binary == 3){ 
-		if(IS_DEBUG){puts("jal");}
+	if(operation_binary == 3) 
 		return inst_jal(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 8){ 
-		if(IS_DEBUG){puts("jr");}
+	if(operation_binary == 0 && function_binary == 8) 
 		return inst_jr(sim_p, inst);
-	}
 
-	if(operation_binary == 35){ 
-		if(IS_DEBUG){puts("lw");}
+	if(operation_binary == 35) 
 		return inst_lw(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 39){ 
-		if(IS_DEBUG){puts("nor");}
+	if(operation_binary == 0 && function_binary == 39) 
 		return inst_nor(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 37){ 
-		if(IS_DEBUG){puts("or_");}
+	if(operation_binary == 0 && function_binary == 37) 
 		return inst_or(sim_p, inst);
-	}
 
-	if(operation_binary == 13){ 
-		if(IS_DEBUG){puts("ori");}
+	if(operation_binary == 13) 
 		return inst_ori(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 42){ 
-		if(IS_DEBUG){puts("slt");}
+	if(operation_binary == 0 && function_binary == 42) 
 		return inst_slt(sim_p, inst);
-	}
 
-	if(operation_binary == 10){ 
-		if(IS_DEBUG){puts("slti");}
+	if(operation_binary == 10) 
 		return inst_slti(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 0){ 
-		if(IS_DEBUG){puts("sll");}
+	if(operation_binary == 0 && function_binary == 0) 
 		return inst_sll(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 2){ 
-		if(IS_DEBUG){puts("srl");}
+	if(operation_binary == 0 && function_binary == 2) 
 		return inst_srl(sim_p, inst);
-	}
 
-	if(operation_binary == 43){ 
-		if(IS_DEBUG){puts("sw");}
+	if(operation_binary == 43) 
 		return inst_sw(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 34){ 
-		if(IS_DEBUG){puts("sub");}
+	if(operation_binary == 0 && function_binary == 34) 
 		return inst_sub(sim_p, inst);
-	}
 
-	if(operation_binary == 17 && fmt_binary == 8 && ft_binary == 1){ 
-		if(IS_DEBUG){puts("bclt");}
+	if(operation_binary == 17 && fmt_binary == 8 && ft_binary == 1) 
 		return inst_bclt(sim_p, inst);
-	}
 
-	if(operation_binary == 17 && fmt_binary == 8 && ft_binary == 0){ 
-		if(IS_DEBUG){puts("bclf");}
+	if(operation_binary == 17 && fmt_binary == 8 && ft_binary == 0) 
 		return inst_bclf(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 26){ 
-		if(IS_DEBUG){puts("div");}
+	if(operation_binary == 0 && function_binary == 26) 
 		return inst_div(sim_p, inst);
-	}
 
-	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 0){ 
-		if(IS_DEBUG){puts("add.s");}
+	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 0) 
 		return inst_adds(sim_p, inst);
-	}
 
-	if(operation_binary == 17 && fmt_binary == 17 &&function_binary == 50){ 
-		if(IS_DEBUG){puts("c.eq.s");}
+	if(operation_binary == 17 && fmt_binary == 17 &&function_binary == 50) 
 		return inst_cs(sim_p, inst, 0);
-	}
 
-	if(operation_binary == 17 && fmt_binary == 17 && function_binary == 60){ 
-		if(IS_DEBUG){puts("c.lt.s");}
+	if(operation_binary == 17 && fmt_binary == 17 && function_binary == 60) 
 		return inst_cs(sim_p, inst, 1);
-	}
 
-	if(operation_binary == 17 && fmt_binary == 17 && function_binary == 62){ 
-		if(IS_DEBUG){puts("c.le.s");}
+	if(operation_binary == 17 && fmt_binary == 17 && function_binary == 62) 
 		return inst_cs(sim_p, inst, 2);
-	}
 
-	if(operation_binary ==17 && fmt_binary == 16  && function_binary == 2){ 
-		if(IS_DEBUG){puts("mul.s");}
+	if(operation_binary ==17 && fmt_binary == 16  && function_binary == 2) 
 		return inst_muls(sim_p, inst);
-	}
 
-	if(operation_binary == 22 && function_binary == 22){ 
-		if(IS_DEBUG){puts("inv.s");}
-		//!!!!!!!!!inv is not exits in MIPS
+	if(operation_binary == 22 && function_binary == 22) 
 		return inst_invs(sim_p, inst);
-	} 
 
-	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 1){ 
-		if(IS_DEBUG){puts("sub.s");}
+	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 1) 
 		return inst_subs(sim_p, inst);
-	}
 
-	if(operation_binary == 49){ 
-		if(IS_DEBUG){puts("lw.s");}
+	if(operation_binary == 49) 
 		return inst_lws(sim_p, inst);
-	}
 
-	if(operation_binary == 0 && function_binary == 24){ 
-		if(IS_DEBUG){puts("mult");}
+	if(operation_binary == 0 && function_binary == 24) 
 		return inst_mult(sim_p, inst);
-	}
 
-	if(operation_binary == 57){ 
-		if(IS_DEBUG){puts("sw.s");}
+	if(operation_binary == 57) 
 		return inst_sws(sim_p, inst);
-	}
 
-	if(operation_binary == 63 && function_binary == 63){ 
-		if(IS_DEBUG){puts("hlt");}
+	if(operation_binary == 63 && function_binary == 63) 
 		return inst_hlt(sim_p, inst);
-	}
+
 	puts("Not Found");
 	printf("operation_binary = %d\n", operation_binary);
 	printf("fmt_binary = %d\n", fmt_binary);
