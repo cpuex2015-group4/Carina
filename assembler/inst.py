@@ -210,16 +210,15 @@ class Instruction:
 				Parser.parse_operand(operands[2], Operandtype.IMMEDIATE)[1]
 		return utils.bin2bytes(inst_bin)
 
-	#####according to henepata, R[rd] = R[rs] << shamt
-	###but to web assembler, R[rd] = R[rt] << shamt
 	@staticmethod
 	def sll(operands, label_dict, line_num):
 		"""
-		Operation : %rd <- %rt << shamt
-		Format    : [ 000000 | --- | %rt | %rd | shamt | 000000 ]
+		Operation : %rd <- %rs << shamt
+		Format    : [ 000000 | %rs | --- | %rd | shamt | 000000 ]
 		"""
-		inst_bin = "00000000000" +\
+		inst_bin = "000000" +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				"00000" +\
 				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[2], Operandtype.SHAMT)[1] +\
 				"000000"

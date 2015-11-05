@@ -298,15 +298,15 @@ class Simulator:
 
 	@classmethod
 	def sll(cls, sim, inst_bin):
-		_, reg_t_bin, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
-		sim.reg[reg_d_bin] = utils.left_shift_logical(sim.reg[reg_t_bin], int(shamt_bin, 2))
+		reg_s_bin, _, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) << int(shamt_bin, 2), "032b")
 		sim.pc += 1
 		return 1
 
 	@classmethod
 	def srl(cls, sim, inst_bin):
-		_, reg_t_bin, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
-		sim.reg[reg_d_bin] = utils.right_shift_logical(sim.reg[reg_t_bin], int(shamt_bin, 2))
+		reg_s_bin, _, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) >> int(shamt_bin, 2), "032b")
 		sim.pc += 1
 		return 1
 
