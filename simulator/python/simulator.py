@@ -423,13 +423,13 @@ class Simulator:
 	@classmethod
 	def in_(cls, sim, inst_bin):
 		_, rs, _, _ = cls.decode_R(inst_bin)
-		sim.reg[rs] = sys.stdin.read(1)
+		sim.reg[rs] = "0"*24 + format(ord(sys.stdin.read(1)), "08b")
 		sim.pc += 1
 		return 1
 
 	@classmethod
 	def out(cls, sim, inst_bin):
 		_, rs, _, _ = cls.decode_R(inst_bin)
-		print(utils.bin2int(sim.reg[rs]))
+		print(utils.bin2bytes(sim.reg[rs]))
 		sim.pc += 1
 		return 1
