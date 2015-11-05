@@ -3,16 +3,16 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 entity fcmp is
- port(
+  port(
    inputA : in  std_logic_vector (31 downto 0);
 	 inputB : in  std_logic_vector (31 downto 0);
-	 mode   : in  std_logic_vector (1  downto 0); -- 00 = disable / 01 = c.le.s / 10 = c.lt.s / 11 = c.eq.s
-	 output : out std_logic); -- 10 = false / 11 = true / 00 = disabled
+	 mode   : in  std_logic_vector ( 1 downto 0); -- 00 = disable / 01 = c.le.s / 10 = c.lt.s / 11 = c.eq.s
+	 output : out std_logic_vector ( 1 downto 0)); -- 10 = false / 11 = true / 00 = disabled
 end fcmp;
 
-architecture struct fcmp is
-	signal lt;
-	signal eq;
+architecture struct of fcmp is
+	signal lt : std_logic;
+	signal eq : std_logic;
 begin
 	eq <= '1' when inputA(30 downto 0) = 0 and inputB(30 downto 0) = 0 else
 	      '1' when inputA = inputB else
