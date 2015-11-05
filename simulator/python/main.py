@@ -45,4 +45,5 @@ if __name__ == "__main__":
 		v0 = v0[1]
 	else:
 		v0 = v0[0]
+	print("")
 	print("===== RESULT =====\nbin  : {}\nint  : {}\nfloat: {}".format(v0, int(v0, 2), utils.reg2float(v0)))

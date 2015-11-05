@@ -104,16 +104,3 @@ def nor_bin(bin1, bin2):
 		bit2 = bin2[i]
 		and_bin += str((int(bit1) - 1) * (int(bit2) - 1))
 	return ans_bin
-
-def left_shift_logical(binary, shamt):
-	zero_shamt  = ""
-	for i in range(shamt):
-		zero_shamt += "0"
-	return binary[shamt:] +  zero_shamt
-
-def right_shift_logical(binary, shamt):
-	zero_shamt  = ""
-	for i in range(shamt):
-		zero_shamt += "0"
-	return zero_shamt + binary[0:-shamt] 
-
