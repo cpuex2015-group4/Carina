@@ -1,47 +1,5 @@
 typedef unsigned int instruction;
 
-typedef struct simulator_{
-	int pc;
-	int dynamic_inst_cnt;
-	int* reg;
-	float* f_reg;
-	int fpcond;
-	int Hi;
-	int Lo; 
-	int inst_cnt;
-	instruction* inst_mem;
-	int* mem;
-	unsigned int data_size;
-	unsigned int text_size;
-	unsigned int entry_point;
-}simulator;
-
-simulator *init_sim()
-{
-	simulator *sim = (simulator *)malloc(sizeof(simulator));
-	sim->pc = 0;
-	sim->dynamic_inst_cnt = 0;
-	sim->fpcond = 0;
-	sim->reg = (int*)malloc(sizeof(int) * 32);
-	sim->f_reg = (float*)malloc(sizeof(float) * 32);
-	for(int i = 0; i < 32; i++){
-		sim->f_reg[i] = 0.0;
-	}
-	memset(sim->reg, 0, (sizeof(int) * 32));
-	//memset(sim->f_reg, 0, (sizeof(float) * 32));
-	//stackpointer = reg[29]
-	sim->reg[29] = 1000;
-	sim->mem = malloc(1000000);
-	return sim;
-}
-
-void free_sim(simulator *sim) {
-	SAFE_DELETE(sim->reg);
-	SAFE_DELETE(sim->f_reg);
-	SAFE_DELETE(sim->mem);
-	SAFE_DELETE(sim);
-}
-
 void print_reg(simulator* sim)
 {
 	int i;
@@ -80,48 +38,68 @@ unsigned char inst2char(instruction inst, int idx)
 	return (unsigned char)inst;
 }
 
-void read_header(simulator* sim, FILE* fp)
+void load_header(simulator* sim, unsigned char* buf)
 {
-
-}
-
-void load_instruction(simulator* sim, FILE* fp)
-{
-	unsigned char buf[1000000];
-	int binary_size;
-	binary_size = fread(buf, sizeof(unsigned char), 1000000, fp);
-	sim->inst_mem = malloc(sizeof(unsigned char) * binary_size);
-	memset(sim->inst_mem, 0, binary_size);
-	sim->inst_cnt = (binary_size - 16) / 4;
-	//printf("binary_size = %d, inst_cnt = %d\n", binary_size, sim->inst_cnt);
-	int i;
-	int OFFSET = 16;
+	sim->text_size = load_char(sim->text_size, buf[4], 0);
+	sim->text_size = load_char(sim->text_size, buf[5], 1);
+	sim->text_size = load_char(sim->text_size, buf[6], 2);
+	sim->text_size = load_char(sim->text_size, buf[7], 3);
+	
+	sim->data_size = load_char(sim->data_size, buf[8], 0);
+	sim->data_size = load_char(sim->data_size, buf[9], 1);
+	sim->data_size = load_char(sim->data_size, buf[10], 2);
+	sim->data_size = load_char(sim->data_size, buf[11], 3);
 
 	sim->entry_point = load_char(sim->entry_point, buf[12], 0);
 	sim->entry_point = load_char(sim->entry_point, buf[13], 1);
 	sim->entry_point = load_char(sim->entry_point, buf[14], 2);
 	sim->entry_point = load_char(sim->entry_point, buf[15], 3);
 	sim->entry_point /= 4;
-	//printf("entry_point = %d\n", sim->entry_point);
+	return;
+}
 
-	for(i = 0; i * 4 + OFFSET < binary_size; i++){
+void load_instruction(simulator* sim, unsigned char* buf)
+{
+	int OFFSET = 16;
+	int i;
+	for(i = 0; i * 4 + OFFSET < sim->binary_size; i++){
 		(sim->inst_mem)[i] = load_char(sim->inst_mem[i], buf[i * 4 + 0 + OFFSET], 0);
 		(sim->inst_mem)[i] = load_char(sim->inst_mem[i], buf[i * 4 + 1 + OFFSET], 1);
 		(sim->inst_mem)[i] = load_char(sim->inst_mem[i], buf[i * 4 + 2 + OFFSET], 2);
 		(sim->inst_mem)[i] = load_char(sim->inst_mem[i], buf[i * 4 + 3 + OFFSET], 3);
 	}
+	return;
+}
 
-	for(i=0; i < sim->inst_cnt; i++){
-		if(i % 4 == 0){
-			//			puts("");
-		}
-		//printf("%02X ", inst2char(sim->inst_mem[i], 0)&0xff);
-		//printf("%02X ", inst2char(sim->inst_mem[i], 1)&0xff);
-		//printf("%02X ", inst2char(sim->inst_mem[i], 2)&0xff);
-		//printf("%02X ", inst2char(sim->inst_mem[i], 3)&0xff);
+void load_data(simulator* sim, unsigned char* buf)
+{
+	int OFFSET = 16;
+	int i;
+	unsigned int data;
+	for(i = OFFSET + sim->text_size * 4; i < sim->binary_size; i+=4){
+		data = load_char(data, buf[i], 0);
+		data = load_char(data, buf[i + 1], 1);
+		data = load_char(data, buf[i + 2], 2);
+		data = load_char(data, buf[i + 3], 3);
+		sim->mem[(i - 16)/4] = data;
 	}
-	//printf("\n");
-	//printf("instruction loaded\n");
+	return;
+}
+
+void load_binary(simulator* sim, FILE* fp)
+{
+	unsigned char buf[1000000];
+	int binary_size;
+	binary_size = fread(buf, sizeof(unsigned char), 1000000, fp);
+	sim->binary_size = binary_size;
+	sim->inst_mem = malloc(sizeof(unsigned char) * binary_size);
+	memset(sim->inst_mem, 0, binary_size);
+	sim->inst_cnt = (binary_size - 16) / 4;
+	//printf("binary_size = %d, inst_cnt = %d\n", binary_size, sim->inst_cnt);
+	//
+	load_header(sim, buf);
+	load_instruction(sim, buf);
+	load_text(sim, buf);
 	return;
 }
 
