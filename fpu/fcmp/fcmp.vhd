@@ -6,8 +6,8 @@ entity fcmp is
   port(
    inputA : in  std_logic_vector (31 downto 0);
 	 inputB : in  std_logic_vector (31 downto 0);
-	 mode   : in  std_logic_vector ( 1 downto 0); -- 00 = disable / 01 = c.le.s / 10 = c.lt.s / 11 = c.eq.s
-	 output : out std_logic_vector ( 1 downto 0)); -- 10 = false / 11 = true / 00 = disabled
+	 mode   : in  std_logic_vector ( 5 downto 0);  -- "111110" = le / "111100" = lt / "110010" = eq
+	 output : out std_logic);
 end fcmp;
 
 architecture struct of fcmp is
@@ -23,8 +23,8 @@ begin
 				'1' when inputA(31) = '0' and inputB(31) = '0' and inputA(30 downto 0) < inputB(30 downto 0) else
 				'0';
 
-	output <= "1" & (lt and eq) when mode = "01" else
-	          "1" & lt          when mode = "10" else
-						"1" & eq          when mode = "11" else
-						"00";
+	output <= (lt and eq) when mode = "111110" else
+	          lt          when mode = "111100" else
+						eq          when mode = "110010" else
+            '0';
 end struct;
