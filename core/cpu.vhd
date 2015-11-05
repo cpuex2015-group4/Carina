@@ -68,6 +68,15 @@ architecture RTL of cpu is
       );
   end component;
 
+  component fpu    --single しか使わないので fmt は省いてあります
+    port (
+      funct:in functt;
+      data1: in datat:=x"00000000";
+      data2: in datat:=x"00000000";
+      result:out datat:=x"00000000";
+      FPCond:out std_logic:='0'
+      );
+end component;
 
   constant ZERO:datat:=x"00000000";
 --zentaiseigyo kei
@@ -75,7 +84,6 @@ architecture RTL of cpu is
   signal PC :datat:=ZERO;
   signal reg_file:reg_filet:=(others=>ZERO);
   signal fpu_reg_file:reg_filet:=(others=>ZERO);
-  signal FPCOND:std_logic:='0';
 
 
   signal core_state:CORE_STATE_TYPE:=INIT;
@@ -117,6 +125,16 @@ signal isZero:std_logic;
   constant memory_write_wait:std_logic_vector(2 downto 0):="010";
   constant memory_read_wait:std_logic_vector(2 downto 0):="011";
   signal memory_count:std_logic_vector(2 downto 0):="000";
+
+
+--fpu
+constant fpu_wait_max:std_logic_vector(2 downto 0):="010";
+signal fpu_wait:std_logic_vector(2 downto 0):="000";
+signal fpu_funct:functt:="000000";
+signal fpu_data1:datat:=x"00000000";
+signal fpu_data2:datat:=x"00000000";
+signal fpu_result:datat:=x"00000000";
+signal FPCond:std_logic:='0';
   
   signal count:integer:=0;
 begin
@@ -134,6 +152,17 @@ begin
     shamt=>inst.shamt,
     result=>result,
     isZero=>isZero);
+
+  fpu_main: fpu    --single しか使わないので fmt は省いてあります
+   port map(
+      fpu_funct,
+      fpu_data1,
+      fpu_data2,
+      fpu_result,
+      FPCond
+      );
+
+ 
 
   lod:loader port map(
     clk=>clk,
@@ -282,13 +311,29 @@ begin
               end if;
               control<=controlv;
             when EX =>
-              exe_state<=MEM;
-
+              if control.fpu_data='1' then
+                fpu_data1<=data.operand1;
+                fpu_data2<=data.operand2;
+                if fpu_wait<fpu_wait_max then
+                  fpu_wait<=fpu_wait+"001";
+                else
+                  data.result<=fpu_result;
+                  exe_state<=MEM;
+                  fpu_wait<="000";
+                end if;
+              else
+                exe_state<=MEM;
+                 data.result<=result;
+             end if;
 --          operand1<=data.operand1;
 --          operand2<=data.operand2;
 --          alu_control<=make_alu_control(inst.opecode,inst.funct);
 --          shamt<=inst.shamt;
-              data.result<=result;
+
+
+
+
+
               case (control.PC_control) is
                 when normal =>
                   data.newPC<=PC+1;

@@ -68,7 +68,8 @@ package p_type is
   function make_control (opecode:opet;fmt:regt;funct:functt) return control_file;
 
   type ALU_CONTROLT is (ALUADD,ALUSUB,ALUAND,ALUOR,ALUSLT,ALUNOR,ALUSLL,ALUSLR);
-
+  type FPU_CONTROLT is (FADD,FSUB,FMUL,FINV,FCOMP);
+  
   function make_alu_control(opecode:opet; funct:functt) return ALU_CONTROLT;
   function sign_extension(imd:imdt) return memaddrt;
   
@@ -208,6 +209,7 @@ package body p_type is
     end if;
     return AC;
   end make_alu_control;
+
 
   function sign_extension(imd:imdt) return memaddrt is
     variable s:std_logic;
