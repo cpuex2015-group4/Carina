@@ -1,8 +1,8 @@
 --
 --	Package File Template
 --
---	Purpose: This package defines supplemental types, subtypes, 
---		 constants, and functions 
+--	Purpose: This package defines supplemental types, subtypes,
+--		 constants, and functions
 --
 --   To use any of the example code shown below, uncomment the lines and modify as necessary
 --
@@ -20,8 +20,8 @@ package p_type is
   subtype imdt is std_logic_vector(15 downto 0);
   subtype addrt is std_logic_vector( 25 downto 0);
   subtype memaddrt is std_logic_vector(19 downto 0);
-  type reg_filet is array(0 to 31) of datat;  
-  type PC_controlt is (j,jr,b,normal);  
+  type reg_filet is array(0 to 31) of datat;
+  type PC_controlt is (j,jr,b,normal);
    type INST_TYPE is (I,R,J);
   type inst_file is record
     PC:datat;
@@ -60,6 +60,7 @@ package p_type is
     IOWrite:std_logic;
     MemtoReg:std_logic;
     isZero:std_logic;
+    fpu_data:std_logic;
     PC_control:PC_controlt;
   end record;
 
@@ -158,6 +159,12 @@ package body p_type is
 		control.IOWrite:='0';
 	 end if;
     return control;
+
+    if opecode="010001" then
+      control.fpu_data:='1';
+    else
+      control.fpu_data:='0';
+    end if;
   end make_control;
 
   function make_alu_control(opecode:opet;funct:functt) return ALU_CONTROLT is

@@ -150,12 +150,12 @@ begin
 	 io_re=>loader_io_re,
 	 loaded=>loaded,
      reset=>loader_reset);
-      
+
   alu_control<=make_alu_control(inst.opecode,inst.funct);
-  
+
   inst_addr<=loader_addr(BRAM_ADDR_SIZE-1 downto 0) when core_state=WAIT_HEADER else
               PC(BRAM_ADDR_SIZE-1 downto 0);
-  
+
   io_re<=loader_io_re when core_state=Wait_header else
 			io_re_cpu;
   main:process (clk)
@@ -163,7 +163,7 @@ begin
     variable controlv:control_file;
     variable vPC:datat;
   begin
-    if rising_edge(clk) then  
+    if rising_edge(clk) then
       case (core_state) is
         when INIT=>
           loader_reset<='0';
@@ -242,7 +242,7 @@ begin
               instv.shamt:=inst_out(10 downto 6);
               instv.funct:=inst_out(5 downto 0);
               instv.immediate:=inst_out(15 downto 0);
-              instv.addr:=inst_out(25 downto 0); 
+              instv.addr:=inst_out(25 downto 0);
               exe_state<=EX;
               if inst_out=x"FFFFFFFF" then
                core_state<=HALTED;
@@ -252,14 +252,27 @@ begin
               end if;
               controlv:=make_control(instv.opecode,instv.rs,instv.funct);
               if controlv.RegDst='0' then
-                instv.reg_dest:=instv.rd;
+                if controlv.fpu_data='0' then
+                  instv.reg_dest:=instv.rd;
+                else
+                  instv.reg_dest:=instv.shamt;
+                end if;
               else
                 instv.reg_dest:=instv.rt;
               end if;
               inst<=instv;
-              data.operand1<=reg_file(CONV_INTEGER(instv.rs));
+              if controlv.fpu_data='0' then
+                data.operand1<=reg_file(CONV_INTEGER(instv.rs));
+              else
+                data.operand1<=fpu_reg_file(CONV_INTEGER(instv.rd));
+              end if;
+
               if controlv.ALUSrc='0' then
-                data.operand2<=reg_file(CONV_INTEGER(instv.rt));
+                if control.fpu_data='0' then
+                  data.operand2<=reg_file(CONV_INTEGER(instv.rt));
+                else
+                  data.operand2<=reg_file(CONV_INTEGER(instv.shamt));
+                end if;
               else
                 if instv.immediate(15) ='0' then
                   data.operand2<="0000000000000000" & instv.immediate;
@@ -318,7 +331,11 @@ begin
                   when memory_write_wait =>
                     sram_we<='1';
                     memory_count<="000";
-                    sram_data<=reg_file(conv_integer(inst.rt));
+                    if inst.opecode/="111001" then
+                      sram_data<=reg_file(conv_integer(inst.rt));
+                    else
+                      sram_data<=fpu_reg_file(conv_integer(inst.rt));
+                    end if;
                     exe_state<=WB;
                   when others=>
                     SRAM_WE<='1';
@@ -348,10 +365,14 @@ begin
               SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
               if control.RegWrite='1' then
                 if inst.reg_dest /= x"00000" then
-                  if inst.opecode(5 downto 4)="11" then
+                  if inst.opecode="110001" then  --lw single
                     fpu_reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
                   else
-                    reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
+                    if control.fpu_data='1' then
+                      fpu_reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
+                    else
+                      reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
+                    end if;
                   end if;
                 end if;
               end if;
