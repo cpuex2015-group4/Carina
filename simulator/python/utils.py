@@ -61,6 +61,27 @@ def word2hex(bytecodes):
 	"""
 	return format(word2int(bytecodes), "08x")
 
+def bin2bytes(binary):
+	"""
+	Convert (binary encoded) integer value to bytecode (big-endian). 
+
+	Parameters
+	----------
+	binary: str
+		binary encoded integer value
+
+	Returns
+	----------
+	bytecode: bytes
+		ascii encoded bytecode
+	"""
+	assert len(binary) == 32
+	byte1 = chr(int(binary[0:8], 2))
+	byte2 = chr(int(binary[8:16], 2))
+	byte3 = chr(int(binary[16:24], 2))
+	byte4 = chr(int(binary[24:32], 2))
+	return (byte1 + byte2 + byte3 + byte4)
+
 def and_bin(bin1, bin2):
 	ans_bin = ""
 	for i, bit1 in enumerate(bin1):
