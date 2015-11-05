@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys
 import pprint
 import utils
 from fpu_module import FpuModule as fpu
@@ -67,8 +66,8 @@ class Simulator:
 			# halting at `hlt` instruction
 			if(res == 0): break
 	
-		# return the content of %v0 and %f1
-		return (self.reg["00010"], self.freg["00001"])
+		# return the content of %v0
+		return self.reg["00010"]
 
 	def load_header(self):
 		"""
@@ -100,9 +99,7 @@ class Simulator:
 		"""
 		for i in range(16 + self.text_size * 4, len(self.binary), 4):
 			data = self.binary[i:i+4]
-			self.mem.setdefault(format((i - 16)/4, '032b'), format(utils.byte2int(data), '032b'))
-			#print(utils.reg2float(format(utils.byte2int(data), '032b')))
-			#print(utils.byte2int(data))
+			self.mem.setdefault(format(i - 16, '032b'), format(utils.byte2int(data), '032b'))
 
 	def fetch_instruction(self, inst):
 		inst_bin = format(int(inst, 16), '032b')
@@ -166,10 +163,6 @@ class Simulator:
 			return Simulator.fsw(self, inst_bin)
 		elif(fpuop_bin == "01000110000"):
 			return Simulator.fcmp(self, inst_bin)
-		elif(operation_bin == "011010"):
-			return Simulator.in_(self, inst_bin)
-		elif(operation_bin == "011011"):
-			return Simulator.out(self, inst_bin)
 		else:
 			raise ValueError("no match with any instruction for bytecode `{}`".format(inst_bin))
 
@@ -251,7 +244,7 @@ class Simulator:
 	@classmethod
 	def lw(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
-		sim.reg[reg_t_bin] = sim.mem[format(utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin), "032b")]
+		sim.reg[reg_t_bin] = sim.mem[format(4 * (utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin)), "032b")]
 		sim.pc += 1
 		return 1
 
@@ -298,22 +291,22 @@ class Simulator:
 
 	@classmethod
 	def sll(cls, sim, inst_bin):
-		reg_s_bin, _, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
-		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) << int(shamt_bin, 2), "032b")
+		_, reg_t_bin, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = utils.left_shift_logical(sim.reg[reg_t_bin], int(shamt_bin, 2))
 		sim.pc += 1
 		return 1
 
 	@classmethod
 	def srl(cls, sim, inst_bin):
-		reg_s_bin, _, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
-		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) >> int(shamt_bin, 2), "032b")
+		_, reg_t_bin, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = utils.left_right_logical(sim.reg[reg_t_bin], int(shamt_bin, 2))
 		sim.pc += 1
 		return 1
 
 	@classmethod
 	def sw(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
-		sim.mem[format(utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin), "032b")] = sim.reg[reg_t_bin]
+		sim.mem[format(4 * (utils.bin2int(sim.reg[reg_s_bin]) + utils.bin2int(imm_bin)), "032b")] = sim.reg[reg_t_bin]
 		sim.pc += 1
 		return 1
 
@@ -380,14 +373,14 @@ class Simulator:
 	@classmethod
 	def flw(cls, sim, inst_bin):
 		rs, ft, imm = cls.decode_I(inst_bin)
-		sim.freg[ft] = sim.mem[format(utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')]
+		sim.freg[ft] = sim.mem[format(4 * utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')]
 		sim.pc += 1
 		return 1
 
 	@classmethod
 	def fsw(cls, sim, inst_bin):
 		rs, ft, imm = cls.decode_I(inst_bin)
-		sim.mem[format(utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')] = sim.freg[ft]
+		sim.mem[format(4 * utils.bin2int(sim.reg[rs]) + utils.bin2int(imm), '032b')] = sim.freg[ft]
 		sim.pc += 1
 		return 1
 
@@ -403,19 +396,5 @@ class Simulator:
 			sim.fpcond = 1 if f1 < f2 else 0
 		elif op == "111110":  # le
 			sim.fpcond = 1 if f1 <= f2 else 0
-		sim.pc += 1
-		return 1
-
-	@classmethod
-	def in_(cls, sim, inst_bin):
-		_, rs, _, _ = cls.decode_R(inst_bin)
-		sim.reg[rs] = "0"*24 + format(ord(sys.stdin.read(1)), "08b")
-		sim.pc += 1
-		return 1
-
-	@classmethod
-	def out(cls, sim, inst_bin):
-		_, rs, _, _ = cls.decode_R(inst_bin)
-		sys.stdout.write(utils.bin2bytes(sim.reg[rs]))
 		sim.pc += 1
 		return 1
