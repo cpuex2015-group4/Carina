@@ -244,8 +244,9 @@ int inst_beq(simulator* sim_p, instruction inst)
 	int reg_t = sim_p->reg[ops.reg_t_idx];
 	if(reg_s == reg_t){
 		sim_p->pc += ops.imm;
+	}else{
+		sim_p->pc++;
 	}
-	sim_p->pc++;
 	return 1;
 }
 
@@ -256,8 +257,9 @@ int inst_bne(simulator* sim_p, instruction inst)
 	int reg_t = sim_p->reg[ops.reg_t_idx];
 	if(reg_s != reg_t){
 		sim_p->pc += ops.imm;
+	}else{
+		sim_p->pc++;
 	}
-	sim_p->pc++;
 	return 1;
 }
 

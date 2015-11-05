@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import sys
 import pprint
 import utils
 from fpu_module import FpuModule as fpu
@@ -163,6 +164,10 @@ class Simulator:
 			return Simulator.fsw(self, inst_bin)
 		elif(fpuop_bin == "01000110000"):
 			return Simulator.fcmp(self, inst_bin)
+		elif(operation_bin == "011010"):
+			return Simulator.in_(self, inst_bin)
+		elif(operation_bin == "011011"):
+			return Simulator.out(self, inst_bin)
 		else:
 			raise ValueError("no match with any instruction for bytecode `{}`".format(inst_bin))
 
@@ -291,15 +296,15 @@ class Simulator:
 
 	@classmethod
 	def sll(cls, sim, inst_bin):
-		_, reg_t_bin, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
-		sim.reg[reg_d_bin] = utils.left_shift_logical(sim.reg[reg_t_bin], int(shamt_bin, 2))
+		reg_s_bin, _, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) << int(shamt_bin, 2), "032b")
 		sim.pc += 1
 		return 1
 
 	@classmethod
 	def srl(cls, sim, inst_bin):
-		_, reg_t_bin, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
-		sim.reg[reg_d_bin] = utils.left_right_logical(sim.reg[reg_t_bin], int(shamt_bin, 2))
+		reg_s_bin, _, reg_d_bin, shamt_bin = cls.decode_R(inst_bin)
+		sim.reg[reg_d_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) >> int(shamt_bin, 2), "032b")
 		sim.pc += 1
 		return 1
 
@@ -396,5 +401,19 @@ class Simulator:
 			sim.fpcond = 1 if f1 < f2 else 0
 		elif op == "111110":  # le
 			sim.fpcond = 1 if f1 <= f2 else 0
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def in_(cls, sim, inst_bin):
+		_, rs, _, _ = cls.decode_R(inst_bin)
+		sim.reg[rs] = "0"*24 + format(ord(sys.stdin.read(1)), "08b")
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def out(cls, sim, inst_bin):
+		_, rs, _, _ = cls.decode_R(inst_bin)
+		sys.stdout.write(utils.bin2bytes(sim.reg[rs]))
 		sim.pc += 1
 		return 1
