@@ -39,7 +39,6 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	sim = Simulator(args.filename)
-	print("===== STDIN ======")
 	v0 = sim.simulate(verbose = args.verbose)
 	if args.get_float:
 		v0 = v0[1]
