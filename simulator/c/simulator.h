@@ -59,7 +59,7 @@ void print_f_reg(simulator* sim)
 	int i;
 	puts("------------------reg---------------");
 	for(i = 0; i < 32; i++){
-		printf("reg[%d] = %f\n", i, sim->f_reg[i]);
+		printf("freg[%d] = %f\n", i, sim->f_reg[i]);
 	}
 	puts("------------------------------------");
 	return;
@@ -120,19 +120,18 @@ void load_data(simulator* sim, unsigned char* buf)
 {
 	int OFFSET = 16;
 	int i;
-	unsigned int data;
+	int data;
 	printf("sim->binary_size = %d\n", sim->binary_size);
 	printf("sim->text_size = %d\n", sim->text_size);
 
-	for(i = 0;  (i + sim->text_size) * 4 + OFFSET < sim->binary_size; i++){
+	for(i = 0; (i + sim->text_size) * 4 + OFFSET < sim->binary_size; i++){
+		memset(&data, 0, 4);
 		data = load_char(data, buf[(i + sim->text_size) * 4 + 0 + OFFSET], 0);
 		data = load_char(data, buf[(i + sim->text_size) * 4 + 1 + OFFSET], 1);
 		data = load_char(data, buf[(i + sim->text_size) * 4 + 2 + OFFSET], 2);
 		data = load_char(data, buf[(i + sim->text_size) * 4 + 3 + OFFSET], 3);
 		sim->mem[(sim->text_size + i)] = data;
-		printf("%f\n", ui2float(data));
 	}
-
 	return;
 }
 
@@ -512,7 +511,7 @@ int inst_sws(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
 	float ft = sim_p->f_reg[ops.reg_t_idx];
-	sim_p->mem[sim_p->reg[ops.reg_s_idx] + ops.imm] = flaot2int(ft);
+	sim_p->mem[sim_p->reg[ops.reg_s_idx] + ops.imm] = float2int(ft);
 	sim_p->pc++;
 	return 1;
 }

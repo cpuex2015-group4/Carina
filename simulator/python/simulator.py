@@ -101,6 +101,8 @@ class Simulator:
 		for i in range(16 + self.text_size * 4, len(self.binary), 4):
 			data = self.binary[i:i+4]
 			self.mem.setdefault(format((i - 16)/4, '032b'), format(utils.byte2int(data), '032b'))
+			#print(utils.reg2float(format(utils.byte2int(data), '032b')))
+			#print(utils.byte2int(data))
 
 	def fetch_instruction(self, inst):
 		inst_bin = format(int(inst, 16), '032b')
