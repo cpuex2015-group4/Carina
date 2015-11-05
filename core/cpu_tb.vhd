@@ -59,6 +59,16 @@ ARCHITECTURE behavior OF cpu_tb IS
          DEBUG : OUT  top_debug_out
         );
     END COMPONENT;
+
+component mem_monkey 
+port (
+  ZD    : inout std_logic_vector(31 downto 0);
+  ZA    : out   std_logic_vector(19 downto 0);
+  XWA   : out   std_logic;
+  clk   : out   std_logic
+);
+end component;
+
     
 
    --Inputs
@@ -134,6 +144,16 @@ BEGIN
           DEBUG => DEBUG
         );
 
+
+   mem:mem_monkey 
+port map (
+  ZD  =>SRAM_DATA,
+  ZA =>SRAM_ADDR,
+  XWA  =>SRAM_WE,
+  clk  =>clk
+);
+
+   
    -- Clock process definitions
    clk_process :process
    begin
