@@ -58,7 +58,7 @@ def test_ack_3_2():
 	tb = "tests/ack"
 	compile(tb)
 	expected = 29
-	assert csim(tb) == expected  # TODO: infinity loop!!!
+	assert csim(tb) == expected
 	assert int(pysim(tb), 2) == expected
 
 def test_gcd_216_3375():
