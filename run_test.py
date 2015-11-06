@@ -13,6 +13,7 @@ CSIM = os.path.join(ROOT, "simulator/c/csim")
 
 def compile(name):
 	subprocess.call([MIN_CAML, name])
+	os.system("cat min-caml/libmincaml.S >> {}.s".format(name))
 	asmblr = Assembler()
 	asmblr.assemble(name + ".s")
 
@@ -37,7 +38,7 @@ def float_eq(f1, f2):
 	# floating point value must be compared based on binary
 	def float2bin(f):
 		v = struct.pack('>f', f)
-		v = struct.unpack('>i', v)[0]
+		v = struct.unpack('>I', v)[0]
 		return format(v, '032b')
 
 	assert len(f1) == 32
@@ -78,6 +79,18 @@ def test_fmul():
 	tb = "tests/fmul"
 	compile(tb)
 	expected = 2.25
+	assert float_eq(pysim(tb, "float"), expected)
+
+def test_sin():
+	tb = "tests/sin"
+	compile(tb)
+	expected = -1.0
+	assert float_eq(pysim(tb, "float"), expected)
+
+def test_sqrt():
+	tb = "tests/sqrt"
+	compile(tb)
+	expected = 1.41421356
 	assert float_eq(pysim(tb, "float"), expected)
 
 if __name__ == "__main__":
