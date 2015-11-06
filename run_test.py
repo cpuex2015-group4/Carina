@@ -99,6 +99,12 @@ def test_closure():
 	expected = 10
 	assert int(pysim(tb), 2) == expected
 
+def test_cls_bug():
+	tb = "tests/cls-bug"
+	compile(tb)
+	expected = 912
+	assert int(pysim(tb), 2) == expected
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))
