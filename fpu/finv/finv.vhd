@@ -7,8 +7,6 @@ entity finv is
     clk    : in  std_logic;
 	  input  : in  std_logic_vector (31 downto 0);
 		output : out std_logic_vector (31 downto 0));
---  exflag : out std_logic_vector ( 3 downto 0); -- オーバーフローなどのフラグ管理用
---  busy   : out std_logic);
 end finv;
 
 architecture struct of finv is

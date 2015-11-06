@@ -11,8 +11,8 @@ int main(){
 	int i;
 	int ab[32],bb[32],ansb[32];
 
-	a.f = 1.5;
-	b.f = 2.2;
+	a.f = 3.0;
+	b.f = 5.0;
 	ans.f = a.f * b.f;
 
   for(i = 0; i < 32; i++){

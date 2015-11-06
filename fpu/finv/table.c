@@ -44,7 +44,7 @@ uint32_t todownto(uint32_t from, uint32_t to, int up, int down){
 	to = to & mask;
   for(i = down; i < up+1; i++){
 	  to = to | ((from & (uint32_t)1) << i);
-		from >> 1;
+		from = from >> 1;
 	}
 	return to;
 }
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
 	uint32_t gr; // 9bit gradient(+hidden bit)
 	union hoge out;
 
-  input.f  = 1.2734;
+  input.f  = 3.0;
 	one.f    = 1.0;
 	answer.f = one.f / input.f;
 
@@ -103,10 +103,11 @@ int main(int argc, char *argv[]){
     
 //	}
   printbit("input   ", input.i, 31, 0);
-  printbit("a1      ", a1, 31, 0);
   printbit("constant", constant.i, 31, 0);
 	printbit("answer  ", answer.i, 31, 0);
 	printbit("output  ", out.i, 31, 0);
+
+	printf("answer = %f, output = %f\n", answer.f, out.f);
   
 	return 0;
 }
