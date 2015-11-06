@@ -39,6 +39,8 @@ class Simulator:
 			self.reg[format(i, "05b")] = "0"*32 
 			self.freg[format(i, "05b")] = "0"*32
 
+		# heap pointer
+		self.reg["11100"] = format(self.text_size + self.data_size, "032b")
 		# stack pointer 
 		self.reg["11101"] = format(0x8000, "032b")
 		self.pc = self.entry_point / 4
@@ -245,6 +247,7 @@ class Simulator:
 	def jr(sim, inst_bin):
 		reg_s_bin = inst_bin[6:11]
 		address_bin = sim.reg[reg_s_bin]
+		sim.reg["11111"] = format((sim.pc + 1) * 4, "032b")
 		sim.pc = utils.bin2int(address_bin) / 4
 		return 1
 
