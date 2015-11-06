@@ -93,6 +93,12 @@ def test_sqrt():
 	expected = 1.41421356
 	assert float_eq(pysim(tb, "float"), expected)
 
+def test_closure():
+	tb = "tests/closure"
+	compile(tb)
+	expected = 10
+	assert int(pysim(tb), 2) == expected
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))
