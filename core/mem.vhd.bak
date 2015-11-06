@@ -33,7 +33,7 @@ begin
   if falling_edge(clk) then
   if XWA='1' then
     ZD<=Z;
-    TEST_mem(conv_integer(ZA(7 downto 0)))<=ZD;
+    TEST_mem(ZA(7 downto 0))<=ZD;
   else
     ZD<=TEST_mem(conv_INTEGER(ZA(7 downto 0)));
   end if;
