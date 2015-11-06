@@ -114,6 +114,8 @@ class Simulator:
 			return Simulator.addi(self, inst_bin)
 		elif(operation_bin == "000000" and funct_bin == "100100"):
 			return Simulator.and_(self, inst_bin)
+		elif(operation_bin == "001100"):
+			return Simulator.andi(self, inst_bin)
 		elif(operation_bin == "000100"):
 			return Simulator.beq(self, inst_bin)
 		elif(operation_bin == "000101"):
@@ -209,6 +211,13 @@ class Simulator:
 	def and_(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, reg_d_bin, _ = cls.decode_R(inst_bin)
 		sim.reg[reg_d_bin] = and_bin(sim.reg[reg_s_bin], sim.reg[reg_t_bin])
+		sim.pc += 1
+		return 1
+
+	@classmethod
+	def andi(cls, sim, inst_bin):
+		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
+		sim.reg[reg_t_bin] = format(utils.bin2int(sim.reg[reg_s_bin]) & utils.bin2int(imm_bin), "032b")
 		sim.pc += 1
 		return 1
 
