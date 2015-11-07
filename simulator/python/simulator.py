@@ -42,7 +42,7 @@ class Simulator:
 		# heap pointer
 		self.reg["11100"] = format(self.text_size + self.data_size, "032b")
 		# stack pointer 
-		self.reg["11101"] = format(0x8000, "032b")
+		self.reg["11101"] = format(0xfffff, "032b")
 		self.pc = self.entry_point
 
 	
