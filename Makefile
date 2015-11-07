@@ -65,4 +65,3 @@ $(MINCAML):
 .PHONY: clean
 clean:
 	@rm -rf *.pyc tests/*.s tests/*.o assembler/*.pyc simulator/*.pyc raytracer/*.s raytracer/*.o
-	@cd $(MINCAML_DIR); $(MAKE) clean;

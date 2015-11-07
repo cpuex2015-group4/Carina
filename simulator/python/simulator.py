@@ -126,6 +126,8 @@ class Simulator:
 			return Simulator.jal(self, inst_bin)
 		elif(operation_bin == "000000" and funct_bin == "001000"):
 			return Simulator.jr(self, inst_bin)
+		elif(operation_bin == "000000" and funct_bin == "001001"):
+			return Simulator.jral(self, inst_bin)
 		elif(operation_bin == "100011"):
 			return Simulator.lw(self, inst_bin)
 		elif(operation_bin == "000000" and funct_bin == "100111"):
@@ -254,6 +256,13 @@ class Simulator:
 
 	@staticmethod
 	def jr(sim, inst_bin):
+		reg_s_bin = inst_bin[6:11]
+		address_bin = sim.reg[reg_s_bin]
+		sim.pc = utils.bin2int(address_bin)
+		return 1
+
+	@staticmethod
+	def jral(sim, inst_bin):
 		reg_s_bin = inst_bin[6:11]
 		address_bin = sim.reg[reg_s_bin]
 		sim.reg["11111"] = format(sim.pc + 1, "032b")
