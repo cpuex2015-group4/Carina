@@ -297,7 +297,7 @@ begin
               end if;
 
               if controlv.ALUSrc='0' then
-                if control.fpu_data='0' then
+                if controlv.fpu_data='0' then
                   data.operand2<=reg_file(CONV_INTEGER(instv.rt));
                 else
                   data.operand2<=reg_file(CONV_INTEGER(instv.shamt));
@@ -413,11 +413,7 @@ begin
                   if inst.opecode="110001" then  --lw single
                     fpu_reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
                   else
-                    if control.fpu_data='1' then
-                      fpu_reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
-                    else
                       reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
-                    end if;
                   end if;
                 end if;
               end if;

@@ -159,13 +159,14 @@ package body p_type is
     eLSE
 		control.IOWrite:='0';
 	 end if;
-    return control;
-
     if opecode="010001" then
       control.fpu_data:='1';
     else
       control.fpu_data:='0';
     end if;
+
+    return control;
+
   end make_control;
 
   function make_alu_control(opecode:opet;funct:functt) return ALU_CONTROLT is
