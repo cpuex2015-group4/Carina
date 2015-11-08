@@ -21,13 +21,14 @@ typedef struct simulator_{
 
 simulator *init_sim()
 {
+	int i;
 	simulator *sim = (simulator *)malloc(sizeof(simulator));
 	sim->pc = 0;
 	sim->dynamic_inst_cnt = 0;
 	sim->fpcond = 0;
 	sim->reg = (int*)malloc(sizeof(int) * 32);
 	sim->f_reg = (float*)malloc(sizeof(float) * 32);
-	for(int i = 0; i < 32; i++){
+	for(i = 0; i < 32; i++){
 		sim->f_reg[i] = 0.0;
 	}
 	memset(sim->reg, 0, (sizeof(int) * 32));
@@ -330,6 +331,7 @@ int inst_jal(simulator* sim_p, instruction inst)
 	if(IS_DEBUG){printf("jal");}
 	sim_p->reg[31] = ((sim_p->pc + 1));
 	operands ops = decode_J(inst);
+	if(IS_DEBUG)printf("ops.imm = %d\n", ops.imm);
 	sim_p->pc = ops.imm;
 	return 1;
 }
@@ -429,8 +431,8 @@ int inst_sll(simulator* sim_p, instruction inst)
 {
 	if(IS_DEBUG){printf("sll");}
 	operands ops = decode_R(inst);
-	int reg_t = sim_p->reg[ops.reg_t_idx];
-	sim_p->reg[ops.reg_d_idx] = reg_t << ops.shamt;
+	int reg_s = sim_p->reg[ops.reg_s_idx];
+	sim_p->reg[ops.reg_d_idx] = reg_s << ops.shamt;
 	sim_p->pc++;
 	return 1;
 }
@@ -439,8 +441,8 @@ int inst_srl(simulator* sim_p, instruction inst)
 {
 	if(IS_DEBUG){printf("srl");}
 	operands ops = decode_R(inst);
-	int reg_t = sim_p->reg[ops.reg_t_idx];
-	sim_p->reg[ops.reg_d_idx] = reg_t >> ops.shamt;
+	int reg_s = sim_p->reg[ops.reg_s_idx];
+	sim_p->reg[ops.reg_d_idx] = reg_s >> ops.shamt;
 	sim_p->pc++;
 	return 1;
 }
@@ -712,7 +714,7 @@ void simulate(simulator* sim_p)
 	//print_reg(sim_p);
 	sim_p->pc = sim_p->entry_point;
 	while(1){
-		if(IS_DEBUG) printf("%d : ", sim_p->pc);
+		if(IS_DEBUG) printf("%d:", sim_p->pc);
 		inst = 0;
 		inst = load_char(inst, inst2char(sim_p->inst_mem[sim_p->pc], 0), 0);
 		inst = load_char(inst, inst2char(sim_p->inst_mem[sim_p->pc], 1), 1);
