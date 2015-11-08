@@ -557,7 +557,7 @@ int inst_lws(simulator* sim_p, instruction inst)
 	if(IS_DEBUG){printf("lws");}
 	operands ops = decode_I(inst);
 	//@@DEBUG
-	printf("sim_p->mem[sim_p->reg[ops.reg_s_idx] = %d\n", sim_p->mem[sim_p->reg[ops.reg_s_idx]]);
+	//printf("sim_p->mem[sim_p->reg[ops.reg_s_idx] = %d\n", sim_p->mem[sim_p->reg[ops.reg_s_idx]]);
 	float ft = int2float(sim_p->mem[sim_p->reg[ops.reg_s_idx] + ops.imm]);
 	sim_p->f_reg[ops.reg_t_idx] = ft;
 	sim_p->pc++;
@@ -711,6 +711,6 @@ void simulate(simulator* sim_p)
 	}
 
 	// print %v0
-	printf("%d\n", sim_p->reg[2]);
+	printf("int:%d,float:%f\n", sim_p->reg[2], sim_p->f_reg[2]);
 }
 

@@ -25,8 +25,11 @@ def csim(name):
 			stderr = subprocess.PIPE,
 			shell = False)
 	# capture output in stdout as return value
-	rv = p.stdout.readlines()[0]
-	return int(rv)
+	# output := int:[int_return],float:[float_return]
+	rvs = p.stdout.readlines()[0].split(",") #["int"+Vi, "float"+Vf]
+	rvi = rvs[0].replace("int:", "")
+	rvf = rvs[1].replace("float:", "")
+	return (int(rvi), float(rvf))
 
 def pysim(name, t = "int"):
 	# execute on python simulator
@@ -35,6 +38,9 @@ def pysim(name, t = "int"):
 	return sim.simulate()[d[t]]
 
 def float_eq(f1, f2):
+	print(f1)
+	print("---------------------")
+	print(f2)
 	# floating point value must be compared based on binary
 	def float2bin(f):
 		v = struct.pack('>f', f)
@@ -50,7 +56,7 @@ def test_recfib13():
 	tb = "tests/fib"
 	compile("tests/fib")
 	expected = 233
-	assert csim(tb) == expected
+	assert csim(tb)[0] == expected
 	assert int(pysim(tb), 2) == expected
 
 def test_ack_3_2():
@@ -58,7 +64,7 @@ def test_ack_3_2():
 	tb = "tests/ack"
 	compile(tb)
 	expected = 29
-	assert csim(tb) == expected
+	assert csim(tb)[0] == expected
 	assert int(pysim(tb), 2) == expected
 
 def test_gcd_216_3375():
@@ -66,49 +72,56 @@ def test_gcd_216_3375():
 	tb = "tests/gcd"
 	compile(tb)
 	expected = 27
-	assert csim(tb) == expected
+	assert csim(tb)[0] == expected
 	assert int(pysim(tb), 2) == expected
 
 def test_fadd():
 	tb = "tests/fadd"
 	compile(tb)
 	expected = 2.9
+	assert csim(tb)[1] == expected 
 	assert float_eq(pysim(tb, "float"), expected)
 
 def test_fmul():
 	tb = "tests/fmul"
 	compile(tb)
 	expected = 2.25
+	assert csim(tb)[1] == expected 
 	assert float_eq(pysim(tb, "float"), expected)
 
 def test_sin():
 	tb = "tests/sin"
 	compile(tb)
 	expected = -1.0
+	#assert csim(tb)[1] == expected 
 	assert float_eq(pysim(tb, "float"), expected)
 
 def test_sqrt():
 	tb = "tests/sqrt"
 	compile(tb)
 	expected = 1.41421356
+	#assert csim(tb)[1] == expected 
 	assert float_eq(pysim(tb, "float"), expected)
 
 def test_closure():
 	tb = "tests/closure"
 	compile(tb)
 	expected = 10
+	assert csim(tb)[0] == expected 
 	assert int(pysim(tb), 2) == expected
 
 def test_cls_bug():
 	tb = "tests/cls-bug"
 	compile(tb)
 	expected = 912
+	assert csim(tb)[0] == expected 
 	assert int(pysim(tb), 2) == expected
 
 def test_cls_bug2():
 	tb = "tests/cls-bug2"
 	compile(tb)
 	expected = 45
+	assert csim(tb)[0] == expected 
 	assert int(pysim(tb), 2) == expected
 
 if __name__ == "__main__":
