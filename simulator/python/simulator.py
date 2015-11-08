@@ -4,7 +4,10 @@
 import sys
 import pprint
 import utils
+from disassembler import Disassembler
 from fpu_module import FpuModule as fpu
+
+disas = Disassembler()
 
 class Simulator:
 	"""
@@ -61,8 +64,8 @@ class Simulator:
 			the content of return value register %v0
 		"""
 		while(True):
-			if verbose: print(self.pc)
 			inst = self.inst_mem[self.pc]
+			if verbose: print(self.pc, utils.bin2int(self.reg["11100"]), utils.bin2int(self.reg["11101"]), disas.disassember(inst))
 			res = self.fetch_instruction(inst)
 			# halting at `hlt` instruction
 			if(res == 0): break
