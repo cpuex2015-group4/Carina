@@ -32,8 +32,7 @@ simulator *init_sim()
 	}
 	memset(sim->reg, 0, (sizeof(int) * 32));
 	//memset(sim->f_reg, 0, (sizeof(float) * 32));
-	//stackpointer = reg[29]
-	sim->reg[29] = 100;
+	sim->reg[29] = 100; //stackpointer = reg[29]
 	sim->mem = calloc(sizeof(int), MEM_SIZE);
 	return sim;
 }
@@ -110,7 +109,6 @@ void load_header(simulator* sim, unsigned char* buf)
 	sim->entry_point = load_char(sim->entry_point, buf[13], 1);
 	sim->entry_point = load_char(sim->entry_point, buf[14], 2);
 	sim->entry_point = load_char(sim->entry_point, buf[15], 3);
-	sim->entry_point /= 4;
 	printf("text_size = %d\n", sim->text_size);
 	printf("data_size = %d\n", sim->data_size);
 	return;
@@ -155,6 +153,7 @@ void load_binary(simulator* sim, FILE* fp)
 	binary_size = fread(buf, sizeof(unsigned char), 1000000, fp);
 	sim->binary_size = binary_size;
 	sim->inst_mem = malloc(sizeof(unsigned char) * binary_size);
+	sim->reg[28] = sim->text_size + sim->data_size; //heap pointer 
 	memset(sim->inst_mem, 0, binary_size);
 	//printf("binary_size = %d, inst_cnt = %d\n", binary_size, sim->inst_cnt);
 	load_header(sim, buf);
@@ -318,16 +317,16 @@ int inst_j(simulator* sim_p, instruction inst)
 {
 	if(IS_DEBUG){printf("j");}
 	operands ops = decode_J(inst);
-	sim_p->pc = ops.imm/4;
+	sim_p->pc = ops.imm;
 	return 1;
 }
 
 int inst_jal(simulator* sim_p, instruction inst)
 {
 	if(IS_DEBUG){printf("jal");}
-	sim_p->reg[31] = ((sim_p->pc + 1)*4);
+	sim_p->reg[31] = ((sim_p->pc + 1));
 	operands ops = decode_J(inst);
-	sim_p->pc = ops.imm/4;
+	sim_p->pc = ops.imm;
 	return 1;
 }
 
@@ -336,7 +335,7 @@ int inst_jr(simulator* sim_p, instruction inst)
 	if(IS_DEBUG){printf("jr");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
-	sim_p->pc = reg_s/4;
+	sim_p->pc = reg_s;
 	return 1;
 }
 
