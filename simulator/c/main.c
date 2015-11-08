@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "./const.h"
 #include "./simulator.h"
+#define USE_FPU_SIM 0
+
+int IS_DEBUG = 1;
+int MEM_SIZE = 1000000;
 
 int main(int argc, char* argvs[])
 {

@@ -1,5 +1,6 @@
 #ifndef SIMLULATOR_H
 #define SIMLULATOR_H
+#define SAFE_DELETE(x) {free(x);(x)=NULL;}
 
 typedef unsigned int instruction;
 

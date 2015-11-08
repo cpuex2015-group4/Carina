@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "./const.h"
 #include "./utils.h"
 #include "./simulator.h"
+
+extern int IS_DEBUG;
+extern int MEM_SIZE;
 
 char* REG_ARR[] = {""};
 

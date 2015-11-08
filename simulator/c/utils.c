@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "./utils.h"
-#include "./const.h"
 
 void print_int2bin(unsigned int n)
 {
