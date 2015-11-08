@@ -50,6 +50,7 @@ architecture RTL of top is
       IO_recv_data: in std_logic_vector(31 downto 0);
       IO_WE,IO_RE: out std_logic;
       IO_send_data:out std_logic_vector(31 downto 0);
+		word_access:out std_logic;
       SRAM_ADDR:out std_logic_vector(19 downto 0);
       SRAM_DATA:inout datat;
       SRAM_WE:out std_logic;
@@ -64,6 +65,7 @@ architecture RTL of top is
 --IO\
   signal IO_empty,IO_full,IO_WE,IO_RE:std_logic:='0';
   signal IO_recv_data,IO_send_data:datat:=x"00000000";
+  signal word_access:std_logic:='1';
 
 --core
 	signal DEBUG_inner:top_debug_out;
@@ -95,7 +97,7 @@ begin
     i=>iclk,
     o=>clk
   );
-  io: IO32 port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX,'1');
+  io: IO32 port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX,word_access);
 
 --  io_send_data<=io_recv_data;
 --  process(clk)
@@ -117,5 +119,5 @@ begin
 --      end if;
 --    end if;
 --  end process;
-  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,ZA,ZD,XWA,DEBUG_inner);
+  core:CPU port map(clk,IO_empty,IO_full,IO_recv_data,IO_WE,IO_RE,IO_send_data,word_access,ZA,ZD,XWA,Debug_inner);
 end RTL;
