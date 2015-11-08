@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "./const.h"
-#include "./utils.h"
 #include "./simulator.h"
 
 int main(int argc, char* argvs[])
