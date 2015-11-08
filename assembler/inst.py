@@ -127,6 +127,17 @@ class Instruction:
 		return utils.bin2bytes(inst_bin)
 
 	@staticmethod
+	def jral(operands, label_dict, line_num):
+		"""
+		Operation : %ra <- %pc + 1; %pc <- %rs
+		Format    : [ 000000 | %rs | --- | --- | --- | 001001 ]
+		"""
+		inst_bin = "000000" +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
+				"000000000000000001001"
+		return utils.bin2bytes(inst_bin)
+
+	@staticmethod
 	def lw(operands, label_dict, line_num):
 		"""
 		Operation : %rt <- Mem[%rs + $imm]

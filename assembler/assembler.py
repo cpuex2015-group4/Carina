@@ -22,6 +22,7 @@ class Assembler:
 		"j" : Instruction.j,
 		"jal" : Instruction.jal,
 		"jr" : Instruction.jr,
+		"jral" : Instruction.jral,
 		"lw" : Instruction.lw,
 		"nor" : Instruction.nor,
 		"or" : Instruction.or_,

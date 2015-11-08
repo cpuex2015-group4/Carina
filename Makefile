@@ -1,18 +1,20 @@
 MAKE=make
 PYTHON=python
 TEST=test
-TARGET=min-rt
+MINRT=raytracer/raytracer
+TARGET=$(MINRT)
 MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
 LIBMINCAML=$(MINCAML_DIR)/libmincaml.S
 AS=$(PYTHON) ./assembler/main.py
 CSIM_DIR=./simulator/c
 FSIM_DIR=./simulator/fpu
+PYSIM=$(PYTHON) ./simulator/python/main.py
 DEPENDENCY_MODULES=.install.txt
-MINRT=raytracer/raytracer
 
 $(TARGET): $(MINCAML) $(MINRT).s
 	$(AS) $(MINRT).s
+	mv $(MINRT).o $(MINRT)
 
 $(MINRT).s: $(MINRT).ml
 	$(MINCAML) $(MINRT)
@@ -30,6 +32,16 @@ $(MINRT).s: $(MINRT).ml
 		$(AS) $*.s; \
 	fi
 
+.PHONY: run
+run: $(TARGET)
+	@echo "begin running raytracer ... "
+	@$(PYSIM) $(TARGET)
+
+.PHONY: debug
+debug: $(TARGET)
+	@echo "begin running raytracer ... "
+	@$(PYSIM) -v $(TARGET)
+
 .PHONY: $(TEST)
 $(TEST):
 	@echo "--------------------\nresolving test dependecies ...\n--------------------"
@@ -43,7 +55,6 @@ $(TEST):
 	@cd $(FSIM_DIR); $(MAKE)
 	@echo "--------------------\ntest begin ...\n--------------------"
 	@nosetests -v
-	@$(MAKE) clean
 	@exit 0
 
 $(MINCAML):
