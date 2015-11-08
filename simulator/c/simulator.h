@@ -109,8 +109,10 @@ void load_header(simulator* sim, unsigned char* buf)
 	sim->entry_point = load_char(sim->entry_point, buf[13], 1);
 	sim->entry_point = load_char(sim->entry_point, buf[14], 2);
 	sim->entry_point = load_char(sim->entry_point, buf[15], 3);
-	printf("text_size = %d\n", sim->text_size);
-	printf("data_size = %d\n", sim->data_size);
+	if(IS_DEBUG){
+		printf("text_size = %d\n", sim->text_size);
+		printf("data_size = %d\n", sim->data_size);
+	}
 	return;
 }
 
@@ -132,8 +134,10 @@ void load_data(simulator* sim, unsigned char* buf)
 	int OFFSET = 16;
 	int i;
 	int data;
-	printf("sim->binary_size = %d\n", sim->binary_size);
-	printf("sim->text_size = %d\n", sim->text_size);
+	if(IS_DEBUG){
+		printf("sim->binary_size = %d\n", sim->binary_size);
+		printf("sim->text_size = %d\n", sim->text_size);
+	}
 
 	for(i = 0; (i + sim->text_size) * 4 + OFFSET < sim->binary_size; i++){
 		memset(&data, 0, 4);
@@ -159,7 +163,7 @@ void load_binary(simulator* sim, FILE* fp)
 	load_header(sim, buf);
 	load_instruction(sim, buf);
 	load_data(sim, buf);
-	print_mem(sim);
+	if(IS_DEBUG) print_mem(sim);
 	return;
 }
 
@@ -187,7 +191,7 @@ void print_operands(operands ops, int option)
 	 * 3 - decode_FR
 	 * 4 - decode_FI
 	 */
-	if(!IS_DEBUG){
+	if(IS_DEBUG){
 	}else{
 		switch(option){
 			case 0:
@@ -208,7 +212,7 @@ void print_operands(operands ops, int option)
 operands decode_R(inst)
 {
 	operands ops;
-	print_operands(ops, 0);
+	if(IS_DEBUG)print_operands(ops, 0);
 	ops.reg_s_idx = get_binary_unsigned(inst, 6, 11);
 	ops.reg_t_idx = get_binary_unsigned(inst, 11, 16);
 	ops.reg_d_idx = get_binary_unsigned(inst, 16, 21);
@@ -219,7 +223,7 @@ operands decode_R(inst)
 operands decode_I(inst)
 {
 	operands ops;
-	print_operands(ops, 1);
+	if(IS_DEBUG)print_operands(ops, 1);
 	ops.reg_s_idx = get_binary_unsigned(inst, 6, 11);
 	ops.reg_t_idx = get_binary_unsigned(inst, 11, 16);
 	ops.imm = get_binary_signed(inst, 16, 32);
@@ -229,7 +233,7 @@ operands decode_I(inst)
 operands decode_J(inst)
 {
 	operands ops;
-	print_operands(ops, 2);
+	if(IS_DEBUG)print_operands(ops, 2);
 	ops.imm = get_binary_signed(inst, 6, 32);
 	return ops;
 }
@@ -237,7 +241,7 @@ operands decode_J(inst)
 operands decode_FR(inst)
 {
 	operands ops;
-	print_operands(ops, 3);
+	if(IS_DEBUG)print_operands(ops, 3);
 	ops.ft_idx = get_binary_signed(inst, 11, 16);
 	ops.fs_idx = get_binary_signed(inst, 16, 21);
 	ops.fd_idx = get_binary_signed(inst, 21, 26);
@@ -247,7 +251,7 @@ operands decode_FR(inst)
 operands decode_FI(inst)
 {
 	operands ops;
-	print_operands(ops, 4);
+	if(IS_DEBUG)print_operands(ops, 4);
 	ops.ft_idx = get_binary_signed(inst, 11, 16);
 	ops.imm = get_binary_signed(inst, 16, 32);
 	return ops;
@@ -335,6 +339,16 @@ int inst_jr(simulator* sim_p, instruction inst)
 	if(IS_DEBUG){printf("jr");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
+	sim_p->pc = reg_s;
+	return 1;
+}
+
+int inst_jral(simulator* sim_p, instruction inst)
+{
+	if(IS_DEBUG){printf("jral");}
+	operands ops = decode_R(inst);
+	int reg_s = sim_p->reg[ops.reg_s_idx];
+	sim_p->reg[31] = (sim_p->pc + 1);
 	sim_p->pc = reg_s;
 	return 1;
 }
@@ -624,6 +638,8 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 
 	if(operation_binary == 0 && function_binary == 8) return inst_jr(sim_p, inst);
 
+	if(operation_binary == 0 && function_binary == 9) return inst_jral(sim_p, inst);
+
 	if(operation_binary == 35) return inst_lw(sim_p, inst);
 
 	if(operation_binary == 0 && function_binary == 39) return inst_nor(sim_p, inst);
@@ -672,11 +688,15 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 
 	if(operation_binary == 63 && function_binary == 63) return inst_hlt(sim_p, inst);
 
-	puts("Not Found");
-	printf("operation_binary = %d\n", operation_binary);
-	printf("fmt_binary = %d\n", fmt_binary);
-	printf("fmt_binary = %d\n", ft_binary);
-	printf("function_binary = %d\n", function_binary);
+	if(IS_DEBUG){
+		puts("Not Found");
+		printf("operation_binary = %d\n", operation_binary);
+		printf("fmt_binary = %d\n", fmt_binary);
+		printf("ft_binary = %d\n", ft_binary);
+		printf("function_binary = %d\n", function_binary);
+		printf("inst_binary = ");
+		print_int2bin(inst);
+	}
 
 	return 0;
 }

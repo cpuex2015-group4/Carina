@@ -50,7 +50,7 @@ def test_recfib13():
 	tb = "tests/fib"
 	compile("tests/fib")
 	expected = 233
-	#assert csim(tb) == expected
+	assert csim(tb) == expected
 	assert int(pysim(tb), 2) == expected
 
 def test_ack_3_2():
@@ -58,7 +58,7 @@ def test_ack_3_2():
 	tb = "tests/ack"
 	compile(tb)
 	expected = 29
-	#assert csim(tb) == expected
+	assert csim(tb) == expected
 	assert int(pysim(tb), 2) == expected
 
 def test_gcd_216_3375():
@@ -66,7 +66,7 @@ def test_gcd_216_3375():
 	tb = "tests/gcd"
 	compile(tb)
 	expected = 27
-	#assert csim(tb) == expected
+	assert csim(tb) == expected
 	assert int(pysim(tb), 2) == expected
 
 def test_fadd():
