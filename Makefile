@@ -64,4 +64,6 @@ $(MINCAML):
 
 .PHONY: clean
 clean:
-	@rm -rf *.pyc tests/*.s tests/*.o assembler/*.pyc simulator/*.pyc raytracer/*.s raytracer/*.o
+	@rm -rf *.pyc tests/*.s tests/*.o \
+		assembler/*.pyc simulator/*.pyc \
+		raytracer/*.s raytracer/*.o raytracer/raytracer
