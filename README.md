@@ -18,6 +18,10 @@ You can refer to more detail information about Carina [here](https://gist.github
 
 `python ./simulator/main.py tests/[test_bench_name].o`
 
+If you intend to get result value as float, use `-f` option.
+
+`python ./simulator/main.py -f tests/[test_bench_name].o`
+
 # Code Status
 
 [![Build Status](https://travis-ci.org/cpuex2015-group4/Carina.svg)](https://travis-ci.org/cpuex2015-group4/Carina)
