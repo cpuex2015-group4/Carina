@@ -79,6 +79,7 @@ def test_fadd():
 	tb = "tests/fadd"
 	compile(tb)
 	expected = 2.9
+	#assert csim(tb)[1] == expected 
 	assert csim(tb)[1] == expected 
 	assert float_eq(pysim(tb, "float"), expected)
 
@@ -93,7 +94,7 @@ def test_sin():
 	tb = "tests/sin"
 	compile(tb)
 	expected = -1.0
-	#assert csim(tb)[1] == expected 
+	assert csim(tb)[1] == expected 
 	assert float_eq(pysim(tb, "float"), expected)
 
 def test_sqrt():
