@@ -486,7 +486,8 @@ int inst_adds(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	float fd = ft + fs;
+	float fd = fs + ft;
+	if(IS_DEBUG)printf("FADD %f + %f = %f\n", ft, fs, fd);
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
@@ -524,7 +525,8 @@ int inst_muls(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	float fd = ft * fs;
+	float fd = fs * ft;
+	if(IS_DEBUG)printf("FMUL %f * %f = %f\n", ft, fs, fd);
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
@@ -535,8 +537,8 @@ int inst_invs(simulator* sim_p, instruction inst)
 	if(IS_DEBUG){printf("invs");}
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
-	float fs = sim_p->f_reg[ops.fs_idx];
-	float fd = ft / fs;
+	//float fs = sim_p->f_reg[ops.fs_idx];
+	float fd = 1.0 / ft;
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
@@ -548,7 +550,7 @@ int inst_subs(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	float fd = ft - fs;
+	float fd = fs - ft;
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
@@ -561,6 +563,7 @@ int inst_lws(simulator* sim_p, instruction inst)
 	//@@DEBUG
 	//printf("sim_p->mem[sim_p->reg[ops.reg_s_idx] = %d\n", sim_p->mem[sim_p->reg[ops.reg_s_idx]]);
 	float ft = int2float(sim_p->mem[sim_p->reg[ops.reg_s_idx] + ops.imm]);
+	//if(IS_DEBUG)printf("ft = %f\n", ft);
 	sim_p->f_reg[ops.reg_t_idx] = ft;
 	sim_p->pc++;
 	return 1;
@@ -647,11 +650,11 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 
 	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 0) return inst_adds(sim_p, inst);
 
-	if(operation_binary == 17 && fmt_binary == 17 &&function_binary == 50) return inst_cs(sim_p, inst, 0);
+	if(operation_binary == 17 && fmt_binary == 16 &&function_binary == 50) return inst_cs(sim_p, inst, 0);
 
-	if(operation_binary == 17 && fmt_binary == 17 && function_binary == 60) return inst_cs(sim_p, inst, 1);
+	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 60) return inst_cs(sim_p, inst, 1);
 
-	if(operation_binary == 17 && fmt_binary == 17 && function_binary == 62) return inst_cs(sim_p, inst, 2);
+	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 62) return inst_cs(sim_p, inst, 2);
 
 	if(operation_binary ==17 && fmt_binary == 16  && function_binary == 2) return inst_muls(sim_p, inst);
 
