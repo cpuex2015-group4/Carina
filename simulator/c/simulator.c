@@ -540,7 +540,7 @@ int inst_muls(simulator* sim_p, instruction inst)
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
 	float fd = fs * ft;
-	if(IS_DEBUG)printf("FMUL %f * %f = %f\n", ft, fs, fd);
+	if(IS_DEBUG)printf("FMUL %f * %f = %f\n", fs, ft, fd);
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
@@ -552,7 +552,7 @@ int inst_invs(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fd = (1.0 / ft);
-	if(IS_DEBUG)printf("FINV 1.0 / %f = %f\n", ft, fd); 
+	if(IS_DEBUG) printf("FINV 1.0 / %f = %f\n", ft, fd); 
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
@@ -560,7 +560,7 @@ int inst_invs(simulator* sim_p, instruction inst)
 
 int inst_divs(simulator* sim_p, instruction inst)
 {
-	if(IS_DEBUG){printf("invs\n");}
+	if(IS_DEBUG){printf("divs\n");}
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
@@ -700,7 +700,11 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 
 	if(operation_binary == 22 && function_binary == 22) return inst_invs(sim_p, inst);
 
-	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 3) return inst_divs(sim_p, inst);
+	/*
+	 * MIPS say 17, 16, 3 is FDIV
+	 * but map this to FINV
+	 */
+	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 3) return inst_invs(sim_p, inst);
 
 	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 1) return inst_subs(sim_p, inst);
 

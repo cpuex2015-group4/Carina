@@ -4,7 +4,7 @@
 #include "./simulator.h"
 #define USE_FPU_SIM 0
 
-int IS_DEBUG = 1;
+int IS_DEBUG = 0;
 int MEM_SIZE = 1000000;
 
 int main(int argc, char* argvs[])
