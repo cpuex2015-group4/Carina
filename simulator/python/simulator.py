@@ -268,6 +268,7 @@ class Simulator:
 	def jral(sim, inst_bin):
 		reg_s_bin = inst_bin[6:11]
 		address_bin = sim.reg[reg_s_bin]
+		#print("address_bin = "+address_bin)
 		sim.reg["11111"] = format(sim.pc + 1, "032b")
 		sim.pc = utils.bin2int(address_bin)
 		return 1

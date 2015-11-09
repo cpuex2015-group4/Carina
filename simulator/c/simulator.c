@@ -711,7 +711,6 @@ void simulate(simulator* sim_p)
 			continue;
 		}
 	}
-
 	// print %v0
 	printf("int:%d,float:%f\n", sim_p->reg[2], sim_p->f_reg[2]);
 }
