@@ -39,10 +39,9 @@ use work.p_type.all;
 
 ENTITY cpu_tb IS
 END cpu_tb;
-
-ARCHITECTURE behavior OF cpu_tb IS
-
     --e Component Declaration for the Unit Under Test (UUT)
+
+architecture pohe of cpu_tb is
 
   COMPONENT cpu
     PORT(
