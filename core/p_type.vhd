@@ -87,8 +87,10 @@ package p_type is
     ra:datat;
     v0:datat;
     t0:datat;
+    t1:datat;
     fp:datat;
     sp:datat;
+    at:datat;
     data:data_file;
     detail:detail_debug_info;
   end record;

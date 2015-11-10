@@ -40,34 +40,6 @@ begin
   process(clk)
   begin
   if rising_edge(clk) then
---      current_xwa<=xwa;
-      former_xwa<=xwa;
-      forformer_xwa<=former_xwa;
-      forforformer_xwa<=forformer_xwa;
---      current_addr<=ZA;
-      former_addr<=ZA;
-      forformer_addr<=former_addr;
-      forforformer_addr<=forformer_addr;
-    if former_xwa='0' then
-      ZD<=Z;
-    elsif forformer_xwa='0' then
-      report "@mem" &Integer'image(conv_integer(ZD)) & "stored@" & Integer'image(conv_integer(forformer_addr(7 downto 0)));
-      TEST_mem(conv_integer(forformer_addr(7 downto 0)))<=ZD;
-    else
-      report "loaded";
-      report "@mem" &Integer'image(conv_integer(ZD)) & "loaded@" & Integer'image(conv_integer(forforformer_addr(7 downto 0)));
-      report "memval=" & integer'image(conv_integer( TEST_mem(conv_INTEGER(forforformer_addr(7 downto 0)))));
-      ZD<=TEST_mem(conv_INTEGER(forforformer_addr(7 downto 0)));
---      ZD<=x"cafecafe";
-      mem_val<=TEST_mem(conv_INTEGER(forforformer_addr(7 downto 0)));
-    end if;
-  end if;
-  end process;
-
-  process(ZD)
-  begin
-    if ZD'event then
-      report "@mem:ZD_changed:" & integer'image(conv_integer(ZD));
-    end if;
+    
   end process;
 end kaze_ga_yabai_arashi;

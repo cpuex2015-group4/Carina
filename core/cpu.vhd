@@ -123,7 +123,7 @@ signal isZero:std_logic;
 
 -- 
   constant memory_write_wait:std_logic_vector(2 downto 0):="010";
-  constant memory_read_wait:std_logic_vector(2 downto 0):="011";
+  constant memory_read_wait:std_logic_vector(2 downto 0):="101";
   signal memory_count:std_logic_vector(2 downto 0):="000";
 
 
@@ -236,10 +236,12 @@ begin
 
           DEBUG.data<=data;
           DEBUG.t0<=reg_file(8);
+          DEBUG.t1<=reg_file(9);
           DEBUG.v0<=reg_file(2);
           DEBUG.fp<=reg_file(30);
           DEBUG.sp<=reg_file(29);
           DEBUG.ra<=reg_file(31);
+          DEBUG.at<=reg_file(1);
           DEBUG.detail.exe_state<=exe_state;
           DEBUG.detail.core_state<=core_state;
           DEBUG.PC<=PC;
