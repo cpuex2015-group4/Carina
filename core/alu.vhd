@@ -30,7 +30,7 @@ begin
       when ALUOR =>
         vresult:=operand1 or operand2;
       when ALUSLT =>
-        if operand1<operand2 then
+        if (not operand1(31)) & operand1(30 downto 0)<(not operand2(31)) & operand2(30 downto 0) then
           vresult:=x"00000001";
         else
           vresult:=x"00000000";
