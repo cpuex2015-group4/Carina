@@ -1,24 +1,24 @@
 --3------------------------------------------------------------------------------
--- Company: 
+-- Company:
 -- Engineer:
 --
 -- Create Date:   03:03:15 10/07/2015
--- Design Name:   
+-- Design Name:
 -- Module Name:   /home/yukiimai/Sandbox/2015_winter/carina/cpu_tb.vhd
 -- Project Name:  Carina
--- Target Device:  
--- Tool versions:  
--- Description:   
--- 
+-- Target Device:
+-- Tool versions:
+-- Description:
+-- --
 -- VHDL Test Bench Created by ISE for module: cpu
--- 
+--
 -- Dependencies:
--- 
+--
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
 --
--- Notes: 
+-- Notes:
 -- This testbench has been automatically generated using types std_logic and
 -- std_logic_vector for the ports of the unit under test.  Xilinx recommends
 -- that these types always be used for the top-level I/O of a design in order
@@ -27,7 +27,7 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
-use ieee.std_logic_unsigned.all; 
+use ieee.std_logic_unsigned.all;
 use ieee.std_logic_arith.all;
 
 
@@ -36,14 +36,14 @@ use work.p_type.all;
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
- 
+
 ENTITY cpu_tb IS
 END cpu_tb;
- 
-ARCHITECTURE behavior OF cpu_tb IS 
- 
+
+ARCHITECTURE behavior OF cpu_tb IS
+
     --e Component Declaration for the Unit Under Test (UUT)
- 
+
     COMPONENT cpu
     PORT(
          clk : IN  std_logic;
@@ -63,7 +63,7 @@ ARCHITECTURE behavior OF cpu_tb IS
         );
     END COMPONENT;
 
-component mem_monkey 
+component mem_monkey
 port (
   ZD    : inout std_logic_vector(31 downto 0);
   ZA    : in   std_logic_vector(19 downto 0);
@@ -71,8 +71,6 @@ port (
   clk   : in   std_logic
 );
 end component;
-
-    
 
    --Inputs
    signal clk : std_logic := '0';
@@ -89,6 +87,8 @@ end component;
    signal IO_RE : std_logic;
    signal IO_send_data : std_logic_vector(31 downto 0);
    signal DEBUG : top_debug_out;
+
+signal output:datat;
 signal word_access :std_logic;
    -- Clock period definitions
    constant clk_period : time := 15 ns;
@@ -96,7 +96,7 @@ signal word_access :std_logic;
 
 --FILEIO
    type    BIN is file of character;
-    file    FILEPOINT   :   BIN open READ_MODE is "loader_data.o";
+    file    FILEPOINT   :   BIN open READ_MODE is "fib.bin";
 
 
 --    constant ROMMAX:Integer:=15;
@@ -119,9 +119,7 @@ signal word_access :std_logic;
 --	  conv_std_logic_vector(11,32),
 --  	  conv_std_logic_vector(0,32),
 --	  conv_std_logic_vector(0,32),
---    x"20040050",x"0c000009",x"2004004f",x"0c000009",x"20040048",x"0c000009",x"20040045",x"0c000009",x"ffffffff",x"6c040000",x"03e00008"  );    
-
-    
+--    x"20040050",x"0c000009",x"2004004f",x"0c000009",x"20040048",x"0c000009",x"20040045",x"0c000009",x"ffffffff",x"6c040000",x"03e00008"  );
         constant ROMMAX:Integer:=9;
        type rom_t is array (0 to ROMMAX) of std_logic_vector(31 downto 0);
     constant rom:rom_t:=(
@@ -133,7 +131,7 @@ signal word_access :std_logic;
 
 
 BEGIN
- 
+
 	-- Instantiate the Unit Under Test (UUT)
    uut: cpu PORT MAP (
           clk => clk,
@@ -149,22 +147,20 @@ BEGIN
           SRAM_ADDR=>SRAM_ADDR,
           SRAM_DATA=>SRAM_DATA,
           SRAM_WE=>SRAM_WE,
-
-          
           DEBUG => DEBUG
         );
 
 
-   mem:mem_monkey 
+   mem:mem_monkey
 port map (
   ZD  =>SRAM_DATA,
   ZA =>SRAM_ADDR,
   XWA  =>SRAM_WE,
   clk  =>clk
 );
-
-   
    -- Clock process definitions
+   output<= io_send_data when word_access='1' else
+            x"000000" & io_send_data(7 downto 0);
    clk_process :process
    begin
 		clk <= '0';
@@ -172,8 +168,6 @@ port map (
 		clk <= '1';
 		wait for clk_period/2;
    end process;
- 
-
 
    iof:process (clk)
    begin
@@ -211,14 +205,15 @@ port map (
           read( FILEPOINT, FREAD_CHAR );
           data:=x"000000" &(conv_std_logic_vector(CHARacter'pos(FREAD_CHAR),8));
         end if;
-        io_empty<='0';
         io_recv_data<=data;
+        io_empty<='0';
         if io_re='0' then
           wait until  io_re='1';
         end if;
         io_empty<='1';
-        wait for clk_period*100;
+        wait for clk_period*10;
       end loop;
+      wait;
    end process;
 
 end;
