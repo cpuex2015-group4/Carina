@@ -41,7 +41,7 @@ class Parser:
 		if entry_point not in label_dict:
 			raise ValueError("program should have entry point named {}".format(entry_point))
 
-		epaddr = label_dict[entry_point] * 4
+		epaddr = label_dict[entry_point]
 
 		new_text_lines = filter(lambda l:
 				".text" not in l and
@@ -252,5 +252,5 @@ class Parser:
 			return (None, offset_bin)
 		elif operand_type == Operandtype.LABEL_ABSOLUTE:
 			target_line_num = label_dict[operand]
-			return (None, format(4 * target_line_num, "026b"))
+			return (None, format(target_line_num, "026b"))
 
