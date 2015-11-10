@@ -32,7 +32,7 @@ package p_type is
     rt:regt;
     rd:regt;
     reg_dest:regt;
-    reg_source:regt;
+ --   reg_source:regt;
     shamt:regt;
     funct:functt;
     immediate:imdt;
@@ -72,22 +72,27 @@ package p_type is
   
   function make_alu_control(opecode:opet; funct:functt) return ALU_CONTROLT;
   function sign_extension(imd:imdt) return memaddrt;
-  
-  type top_debug_out is record  
-    data1:datat;
-    data2:datat;
-    data3:datat;
+
+  type detail_debug_info is record
     exe_state:EXE_STATE_TYPE;
     core_state:CORE_STATE_TYPE;
+    alucont:ALU_CONTROLT;
     control:control_file;
     opecode:opet;
-    data:data_file;
-    PC:datat;
     inst:inst_file;
-    alucont:ALU_CONTROLT;
-    
+  end record;  
+  
+  type top_debug_out is record
+    PC:datat;
+    ra:datat;
+    v0:datat;
+    t0:datat;
+    fp:datat;
+    sp:datat;
+    data:data_file;
+    detail:detail_debug_info;
   end record;
-
+  
 -- procedure <procedure_nam >(<type_declaration> <constant_name>	: in <type_d@eclaration>);
 --
 

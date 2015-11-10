@@ -73,22 +73,20 @@ ARCHITECTURE behavior OF cpu_tb IS
 
    --Inputs
   signal clk : std_logic := '0';
+  signal DEBUG : top_debug_out;
   signal IO_empty : std_logic := '1';
   signal IO_full : std_logic := '0';
-  signal IO_recv_data : std_logic_vector(31 downto 0) := (others => '0');
-
-  signal SRAM_ADDR: std_logic_vector(19 downto 0);
-  signal SRAM_DATA:datat;
-  signal SRAM_WE:std_logic;
- 	--Outputs
-  signal IO_WE : std_logic;
   signal IO_RE : std_logic;
-  signal IO_send_data : std_logic_vector(31 downto 0);
-  signal DEBUG : top_debug_out;
-
+  signal IO_recv_data : std_logic_vector(31 downto 0) := (others => '0');
+  signal IO_WE : std_logic;
   signal output:datat;
+  signal SRAM_ADDR: std_logic_vector(19 downto 0);
+  signal SRAM_WE:std_logic;
+  signal SRAM_DATA:datat;
   signal word_access :std_logic;
-   -- Clock period definitions
+  signal IO_send_data : std_logic_vector(31 downto 0);
+
+  -- Clock period definitions
   constant clk_period : time := 15 ns;
 
 

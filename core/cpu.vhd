@@ -205,10 +205,9 @@ begin
           end if;
         when WAIT_HEADER =>
       --debug
-          DEBUG.data1<=inst_out;
-          DEBUG.core_state<=core_state;
+          DEBUG.detail.core_state<=core_state;
           DEBUG.PC<=CONV_STD_LOGIC_VECTOR(count,32);
-          DEBUG.control<=control;
+          DEBUG.detail.control<=control;
       --/debug
 
 
@@ -232,18 +231,20 @@ begin
           core_state<=EXECUTING;    --data source no kirikae
         when EXECUTING =>
       --debug
-          DEBUG.opecode<=inst.opecode;
-          DEBUG.control<=control;
+          DEBUG.detail.opecode<=inst.opecode;
+          DEBUG.detail.control<=control;
 
           DEBUG.data<=data;
-          DEBUG.data1<=reg_file(1);
-          DEBUG.data2<=reg_file(2);
-          DEBUG.data3<=reg_file(31);
-          DEBUG.exe_state<=exe_state;
-          DEBUG.core_state<=core_state;
+          DEBUG.t0<=reg_file(8);
+          DEBUG.v0<=reg_file(2);
+          DEBUG.fp<=reg_file(30);
+          DEBUG.sp<=reg_file(29);
+          DEBUG.ra<=reg_file(31);
+          DEBUG.detail.exe_state<=exe_state;
+          DEBUG.detail.core_state<=core_state;
           DEBUG.PC<=PC;
-          DEBUG.inst<=inst;
-          DEBUG.alucont<=alu_control;
+          DEBUG.detail.inst<=inst;
+          DEBUG.detail.alucont<=alu_control;
   --/debug
 
           case ( exe_state) is
