@@ -80,25 +80,24 @@ int main(int argc, char *argv[]){
 	uint32_t gr; // 9bit gradient(+hidden bit)
 	union hoge out;
 
-  input.f  = 3.0;
+  input.i  = (uint32_t)1 << 23; // 最小の正規化数
 	one.f    = 1.0;
 	answer.f = one.f / input.f;
 
 //  for(key = 0; key < 0x400; key++){
-//  x1.i = todownto(key, input.i, 22, 13);
-//	x2.i = todownto(key, input.i, 22, 13) + 0x2000;
+  input.i += 1;
   a0.i = fromdownto(input.i, 31, 13) << 13;
 	a1 = fromdownto(input.i, 12,  0);
 
 	x1.f = one.f / a0.f;
-	x2.i = a0.i + 0x2000;
+	x2.i = a0.i + ((uint32_t)1 << 13);
 	x2.f = one.f / x2.f;
 	x0.f = (x1.f + x2.f)/2;
 
   constant.f = 2*x0.f - a0.f * x0.f * x0.f;
 	gradient.f = x0.f * x0.f;
 
-	gr = fromdownto(gradient.i, 22, 14) + 0x200;
+	gr = fromdownto(gradient.i, 22, 14) + ((uint32_t)1 << 9);
 	out.i = constant.i - ((a1 * gr) >> 10);
     
 //	}
