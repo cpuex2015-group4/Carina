@@ -76,7 +76,7 @@ architecture RTL of cpu is
       result:out datat:=x"00000000";
       FPCond:out std_logic:='0'
       );
-end component;
+  end component;
 
   constant ZERO:datat:=x"00000000";
 --zentaiseigyo kei
@@ -96,12 +96,11 @@ end component;
   signal data:data_file;
   signal control:control_file;
   signal io_re_cpu:std_logic:='0';
-  
-signal alu_control:alu_controlt;
+  signal alu_control:alu_controlt;
 
   --debug
   signal pohe:std_logic:='0';
-
+  signal total_instruction:datat:=ZERO;
 --signal operand1:datat;-
 --signal operand2:datat;
 --signal alu_control:alu_controlt;
@@ -195,6 +194,7 @@ begin
     if rising_edge(clk) then
       case (core_state) is
         when INIT=>
+          total_instruction<=ZERO;
           loader_reset<='0';
           if io_full='0' then
             io_we<='1';
@@ -251,6 +251,7 @@ begin
 
           case ( exe_state) is
             when F =>
+              total_instruction<=total_instruction+x"00000001";
 --		    report "inst_out:" & integer'image(conv_integer(inst_out));
 --			 report "PC:" &  integer'image(conv_integer(PC));
 -- ###################################DEBUG############################
@@ -276,7 +277,7 @@ begin
               instv.immediate:=inst_out(15 downto 0);
               instv.addr:=inst_out(25 downto 0);
               exe_state<=EX;
-              if inst_out=x"FFFFFFFF" then
+              if inst_out=x"FFFFFFFF" then-------------------------------hlt
                core_state<=HALTED;
                 loader_reset<='1';
                 word_access<='1';
@@ -421,7 +422,7 @@ begin
                 end if;
               end if;
               exe_state<=F;
-              if inst.opecode="000011" then  --jump and link
+              if inst.opecode="000011" or (inst.opecode="000000" and inst.funct="01001") then  --jal,jral
                 reg_file(31)<=PC+x"00000001";
                 report "j_l";
               end if;
@@ -443,8 +444,15 @@ begin
               PC<=vPC;
           end case;
         when HALTED =>
-      -- do nothing;
-       core_state<=INIT;
+      -- do nothing
+       if IO_full='0' then
+         IO_we<='1';
+         IO_send_data<=total_instruction;
+         core_state<=INIT;
+         exe_state<=WB;
+       else
+         IO_we<='0';
+       end if;
 
       end case;
     end if;
