@@ -760,6 +760,7 @@ void simulate(simulator* sim_p)
 			continue;
 		}
 	}
+	if(IS_DEBUG)printf("dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
 	// print %v0
 	printf("int:%d,float:%f\n", sim_p->reg[2], sim_p->f_reg[2]);
 }
