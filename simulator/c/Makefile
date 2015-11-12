@@ -1,6 +1,7 @@
 TARGET=csim
 CC=gcc
-CFLAGS=-Wall -std=c99 
+CFLAGS=-Wall -std=c99 -O3
+ICCFLAGS=-Wall -fast -parallel
 SRC_MAIN=main.c
 SRC_UTILS=utils.c
 SRC_SIM=simulator.c

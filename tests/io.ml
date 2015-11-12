@@ -1,3 +1,2 @@
-let x = read_float () in
-let y = read_float () in
-x +. y 
+let x = read_int () in
+x 
