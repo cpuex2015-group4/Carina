@@ -275,6 +275,10 @@ int inst_beq(simulator* sim_p, instruction inst)
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
+	if(IS_DEBUG){
+		printf("reg_s = %d\n", reg_s);
+		printf("reg_t = %d\n", reg_t);
+	}
 	if(reg_s == reg_t){
 		sim_p->pc += ops.imm;
 	}
@@ -381,6 +385,10 @@ int inst_slt(simulator* sim_p, instruction inst)
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
+	if(IS_DEBUG){
+		printf("reg_s = %d\n", reg_s);
+		printf("reg_t = %d\n", reg_t);
+	}
 	if(reg_s < reg_t){
 		sim_p->reg[ops.reg_d_idx] = 1;
 	}else{
@@ -622,7 +630,7 @@ int inst_in_(simulator* sim_p, instruction inst)
 	operands ops = decode_R(inst);
 	char in_;
 	in_ = getchar();
-	sim_p->reg[ops.reg_s_idx] = (unsigned int)in_;
+	sim_p->reg[ops.reg_t_idx] = (unsigned int)in_;
 	sim_p->pc++;
 	return 1;
 }
@@ -658,7 +666,6 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 		printf("ft_binary = %d\n", ft_binary);
 		printf("function_binary = %d\n", function_binary);
 	}
-
 	*/
 
 	sim_p->dynamic_inst_cnt++;
