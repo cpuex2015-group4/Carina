@@ -351,8 +351,7 @@ class Simulator:
 	@staticmethod
 	def hlt(sim, inst_bin):
 		#print("HALT\n{}".format("=" * 20))
-		#pprint.pprint(sim.reg)
-		#pprint.pprint(sim.mem)
+		#pprint.pprint(sim.freg)
 		return 0
 
 	@classmethod
