@@ -453,6 +453,7 @@ class Simulator:
 	@classmethod
 	def out(cls, sim, inst_bin):
 		_, rs, _, _ = cls.decode_R(inst_bin)
-		sys.stdout.write(utils.bin2bytes(sim.reg[rs]))
+		sys.stdout.write(chr(int(sim.reg[rs], 2)))
+		sys.stdout.flush()
 		sim.pc += 1
 		return 1
