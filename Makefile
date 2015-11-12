@@ -11,6 +11,7 @@ CSIM_DIR=./simulator/c
 FSIM_DIR=./simulator/fpu
 PYSIM=$(PYTHON) ./simulator/python/main.py
 DEPENDENCY_MODULES=.install.txt
+SLD=./raytracer/contest.sld
 
 $(TARGET): $(MINCAML) $(MINRT).s
 	$(AS) $(MINRT).s
@@ -35,12 +36,12 @@ $(MINRT).s: $(MINRT).ml
 .PHONY: run
 run: $(TARGET)
 	@echo "begin running raytracer ... "
-	@$(PYSIM) $(TARGET)
+	@cat $(SLD) | $(PYSIM) $(TARGET)
 
 .PHONY: debug
 debug: $(TARGET)
 	@echo "begin running raytracer ... "
-	@$(PYSIM) -v $(TARGET)
+	@cat $(SLD) | $(PYSIM) -v $(TARGET)
 
 .PHONY: $(TEST)
 $(TEST):
