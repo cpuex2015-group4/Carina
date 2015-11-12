@@ -275,6 +275,10 @@ int inst_beq(simulator* sim_p, instruction inst)
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
+	if(IS_DEBUG){
+		printf("reg_s = %d\n", reg_s);
+		printf("reg_t = %d\n", reg_t);
+	}
 	if(reg_s == reg_t){
 		sim_p->pc += ops.imm;
 	}
@@ -381,6 +385,10 @@ int inst_slt(simulator* sim_p, instruction inst)
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
+	if(IS_DEBUG){
+		printf("reg_s = %d\n", reg_s);
+		printf("reg_t = %d\n", reg_t);
+	}
 	if(reg_s < reg_t){
 		sim_p->reg[ops.reg_d_idx] = 1;
 	}else{
@@ -596,7 +604,7 @@ int inst_lws(simulator* sim_p, instruction inst)
 
 int inst_mult(simulator* sim_p, instruction inst)
 {
-	if(IS_DEBUG){printf("mult\n");}
+	if(IS_DEBUG){printf("mult\n");} 
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
@@ -616,6 +624,25 @@ int inst_sws(simulator* sim_p, instruction inst)
 	return 1;
 }
 
+int inst_in_(simulator* sim_p, instruction inst)
+{
+	if(IS_DEBUG){printf("in\n");} 
+	operands ops = decode_R(inst);
+	char in_;
+	in_ = getchar();
+	sim_p->reg[ops.reg_t_idx] = (unsigned int)in_;
+	sim_p->pc++;
+	return 1;
+}
+
+int inst_out(simulator* sim_p, instruction inst)
+{
+	if(IS_DEBUG){printf("out\n");} 
+	operands ops = decode_R(inst);
+	printf("%c\n", (char)sim_p->reg[ops.reg_t_idx]);
+	sim_p->pc++;
+	return 1;
+}
 
 int inst_hlt(simulator* sim_p, instruction inst)
 {
@@ -639,7 +666,6 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 		printf("ft_binary = %d\n", ft_binary);
 		printf("function_binary = %d\n", function_binary);
 	}
-
 	*/
 
 	sim_p->dynamic_inst_cnt++;
@@ -714,6 +740,10 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 
 	if(operation_binary == 57) return inst_sws(sim_p, inst);
 
+	if(operation_binary == 26) return inst_in_(sim_p, inst);
+
+	if(operation_binary == 27) return inst_out(sim_p, inst);
+
 	if(operation_binary == 63 && function_binary == 63) return inst_hlt(sim_p, inst);
 
 	if(IS_DEBUG){
@@ -760,7 +790,8 @@ void simulate(simulator* sim_p)
 			continue;
 		}
 	}
+	printf("dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
 	// print %v0
-	printf("int:%d,float:%f\n", sim_p->reg[2], sim_p->f_reg[2]);
+	printf("int:%d,float:%.8f\n", sim_p->reg[2], sim_p->f_reg[2]);
 }
 
