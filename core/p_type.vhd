@@ -94,6 +94,7 @@ package p_type is
     fp:datat;
     sp:datat;
     at:datat;
+    FPCond:std_logic;
     data:data_file;
     detail:detail_debug_info;
   end record;

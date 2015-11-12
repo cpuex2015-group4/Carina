@@ -84,7 +84,7 @@ begin
       output=>FPCond
     );
 
-   add_data2<=(not data2(31)) &data2(30 downto 0) when funct=1 else  --funct=1 ha
+   add_data2<=(not data2(31)) & data2(30 downto 0) when funct=1 else  --funct=1 ha
                                                                      --sub dayon
                data2 ;
 

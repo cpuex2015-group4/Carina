@@ -85,7 +85,7 @@ architecture RTL of cpu is
   signal PC :datat:=ZERO;
   signal reg_file:reg_filet:=(others=>ZERO);
   signal fpu_reg_file:reg_filet:=(others=>ZERO);
-
+  signal FPCOND:std_logic;
 
   signal core_state:CORE_STATE_TYPE:=INIT;
   signal exe_state:EXE_STATE_TYPE:=F;
@@ -134,7 +134,7 @@ signal fpu_funct:functt:="000000";
 signal fpu_data1:datat:=x"00000000";
 signal fpu_data2:datat:=x"00000000";
 signal fpu_result:datat:=x"00000000";
-signal FPCond:std_logic:='0';
+signal fpu_FPCond:std_logic:='0';
   
   signal count:integer:=0;
 begin
@@ -160,7 +160,7 @@ begin
       fpu_data1,
       fpu_data2,
       fpu_result,
-      FPCond
+      fpu_FPCond
       );
 
  
@@ -252,6 +252,7 @@ begin
           DEBUG.PC<=PC;
           DEBUG.detail.inst<=inst;
           DEBUG.detail.alucont<=alu_control;
+          DEBUG.FPCond<=FPcond;
   --/debug
 
           case ( exe_state) is
@@ -323,12 +324,16 @@ begin
               if control.fpu_data='1' then
                 fpu_data1<=data.operand1;
                 fpu_data2<=data.operand2;
+                fpu_funct<=inst.funct;
                 if fpu_wait<fpu_wait_max then
                   fpu_wait<=fpu_wait+"001";
                 else
                   data.result<=fpu_result;
                   exe_state<=MEM;
                   fpu_wait<="000";
+                  if inst.funct(5 downto 4)="11" then
+                    FPCOND<=fpu_FPCOND;
+                  end if;
                 end if;
               else
                 exe_state<=MEM;
