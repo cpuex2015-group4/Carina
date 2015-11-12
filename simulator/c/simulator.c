@@ -639,7 +639,7 @@ int inst_out(simulator* sim_p, instruction inst)
 {
 	if(IS_DEBUG){printf("out\n");} 
 	operands ops = decode_R(inst);
-	printf("%c\n", (char)sim_p->reg[ops.reg_s_idx]);
+	printf("%c\n", (char)sim_p->reg[ops.reg_t_idx]);
 	sim_p->pc++;
 	return 1;
 }
