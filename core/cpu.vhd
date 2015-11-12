@@ -238,6 +238,9 @@ begin
           DEBUG.t0<=reg_file(8);
           DEBUG.t1<=reg_file(9);
           DEBUG.v0<=reg_file(2);
+          DEBUG.f1<=fpu_reg_file(1);
+          DEBUG.f2<=fpu_reg_file(2);
+          DEBUG.f3<=fpu_reg_file(3);
           DEBUG.fp<=reg_file(30);
           DEBUG.sp<=reg_file(29);
           DEBUG.ra<=reg_file(31);
@@ -304,7 +307,7 @@ begin
                 if controlv.fpu_data='0' then
                   data.operand2<=reg_file(CONV_INTEGER(instv.rt));
                 else
-                  data.operand2<=reg_file(CONV_INTEGER(instv.shamt));
+                  data.operand2<=fpu_reg_file(CONV_INTEGER(instv.rt));
                 end if;
               else
                 if instv.immediate(15) ='0' then

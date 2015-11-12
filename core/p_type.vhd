@@ -88,6 +88,9 @@ package p_type is
     v0:datat;
     t0:datat;
     t1:datat;
+    f1:datat;
+    f2:datat;
+    f3:datat;
     fp:datat;
     sp:datat;
     at:datat;
@@ -104,7 +107,7 @@ package body p_type is
   function make_control (opecode:opet;fmt:regt;funct:functt) return control_file is
     variable control:control_file;
   begin
-    if opecode ="000000" OR opecode="011011" or opecode="000100" or opecode="000101"  then
+    if opecode ="000000" OR opecode="011011" or opecode="000100" or opecode="000101"  or opecode="010001" then
       control.RegDst:='0';
       control.ALUSrc:='0';
     else
@@ -113,7 +116,7 @@ package body p_type is
     end if;
 
     if opecode="000000" or opecode="001000" or opecode="001010"
-      or opecode = "001011" or opecode ="001100" or opecode = "011010" or opecode = "100011" or opecode="110001" then
+      or opecode = "001011" or opecode ="001100" or opecode = "011010" or opecode = "100011" or opecode="110001" or opecode="010001" then
       control.RegWrite:='1';
     else
       control.RegWrite:='0';

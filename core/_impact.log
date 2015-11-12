@@ -116,3 +116,33 @@ INFO:iMPACT - '2': Checking done pin....done.
 '2': Programmed successfully.
 PROGRESS_END - End Operation.
 Elapsed time =      4 sec.
+INFO:iMPACT - Current time: 15/11/12 15:26
+// *** BATCH CMD : Program -p 2 
+ERROR:Cse - A reference voltage has not been detected on the ribbon cable   interface to the target system ( pin 2 ).  Check that power is applied to the   target system and that the ribbon cable is properly seated at both ends.  The   status LED on Platform Cable USB will be GREEN if target voltage is in the   proper range and applied to the correct pin.
+INFO:iMPACT - Current time: 15/11/12 15:27
+// *** BATCH CMD : Program -p 2 
+Maximum TCK operating frequency for this device chain: 15000000.
+Validating chain...
+Boundary-scan chain validated successfully.
+2: Device Temperature: Current Reading: -273.00 C
+2: VCCINT Supply: Current Reading:   0.000 V
+2: VCCAUX Supply: Current Reading:   0.000 V
+PROGRESS_START - Starting Operation.
+'2': Programming device...
+ Match_cycle = NoWait.
+Match cycle: NoWait
+ LCK_cycle = NoWait.
+LCK cycle: NoWait
+done.
+INFO:iMPACT:2219 - Status register values:
+INFO:iMPACT - 0011 1111 0011 1110 0000 1011 1100 0000 
+INFO:iMPACT:579 - '2': Completed downloading bit file to device.
+INFO:iMPACT:188 - '2': Programming completed successfully.
+ Match_cycle = NoWait.
+Match cycle: NoWait
+ LCK_cycle = NoWait.
+LCK cycle: NoWait
+INFO:iMPACT - '2': Checking done pin....done.
+'2': Programmed successfully.
+PROGRESS_END - End Operation.
+Elapsed time =      4 sec.

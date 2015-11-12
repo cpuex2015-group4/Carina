@@ -41,7 +41,7 @@ architecture nobunaga of fpu is
   end component;
 
   component fcmp
-    port(
+\    port(
       inputa:in datat;
       inputb:in datat;
       funct:in functt;
@@ -85,7 +85,7 @@ begin
                                                                      --sub dayon
                data2 ;
 
-       result<=add_result when funct="---0-" else --0 add  1 sub
-                mul_result when funct="---10" else
-                inv_result when funct="---11";
+       result<= add_result when funct=0 or funct=1 else --0 add  1 sub
+                mul_result when funct=2 else
+                inv_result when funct=3;
 end nobunaga;
