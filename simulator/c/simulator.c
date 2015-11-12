@@ -656,7 +656,6 @@ int inst_hlt(simulator* sim_p, instruction inst)
 	return 0;
 }
 
-
 int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_binary, unsigned char fmt_binary, unsigned char ft_binary, unsigned char function_binary)
 {
 	/*
@@ -667,7 +666,6 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 		printf("function_binary = %d\n", function_binary);
 	}
 	*/
-
 	sim_p->dynamic_inst_cnt++;
 	//if(IS_DEBUG){printf("%d\n", sim_p->pc);}
 	if(operation_binary == 0 && function_binary == 32) return inst_add(sim_p, inst);
@@ -782,16 +780,20 @@ void simulate(simulator* sim_p)
 		function_binary = get_binary_unsigned(inst, 26, 32);
 
 		res = simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
-		//if(IS_DEBUG){print_reg(sim_p);}
-		//if(IS_DEBUG)printf("simulate_inst returns\n");
 		if(res == 0){
 			break;
 		}else{
 			continue;
 		}
 	}
+	/*
+	 * Dynamic Instruction Count
+	 */
 	printf("dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
-	// print %v0
+	/*
+	 * print Resut
+	 * ---------------------------------------
+	 *  Format:  "int:[int_res],float:[float_res]"
+	 */
 	printf("int:%d,float:%.8f\n", sim_p->reg[2], sim_p->f_reg[2]);
 }
-
