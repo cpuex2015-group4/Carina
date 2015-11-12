@@ -8,6 +8,7 @@ use work.p_type.all;
 
 entity fpu is    --single しか使わないので fmt は省いてあります
 port (
+  clk:in std_logic;
   funct:in functt;
   data1: in datat:=x"00000000";
   data2: in datat:=x"00000000";
@@ -35,16 +36,17 @@ architecture nobunaga of fpu is
 
   component finv
     port(
+      clk:in std_logic;
       input:in datat;
       output:out datat
       );
   end component;
 
   component fcmp
-\    port(
+    port(
       inputa:in datat;
       inputb:in datat;
-      funct:in functt;
+      mode:in functt;
       output:out std_logic
     );
   end component;
@@ -69,6 +71,7 @@ begin
 
   fi: finv
     port map(
+      clk=>clk,
       input=>data1,
       output=>inv_result
       );
@@ -77,7 +80,7 @@ begin
     port map(
       inputa=>data1,
       inputb=>data2,
-      funct=>funct,
+      mode=>funct,
       output=>FPCond
     );
 

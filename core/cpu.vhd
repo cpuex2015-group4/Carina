@@ -70,6 +70,7 @@ architecture RTL of cpu is
 
   component fpu    --single しか使わないので fmt は省いてあります
     port (
+      clk:in std_logic;
       funct:in functt;
       data1: in datat:=x"00000000";
       data2: in datat:=x"00000000";
@@ -154,6 +155,7 @@ begin
 
   fpu_main: fpu    --single しか使わないので fmt は省いてあります
    port map(
+     clk,
       fpu_funct,
       fpu_data1,
       fpu_data2,
@@ -417,7 +419,7 @@ begin
               SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
               if control.RegWrite='1' then
                 if inst.reg_dest /= x"00000" then
-                  if inst.opecode="110001" then  --lw single
+                  if inst.opecode="010001" or inst.opecode="110001" then  --flu(0x11) and lw.s(0x31)
                     fpu_reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
                   else
                       reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
