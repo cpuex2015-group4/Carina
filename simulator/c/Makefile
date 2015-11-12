@@ -1,6 +1,6 @@
 TARGET=csim
 CC=gcc
-CFLAGS=-Wall -std=c99 
+CFLAGS=-Wall -std=c99 -O3
 SRC_MAIN=main.c
 SRC_UTILS=utils.c
 SRC_SIM=simulator.c
@@ -14,15 +14,8 @@ HEADER_UTILS=utils.h
 $(TARGET): $(OBJS)
 	$(CC) -o $(TARGET) $(CFLAGS) $(OBJS)
 
-$(OBJ_MAIN): $(SRC_MAIN) 
-	$(CC) -c $(CFLAGS) $(SRC_MAIN)
-
-$(OBJ_SIM): $(SRC_SIM) 
-	$(CC) -c $(CFLAGS) $(SRC_SIM)
-
-$(OBJ_UTILS): $(SRC_UTILS) 
-	$(CC) -c $(CFLAGS) $(SRC_UTILS)
-
+%.o: %.c
+	$(CC) -c $(CFLAGS) $<
 
 .PHONY: clean
 clean:
