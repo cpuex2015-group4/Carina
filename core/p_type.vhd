@@ -140,7 +140,7 @@ package body p_type is
       when "000010" | "000011" =>
         control.PC_control:=j;
       when "000000" =>
-        if funct="001000" | funct="001001" then
+        if funct="001000" or funct="001001" then
           control.PC_control:=jr;
         else
           control.PC_control:=normal;

@@ -6,7 +6,6 @@
 *~
 core/working
 core/hakeisimu
-core/_*
 #*#
 __pycache__
 .python-version
