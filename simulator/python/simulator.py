@@ -30,6 +30,7 @@ class Simulator:
 		self.inst_mem = []
 		self.mem = {}
 		self.fpcond = 0
+		self.dic = 0  # dynamic instruction count
 
 		with open(filename, "rb") as file_in:
 			self.binary = file_in.read()
@@ -63,9 +64,18 @@ class Simulator:
 		rv: int
 			the content of return value register %v0
 		"""
+		if verbose:
+			print("(pc, dyn_inst_cnt, %gp, %sp, disas)")
+
 		while(True):
+			self.dic += 1
 			inst = self.inst_mem[self.pc]
-			if verbose: print(self.pc, utils.bin2int(self.reg["11100"]), utils.bin2int(self.reg["11101"]), disas.disassember(inst))
+			if verbose:
+				print(  self.pc,
+						self.dic,
+						utils.bin2int(self.reg["11100"]),
+						utils.bin2int(self.reg["11101"]),
+						disas.disassember(inst))
 			res = self.fetch_instruction(inst)
 			# halting at `hlt` instruction
 			if(res == 0): break
