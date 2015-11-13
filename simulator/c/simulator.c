@@ -529,13 +529,13 @@ int inst_cs(simulator* sim_p, instruction inst, int option)
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
 	if(option == 0)
-		sim_p->fpcond = ft==fs? 1 : 0;
+		sim_p->fpcond = fs==ft? 1 : 0;
 
 	if(option == 1)
-		sim_p->fpcond = ft<fs? 1 : 0;
+		sim_p->fpcond = fs<ft? 1 : 0;
 
 	if(option == 2)
-		sim_p->fpcond = ft<=fs? 1 : 0;
+		sim_p->fpcond = fs<=ft? 1 : 0;
 
 	sim_p->pc++;
 	return 1;

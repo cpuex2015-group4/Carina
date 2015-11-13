@@ -445,8 +445,8 @@ class Instruction:
 		Format : [ 010001 | 10000 | %ft | %fs | --- | 110010 ]
 		"""
 		inst_bin = "01000110000" +\
-				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				"00000110010"
 		return utils.bin2bytes(inst_bin)
 
@@ -457,8 +457,8 @@ class Instruction:
 		Format : [ 010001 | 10000 | %ft | %fs | --- | 111100 ]
 		"""
 		inst_bin = "01000110000" +\
-				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				"00000111100"
 		return utils.bin2bytes(inst_bin)
 
@@ -469,8 +469,8 @@ class Instruction:
 		Format : [ 010001 | 10000 | %ft | %fs | --- | 111110 ]
 		"""
 		inst_bin = "01000110000" +\
-				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				Parser.parse_operand(operands[1], Operandtype.REGISTER_DIRECT)[0] +\
+				Parser.parse_operand(operands[0], Operandtype.REGISTER_DIRECT)[0] +\
 				"00000111110"
 		return utils.bin2bytes(inst_bin)
 
