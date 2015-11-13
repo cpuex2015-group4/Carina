@@ -26,7 +26,7 @@ def csim(name):
 			shell = False)
 	# capture output in stdout as return value
 	# output := int:[int_return],float:[float_return]
-	rvs = p.stdout.readlines()[0].split(",") #["int"+Vi, "float"+Vf]
+	rvs = p.stdout.readlines()[1].split(",") #["int"+Vi, "float"+Vf]
 	rvi = rvs[0].replace("int:", "")
 	rvf = rvs[1].replace("float:", "")
 	return (int(rvi), float(rvf))
@@ -80,7 +80,6 @@ def test_fadd():
 	compile(tb)
 	expected = 2.9
 	#assert csim(tb)[1] == expected 
-	assert csim(tb)[1] == expected 
 	assert float_eq(pysim(tb, "float"), expected)
 
 def test_fmul():
