@@ -91,8 +91,9 @@ package p_type is
     f1:datat;
     f2:datat;
     f3:datat;
-    fp:datat;
+    gp:datat;
     sp:datat;
+    fp:datat;
     at:datat;
     FPCond:std_logic;
     data:data_file;

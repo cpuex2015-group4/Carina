@@ -5,7 +5,9 @@
 *.s
 *~
 core/working
+core/_impact*
 core/hakeisimu
+core/iseconfig
 #*#
 __pycache__
 .python-version

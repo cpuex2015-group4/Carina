@@ -64,6 +64,7 @@ architecture RTL of cpu is
       SRAM_WE:out std_logic:='1';
       entry:out datat;
       IO_RE,loaded: out std_logic:='0';
+      heap_head:out datat;
       reset:in std_logic:='0'
       );
   end component;
@@ -120,7 +121,7 @@ signal isZero:std_logic;
   signal loader_SRAM_ADDR: std_logic_vector(19 downto 0):="00000000000000000000";
   signal loader_SRAM_DATA: datat:="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
   signal loader_SRAM_WE:std_logic:='1';
-
+  signal heap_head:datat;
 -- 
   constant memory_write_wait:std_logic_vector(2 downto 0):="010";
   constant memory_read_wait:std_logic_vector(2 downto 0):="101";
@@ -178,6 +179,7 @@ begin
     sram_we=>loader_sram_we,
      entry=>entry_point,
 	 io_re=>loader_io_re,
+    heap_head=>heap_head,
 	 loaded=>loaded,
      reset=>loader_reset);
 
@@ -227,6 +229,8 @@ begin
 --        io_we<=loader_io_re;
           end if;
         when EXE_READY=>
+          reg_file(29)<="00000000000011111111111111111111";   --sp=mem_max;
+          reg_file(28)<=heap_head; --gp=heap_head
           io_we<='0';
           word_access<='0';
           report "exe ready";
@@ -244,6 +248,7 @@ begin
           DEBUG.f2<=fpu_reg_file(2);
           DEBUG.f3<=fpu_reg_file(3);
           DEBUG.fp<=reg_file(30);
+          DEBUG.gp<=reg_file(28);
           DEBUG.sp<=reg_file(29);
           DEBUG.ra<=reg_file(31);
           DEBUG.at<=reg_file(1);
