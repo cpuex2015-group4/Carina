@@ -6,6 +6,7 @@ import pprint
 import utils
 from disassembler import Disassembler
 from fpu_module import FpuModule as fpu
+import traceback
 import pickle
 
 disas = Disassembler()
@@ -84,7 +85,8 @@ class Simulator:
 		except Exception as e:
 			with open(".mem-dump", "w") as dump:
 				pickle.dump(self.mem, dump)
-			print("{}: {}".format(type(e), e))
+			sys.stderr.write("{}: {}".format(type(e), e))
+			sys.stderr.write(traceback.format_exc())
 			raise e
 	
 		# return the content of %v0 and %f2
