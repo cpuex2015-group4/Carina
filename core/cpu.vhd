@@ -470,7 +470,7 @@ begin
       -- do nothing
 
           if IS_SIM then
-            assert false report "Halted" severity failure;x
+            assert false report "Halted" severity failure;
           end if;
           if IS_DEBUG then
             if IO_full='0' then
