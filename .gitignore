@@ -10,3 +10,4 @@ core/hakeisimu
 __pycache__
 .python-version
 raytracer/raytracer
+.mem-dump

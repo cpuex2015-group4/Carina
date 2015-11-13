@@ -19,7 +19,7 @@ def compile(name):
 
 def csim(name):
 	# execute on c simulator
-	p = subprocess.Popen([CSIM, name + ".o"],
+	p = subprocess.Popen([CSIM, "-f" + name + ".o"],
 			stdin  = subprocess.PIPE,
 			stdout = subprocess.PIPE,
 			stderr = subprocess.PIPE,

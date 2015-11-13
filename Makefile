@@ -7,6 +7,7 @@ MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
 LIBMINCAML=$(MINCAML_DIR)/libmincaml.S
 AS=$(PYTHON) ./assembler/main.py
+PC_EMITTER=$(PYTHON) ./assembler/emit.py
 CSIM_DIR=./simulator/c
 FSIM_DIR=./simulator/fpu
 PYSIM=$(PYTHON) ./simulator/python/main.py
@@ -15,6 +16,7 @@ SLD=./raytracer/contest.sld
 
 $(TARGET): $(MINCAML) $(MINRT).s
 	$(AS) $(MINRT).s
+	$(PC_EMITTER) $(MINRT).s
 	mv $(MINRT).o $(MINRT)
 
 $(MINRT).s: $(MINRT).ml
