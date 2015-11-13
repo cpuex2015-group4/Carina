@@ -17,7 +17,7 @@
 #define USE_FPU_SIM 0
 
 int IS_DEBUG = 0;
-int MEM_SIZE = 1000000;
+unsigned long MEM_SIZE = 100000000000LL;
 
 int main(int argc, char* argv[])
 {

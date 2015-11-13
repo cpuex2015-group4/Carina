@@ -17,13 +17,15 @@ simulator *init_sim()
 	sim->dynamic_inst_cnt = 0;
 	sim->fpcond = 0;
 	sim->reg = (int*)malloc(sizeof(int) * 32);
+	memset(sim->reg, 0, (sizeof(int) * 32));
 	sim->f_reg = (float*)malloc(sizeof(float) * 32);
+
 	for(i = 0; i < 32; i++){
 		sim->f_reg[i] = 0.0;
 	}
-	memset(sim->reg, 0, (sizeof(int) * 32));
+
 	//memset(sim->f_reg, 0, (sizeof(float) * 32));
-	sim->reg[29] = 100; //stackpointer = reg[29]
+	sim->reg[29] = 1048575;  //stack pointer 0xfffff
 	sim->mem = calloc(sizeof(int), MEM_SIZE);
 	return sim;
 }
@@ -148,7 +150,10 @@ void load_binary(simulator* sim, FILE* fp)
 	binary_size = fread(buf, sizeof(unsigned char), 1000000, fp);
 	sim->binary_size = binary_size;
 	sim->inst_mem = malloc(sizeof(unsigned char) * binary_size);
+
 	sim->reg[28] = sim->text_size + sim->data_size; //heap pointer 
+	sim->reg[29] = 1048575;  //stack pointer 0xfffff
+
 	memset(sim->inst_mem, 0, binary_size);
 	//printf("binary_size = %d, inst_cnt = %d\n", binary_size, sim->inst_cnt);
 	load_header(sim, buf);
@@ -322,6 +327,7 @@ int inst_jr(simulator* sim_p, instruction inst)
 	if(IS_DEBUG){printf("jr\n");}
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
+	if(IS_DEBUG){printf("reg_s_idx = %d\n", ops.reg_s_idx);}
 	sim_p->pc = reg_s;
 	return 1;
 }
@@ -332,6 +338,7 @@ int inst_jral(simulator* sim_p, instruction inst)
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	sim_p->reg[31] = (sim_p->pc + 1);
+	if(IS_DEBUG){printf("sim_p->pc + 1  = %d\n", sim_p->pc + 1);}
 	sim_p->pc = reg_s;
 	return 1;
 }
@@ -521,7 +528,7 @@ int inst_cseq(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	sim_p->fpcond = ft==fs? 1 : 0;
+	sim_p->fpcond = fs==ft? 1 : 0;
 	sim_p->pc++;
 	return 1;
 }
@@ -532,7 +539,7 @@ int inst_cslt(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	sim_p->fpcond = ft<fs? 1 : 0;
+	sim_p->fpcond = fs<ft? 1 : 0;
 	sim_p->pc++;
 	return 1;
 }
@@ -543,7 +550,7 @@ int inst_csle(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	sim_p->fpcond = ft<=fs? 1 : 0;
+	sim_p->fpcond = fs<=ft? 1 : 0;
 	sim_p->pc++;
 	return 1;
 }
@@ -729,7 +736,7 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 
 	if(operation_binary ==17 && fmt_binary == 16  && function_binary == 2) return inst_muls(sim_p, inst);
 
-	if(operation_binary == 22 && function_binary == 22) return inst_invs(sim_p, inst);
+	//if(operation_binary == 22 && function_binary == 22) return inst_invs(sim_p, inst);
 
 	/*
 	 * MIPS say 17, 16, 3 is FDIV
@@ -787,6 +794,10 @@ void simulate(simulator* sim_p)
 		function_binary = get_binary_unsigned(inst, 26, 32);
 
 		res = simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
+		if(IS_DEBUG){
+			//print_reg(sim_p);
+			//print_mem(sim_p);
+		}
 		if(res == 0){
 			break;
 		}else{
