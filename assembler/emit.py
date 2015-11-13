@@ -12,12 +12,14 @@ $ python emit.py [assembly-file]
 """
 
 import sys
+import re
 
 if __name__ == "__main__":
 	with open(sys.argv[1], "r") as ic:
 		text = ic.readlines()
 	
 	pc = 0
+	pat = re.compile(r"[^#]*:")
 	for i in range(len(text)):
 		t = text[i]
 		if  t.strip() != "" \
@@ -26,7 +28,7 @@ if __name__ == "__main__":
 		and ".text" not in t \
 		and ".long" not in t \
 		and ".globl" not in t \
-		and ":" not in t:
+		and pat.match(t) is None:
 			text[i] = "{}  # {}\n".format(t.rstrip('\n'), pc)
 			pc += 1
 
