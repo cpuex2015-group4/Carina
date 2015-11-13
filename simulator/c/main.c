@@ -5,8 +5,9 @@
  *
  * OPTION
  * -------------------------
- *  -f [objectfile] Essential!!!
- *  -d (Debug Option)
+ *  -f [objectfile] Essential
+ *  -t Test (when to make output only result(="int:[int_res],float:[float_res]"))
+ *  -d Debug Option
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +23,7 @@ int main(int argc, char* argv[])
 {
 	FILE* fp_binary;
 	int result;
-	while((result=getopt(argc,argv,"df:"))!=-1){
+	while((result=getopt(argc,argv,"dtf:"))!=-1){
 		switch(result){
 			/* 
 			 * Option that does not need arg

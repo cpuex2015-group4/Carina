@@ -515,28 +515,35 @@ int inst_adds(simulator* sim_p, instruction inst)
 	return 1;
 }
 
-int inst_cs(simulator* sim_p, instruction inst, int option)
+int inst_cseq(simulator* sim_p, instruction inst)
 {
-	if(IS_DEBUG){printf("cs\n");}
-	/*
-	 * option
-	 * -----------
-	 *  0->EQ
-	 *  1->LT
-	 *  2->LE
-	 */
+	if(IS_DEBUG){printf("cseq\n");}
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	if(option == 0)
-		sim_p->fpcond = ft==fs? 1 : 0;
+	sim_p->fpcond = ft==fs? 1 : 0;
+	sim_p->pc++;
+	return 1;
+}
 
-	if(option == 1)
-		sim_p->fpcond = ft<fs? 1 : 0;
+int inst_cslt(simulator* sim_p, instruction inst)
+{
+	if(IS_DEBUG){printf("cslt\n");}
+	operands ops = decode_FR(inst);
+	float ft = sim_p->f_reg[ops.ft_idx];
+	float fs = sim_p->f_reg[ops.fs_idx];
+	sim_p->fpcond = ft<fs? 1 : 0;
+	sim_p->pc++;
+	return 1;
+}
 
-	if(option == 2)
-		sim_p->fpcond = ft<=fs? 1 : 0;
-
+int inst_csle(simulator* sim_p, instruction inst)
+{
+	if(IS_DEBUG){printf("csle\n");}
+	operands ops = decode_FR(inst);
+	float ft = sim_p->f_reg[ops.ft_idx];
+	float fs = sim_p->f_reg[ops.fs_idx];
+	sim_p->fpcond = ft<=fs? 1 : 0;
 	sim_p->pc++;
 	return 1;
 }
@@ -639,7 +646,7 @@ int inst_out(simulator* sim_p, instruction inst)
 {
 	if(IS_DEBUG){printf("out\n");} 
 	operands ops = decode_R(inst);
-	printf("%c\n", (char)sim_p->reg[ops.reg_t_idx]);
+	printf("%c", (char)sim_p->reg[ops.reg_t_idx]);
 	sim_p->pc++;
 	return 1;
 }
@@ -714,11 +721,11 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 
 	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 0) return inst_adds(sim_p, inst);
 
-	if(operation_binary == 17 && fmt_binary == 16 &&function_binary == 50) return inst_cs(sim_p, inst, 0);
+	if(operation_binary == 17 && fmt_binary == 16 &&function_binary == 50) return inst_cseq(sim_p, inst);
 
-	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 60) return inst_cs(sim_p, inst, 1);
+	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 60) return inst_cslt(sim_p, inst);
 
-	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 62) return inst_cs(sim_p, inst, 2);
+	if(operation_binary == 17 && fmt_binary == 16 && function_binary == 62) return inst_csle(sim_p, inst);
 
 	if(operation_binary ==17 && fmt_binary == 16  && function_binary == 2) return inst_muls(sim_p, inst);
 
