@@ -6,6 +6,7 @@ import pprint
 import utils
 from disassembler import Disassembler
 from fpu_module import FpuModule as fpu
+import pickle
 
 disas = Disassembler()
 
@@ -67,18 +68,24 @@ class Simulator:
 		if verbose:
 			print("(pc, dyn_inst_cnt, %gp, %sp, disas)")
 
-		while(True):
-			self.dic += 1
-			inst = self.inst_mem[self.pc]
-			if verbose:
-				print(  self.pc,
-						self.dic,
-						utils.bin2int(self.reg["11100"]),
-						utils.bin2int(self.reg["11101"]),
-						disas.disassember(inst))
-			res = self.fetch_instruction(inst)
-			# halting at `hlt` instruction
-			if(res == 0): break
+		try:
+			while(True):
+				self.dic += 1
+				inst = self.inst_mem[self.pc]
+				if verbose:
+					print(  self.pc,
+							self.dic,
+							utils.bin2int(self.reg["11100"]),
+							utils.bin2int(self.reg["11101"]),
+							disas.disassember(inst))
+				res = self.fetch_instruction(inst)
+				# halting at `hlt` instruction
+				if(res == 0): break
+		except Exception as e:
+			with open(".mem-dump", "w") as dump:
+				pickle.dump(self.mem, dump)
+			print("{}: {}".format(type(e), e))
+			raise e
 	
 		# return the content of %v0 and %f2
 		return (self.reg["00010"], self.freg["00010"])
