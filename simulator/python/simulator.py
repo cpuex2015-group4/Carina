@@ -6,6 +6,8 @@ import pprint
 import utils
 from disassembler import Disassembler
 from fpu_module import FpuModule as fpu
+import traceback
+import pickle
 
 disas = Disassembler()
 
@@ -30,6 +32,7 @@ class Simulator:
 		self.inst_mem = []
 		self.mem = {}
 		self.fpcond = 0
+		self.dic = 0  # dynamic instruction count
 
 		with open(filename, "rb") as file_in:
 			self.binary = file_in.read()
@@ -63,12 +66,28 @@ class Simulator:
 		rv: int
 			the content of return value register %v0
 		"""
-		while(True):
-			inst = self.inst_mem[self.pc]
-			if verbose: print(self.pc, utils.bin2int(self.reg["11100"]), utils.bin2int(self.reg["11101"]), disas.disassember(inst))
-			res = self.fetch_instruction(inst)
-			# halting at `hlt` instruction
-			if(res == 0): break
+		if verbose:
+			print("(pc, dyn_inst_cnt, %gp, %sp, disas)")
+
+		try:
+			while(True):
+				self.dic += 1
+				inst = self.inst_mem[self.pc]
+				if verbose:
+					print(  self.pc,
+							self.dic,
+							utils.bin2int(self.reg["11100"]),
+							utils.bin2int(self.reg["11101"]),
+							disas.disassember(inst))
+				res = self.fetch_instruction(inst)
+				# halting at `hlt` instruction
+				if(res == 0): break
+		except Exception as e:
+			with open(".mem-dump", "w") as dump:
+				pickle.dump(self.mem, dump)
+			sys.stderr.write("{}: {}".format(type(e), e))
+			sys.stderr.write(traceback.format_exc())
+			raise e
 	
 		# return the content of %v0 and %f2
 		return (self.reg["00010"], self.freg["00010"])
