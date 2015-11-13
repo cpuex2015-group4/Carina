@@ -29,10 +29,9 @@ end cpu;
 ----pipeline mo nanimo sitenai yo
 ----pipeline ga sitai naa
 
-
-
 architecture RTL of cpu is
 
+  constant IS_DEBUG:boolean:=false;
   component BRAM_INST
     port(
       addra: in BRAM_ADDRT;
@@ -200,12 +199,18 @@ begin
         when INIT=>
           total_instruction<=ZERO;
           loader_reset<='0';
-          if io_full='0' then
-            io_we<='1';
-            io_send_data<=x"4341524e";
+
+          if IS_DEBUG then
+            if io_full='0' then
+              io_we<='1';
+              io_send_data<=x"4341524e";
+            else
+              io_we<='0';
+              core_state<=WaIT_HEADER;
+            end if;
           else
-            io_we<='0';
             core_state<=WaIT_HEADER;
+            io_we<='0';
           end if;
         when WAIT_HEADER =>
       --debug
@@ -220,8 +225,10 @@ begin
           sram_we<=loader_sram_we;
           loader_activate<='1';
           if loaded='1' then
-			io_send_data<=x"52435644";
-			IO_WE<='1';
+            if IS_DEBUG then
+              io_send_data<=x"52435644";
+              IO_WE<='1';
+            end if;
             PC<=entry_point;
             core_state<=EXE_READY;
 --       else
@@ -460,15 +467,16 @@ begin
           end case;
         when HALTED =>
       -- do nothing
-       if IO_full='0' then
-         IO_we<='1';
-         IO_send_data<=total_instruction;
-         core_state<=INIT;
-         exe_state<=WB;
-       else
-         IO_we<='0';
-       end if;
-
+          if IS_DEBUG then
+            if IO_full='0' then
+              IO_we<='1';
+              IO_send_data<=total_instruction;
+              core_state<=INIT;
+              exe_state<=WB;
+            else
+              IO_we<='0';
+            end if;
+          end if;
       end case;
     end if;
   end process;
