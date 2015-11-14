@@ -6,7 +6,7 @@
  * OPTION
  * -------------------------
  *  NEEDS ARGUMENT:
- *  -b [Dynamic InstCnt] Break Point
+ * // -b [Dynamic InstCnt] Break Point
  *  -f [objectfile] Essential
  *
  *  NOT NEED ARGUMENT:
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 				}
 				if(IS_DEBUG)fprintf(stdout,"Object File : %s\n", optarg);
 				break;
-
+			
 			case ':':
 				fprintf(stdout,"%c needs value\n",result);
 				break;

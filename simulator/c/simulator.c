@@ -6,6 +6,7 @@
 
 extern int MEM_SIZE;
 extern int INST_CNT;
+extern int IS_DEBUG;
 
 char* REG_ARR[] = {""};
 
@@ -660,6 +661,12 @@ int inst_hlt(simulator* sim_p, instruction inst)
 	return 0;
 }
 
+/*
+ * Function Pointer Array
+ * -----------------
+ *  for function  inst_hoge(simulator* sim_p, instruction inst);
+ */
+
 int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_binary, unsigned char fmt_binary, unsigned char ft_binary, unsigned char function_binary)
 {
 	sim_p->dynamic_inst_cnt++;
@@ -751,6 +758,8 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 	return 0;
 }
 
+extern int simulate_inst_debug(simulator* , instruction, unsigned char, unsigned char, unsigned char, unsigned char);
+
 void simulate(simulator* sim_p)
 {
 	instruction inst;
@@ -760,6 +769,13 @@ void simulate(simulator* sim_p)
 	unsigned char function_binary;
 	int res = 0;
 	sim_p->pc = sim_p->entry_point;
+
+	int (*simulate_inst_p)(simulator*, instruction, unsigned char, unsigned char, unsigned char, unsigned char);
+	if(IS_DEBUG){
+		simulate_inst_p = simulate_inst_debug;
+	}else{
+		simulate_inst_p = simulate_inst;
+	}
 	while(1){
 		inst = 0;
 		inst = load_char(inst, inst2char(sim_p->inst_mem[sim_p->pc], 0), 0);
@@ -772,7 +788,7 @@ void simulate(simulator* sim_p)
 		ft_binary = get_binary_unsigned(inst, 11, 16); 
 		function_binary = get_binary_unsigned(inst, 26, 32);
 
-		res = simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
+		res = simulate_inst_p(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
 		if(res == 0){
 			break;
 		}else{
