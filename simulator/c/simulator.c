@@ -206,15 +206,17 @@ void load_binary(simulator* sim, FILE* fp)
 	sim->binary_size = binary_size;
 	sim->inst_mem = malloc(sizeof(unsigned char) * binary_size);
 
-	sim->reg[28] = sim->text_size + sim->data_size; //heap pointer 
-	sim->reg[29] = 1048575;  //stack pointer 0xfffff
 
 	memset(sim->inst_mem, 0, binary_size);
 	//printf("binary_size = %d, inst_cnt = %d\n", binary_size, sim->inst_cnt);
 	load_header(sim, buf);
 	load_instruction(sim, buf);
 	load_data(sim, buf);
-	if(IS_DEBUG) print_mem(sim);
+	//if(IS_DEBUG) print_mem(sim);
+
+	sim->reg[28] = sim->text_size + sim->data_size; //heap pointer 
+	sim->reg[29] = 1048575;  //stack pointer 0xfffff
+
 	return;
 }
 
@@ -462,9 +464,12 @@ int inst_slt(simulator* sim_p, instruction inst)
 	operands ops = decode_R(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	int reg_t = sim_p->reg[ops.reg_t_idx];
+	if(IS_DEBUG)printf("reg_s = %d, reg_t = %d\n", reg_s, reg_t);
 	if(reg_s < reg_t){
+		if(IS_DEBUG)puts("Set 1");
 		sim_p->reg[ops.reg_d_idx] = 1;
 	}else{
+		if(IS_DEBUG)puts("Set 0");
 		sim_p->reg[ops.reg_d_idx] = 0;
 	}
 	sim_p->pc++;
@@ -628,6 +633,7 @@ int inst_csle(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
+	if(IS_DEBUG)printf("ft = %f, fs = %f\n", ft, fs);
 	if(fs <= ft){
 		sim_p->fpcond = 1;
 	}else{
@@ -757,7 +763,7 @@ int inst_hlt(simulator* sim_p, instruction inst)
 	//print_reg(sim_p);
 	if(IS_DEBUG){
 		print_f_reg(sim_p);
-		print_mem(sim_p);
+		//print_mem(sim_p);
 		printf("dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
 	}
 	return 0;
@@ -773,8 +779,14 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 		printf("function_binary = %d\n", function_binary);
 	}
 	*/
+	/*
+	if(sim_p->dynamic_inst_cnt == 1000){
+		print_reg(sim_p);
+		return 0;
+	}
+	*/
+
 	sim_p->dynamic_inst_cnt++;
-	//if(IS_DEBUG){printf("%d\n", sim_p->pc);}
 	if(operation_binary == 0 && function_binary == 32) return inst_add(sim_p, inst);
 
 	if(operation_binary == 8) return inst_addi(sim_p, inst);
@@ -830,7 +842,6 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 	if(operation_binary ==17 && fmt_binary == 16  && function_binary == 2) return inst_muls(sim_p, inst);
 
 	//if(operation_binary == 22 && function_binary == 22) return inst_invs(sim_p, inst);
-
 	/*
 	 * MIPS say 17, 16, 3 is FDIV
 	 * but map this to FINV
@@ -871,7 +882,6 @@ void simulate(simulator* sim_p)
 	unsigned char ft_binary;
 	unsigned char function_binary;
 	int res = 0;
-	//print_reg(sim_p);
 	sim_p->pc = sim_p->entry_point;
 	while(1){
 		if(IS_DEBUG) printf("%d\n", sim_p->pc);
@@ -888,7 +898,7 @@ void simulate(simulator* sim_p)
 
 		res = simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
 		if(IS_DEBUG){
-			//print_reg(sim_p);
+			print_reg(sim_p);
 			//print_mem(sim_p);
 		}
 		if(res == 0){
