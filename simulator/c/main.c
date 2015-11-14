@@ -7,7 +7,6 @@
  * -------------------------
  *  -f [objectfile] Essential
  *  -c Instruction Count 
- *  -t Test (when to make output only result(="int:[int_res],float:[float_res]"))
  *  -d Debug Option
  */
 #include <stdio.h>
