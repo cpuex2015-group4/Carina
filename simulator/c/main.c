@@ -5,9 +5,13 @@
  *
  * OPTION
  * -------------------------
+ *  NEEDS ARGUMENT:
+ *  -b [Dynamic InstCnt] Break Point
  *  -f [objectfile] Essential
- *  -c Instruction Count 
- *  -d Debug Option
+ *
+ *  NOT NEED ARGUMENT:
+ *  -c Instruction Count Flag
+ *  -d Debug Flag
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,9 +53,11 @@ int main(int argc, char* argv[])
 				}
 				if(IS_DEBUG)fprintf(stdout,"Object File : %s\n", optarg);
 				break;
+
 			case ':':
 				fprintf(stdout,"%c needs value\n",result);
 				break;
+
 			case '?':
 				fprintf(stdout,"unknown\n");
 				break;
