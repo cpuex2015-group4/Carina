@@ -6,6 +6,7 @@
  * OPTION
  * -------------------------
  *  -f [objectfile] Essential
+ *  -c Instruction Count 
  *  -t Test (when to make output only result(="int:[int_res],float:[float_res]"))
  *  -d Debug Option
  */
@@ -17,13 +18,14 @@
 #define USE_FPU_SIM 0
 
 int IS_DEBUG = 0;
+int INST_CNT = 0;
 unsigned long MEM_SIZE = 100000000000LL;
 
 int main(int argc, char* argv[])
 {
 	FILE* fp_binary;
 	int result;
-	while((result=getopt(argc,argv,"dtf:"))!=-1){
+	while((result=getopt(argc,argv,"cdf:"))!=-1){
 		switch(result){
 			/* 
 			 * Option that does not need arg
@@ -32,6 +34,12 @@ int main(int argc, char* argv[])
 				fprintf(stdout, "DEBUG ON\n");
 				IS_DEBUG = 1;
 				break;
+
+			case 'c':
+				fprintf(stdout, "INST CNT ON\n");
+				INST_CNT = 1;
+				break;
+				
 			/*
 			 * Option that needs arg
 			 */
