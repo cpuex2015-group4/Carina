@@ -18,7 +18,6 @@
 #include <string.h>
 #include <unistd.h>
 #include "./simulator.h"
-#define USE_FPU_SIM 0
 
 int IS_DEBUG = 0;
 int INST_CNT = 0;

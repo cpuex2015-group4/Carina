@@ -505,13 +505,16 @@ int inst_div(simulator* sim_p, instruction inst)
 	return 1;
 }
 
+
+extern uint32_t fadd(uint32_t, uint32_t);
+
 int inst_adds(simulator* sim_p, instruction inst)
 {
 	if(INST_CNT)inst_cnt_arr[INST_ADDS_IDX]++;
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	float fd = fs + ft;
+	float fd = int2float(fadd(float2int(fs),  float2int(ft)));
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
@@ -555,13 +558,16 @@ int inst_csle(simulator* sim_p, instruction inst)
 	return 1;
 }
 
+
+extern uint32_t fmul(uint32_t, uint32_t);
+
 int inst_muls(simulator* sim_p, instruction inst)
 {
 	if(INST_CNT)inst_cnt_arr[INST_MULS_IDX]++;
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	float fd = fs * ft;
+	float fd = int2float(fmul(float2int(fs), float2int(ft)));
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
