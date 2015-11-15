@@ -505,7 +505,6 @@ int inst_div(simulator* sim_p, instruction inst)
 	return 1;
 }
 
-
 extern uint32_t fadd(uint32_t, uint32_t);
 
 int inst_adds(simulator* sim_p, instruction inst)
@@ -561,13 +560,25 @@ int inst_csle(simulator* sim_p, instruction inst)
 
 extern uint32_t fmul(uint32_t, uint32_t);
 
+typedef union myfloat_{
+	uint32_t muint;
+	float mfloat;
+}myfloat;
+
 int inst_muls(simulator* sim_p, instruction inst)
 {
 	if(INST_CNT)inst_cnt_arr[INST_MULS_IDX]++;
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	float fd = int2float(fmul(float2int(fs), float2int(ft)));
+	myfloat mf1;
+	myfloat mf2;
+	myfloat mf_ans;
+	mf1.mfloat = fs;
+	mf2.mfloat = ft;
+	mf_ans.muint = fmul(mf1.muint, mf2.muint);
+	float fd = mf_ans.mfloat;
+	//float fd = fs * ft; 
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;

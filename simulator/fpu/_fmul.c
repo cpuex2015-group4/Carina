@@ -8,6 +8,25 @@ typedef union myfloat_{
 	float mfloat;
 } myfloat;
 
+void print_int2bin_(unsigned int n)
+{
+	char buf[32];
+	int i;
+	for(i = 0; i < 32; i++){
+		if(n % 2 == 0){
+			buf[i] = '0';
+		}else{
+			buf[i] = '1';
+		}
+		n = n >> 1;
+	}
+	for(i = 0; i < 32; i++){
+		printf("%c", buf[31 - i]);
+	}
+	puts("");
+	return;
+}
+
 uint32_t get_binary_unsigned_(uint32_t n, int start, int end)
 {
 	int len = end - start;
@@ -49,13 +68,20 @@ int get_binary_signed_(int n, int start, int end)
 	return n;
 }
 
+int pow_2(int n)
+{
+	//calt 2\n
+	if(n == 0) return 1;
+	if(n == 1) return 2;
+	if(n % 2 == 0) return pow_2(n / 2) * pow_2(n / 2);
+	return pow_2(n / 2) * pow_2(n / 2) * 2;
+}
 
 uint32_t get_msb1_idx(uint32_t ui)
 {
 	int i;
-	uint32_t tmp = (int)pow(2, 31);
-	if (ui == 0)
-		return -1;
+	uint32_t tmp = pow_2(31);
+	if (ui == 0) return -1;
 	for(i = 0; i < 32; i++){
 		if(ui == (ui | tmp)){
 			return i;
@@ -96,7 +122,9 @@ uint32_t bit_round(uint32_t n)
 uint32_t fmul(uint32_t f1, uint32_t f2)
 {
 	myfloat mf1 = {f1};
+	mf1.muint = f1;
 	myfloat mf2 = {f2};
+	mf1.muint = f2;
 	//mf1.muint = bit_round(mf1.muint);
 	//mf2.muint = bit_round(mf2.muint);
 	//step1 step2
@@ -116,7 +144,7 @@ uint32_t fmul(uint32_t f1, uint32_t f2)
 	uint32_t tmp = (fraction1_higher13bit * fraction2_higher13bit) + ((fraction1_higher13bit * fraction2_lower11bit) >> 11 ) + ((fraction2_higher13bit * fraction1_lower11bit) >> 11) + 2;
 
 	//step4
-	int is_underflow;
+	int is_underflow = 0;
 	tmp = step4(tmp, &is_underflow);
 
 	//step5
@@ -132,3 +160,16 @@ uint32_t fmul(uint32_t f1, uint32_t f2)
 	mf_ans.muint = (sign_ans << 31 | (exponent_ans << 23) | tmp);
 	return mf_ans.muint;
 }
+
+/*
+int main(void)
+{
+	myfloat mf1;
+	mf1.mfloat = 1.5;
+	myfloat mf2;
+	mf2.mfloat = 1.5;
+	myfloat mfans;
+	mfans.muint = fmul(mf1.muint, mf2.muint);
+	printf("%f\n", mfans.mfloat);
+}
+*/

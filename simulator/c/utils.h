@@ -23,6 +23,8 @@ float int2float(int i);
 
 int float2int(float f);
 
-float ui2float(unsigned int ui);
+float ui2float(unsigned int);
+
+unsigned int float2ui(float);
 
 #endif
