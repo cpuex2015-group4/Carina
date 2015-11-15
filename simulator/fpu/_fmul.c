@@ -50,14 +50,23 @@ uint32_t get_sign(myfloat mf)
 	return get_binary_unsigned_(mf.muint, 0, 1);
 }
 
+int pow_2(int n)
+{
+	//calt 2\n
+	if(n == 0) return 1;
+	if(n == 1) return 2;
+	if(n % 2 == 0) return pow_2(n / 2) * pow_2(n / 2);
+	return pow_2(n / 2) * pow_2(n / 2) * 2;
+}
+
 uint32_t set_bit(uint32_t ui, int idx)
 {
-	return ui | (uint32_t)pow(2, idx);
+	return ui | pow_2(idx);
 }
 
 uint32_t unset_bit(uint32_t ui, int idx)
 {
-	return ui & (~(uint32_t)pow(2, idx));
+	return ui & (~pow_2(idx));
 }
 
 int get_binary_signed_(int n, int start, int end)
@@ -68,14 +77,6 @@ int get_binary_signed_(int n, int start, int end)
 	return n;
 }
 
-int pow_2(int n)
-{
-	//calt 2\n
-	if(n == 0) return 1;
-	if(n == 1) return 2;
-	if(n % 2 == 0) return pow_2(n / 2) * pow_2(n / 2);
-	return pow_2(n / 2) * pow_2(n / 2) * 2;
-}
 
 uint32_t get_msb1_idx(uint32_t ui)
 {
