@@ -25,7 +25,7 @@ end mem_monkey;
 
 architecture kaze_ga_yabai_arashi of mem_monkey is
   constant Z:datat:=(others=>'Z');
-  type memt is array(0 to 255) of datat;
+  type memt is array(0 to 65535) of datat;
   signal test_mem:memt:=(others=>x"FFFFFFFF");
   signal former_xwa:std_logic:='1';
   signal forformer_xwa:std_logic:='1';
@@ -51,15 +51,15 @@ begin
     if former_xwa='0' then
       ZD<=Z;
     elsif forformer_xwa='0' then
-      report "@mem" &Integer'image(conv_integer(ZD)) & "stored@" & Integer'image(conv_integer(forformer_addr(7 downto 0)));
-      TEST_mem(conv_integer(forformer_addr(7 downto 0)))<=ZD;
+      report "@mem" &Integer'image(conv_integer(ZD)) & "stored@" & Integer'image(conv_integer(forformer_addr(15 downto 0)));
+      TEST_mem(conv_integer(forformer_addr(15 downto 0)))<=ZD;
     else
       report "loaded";
-      report "@mem" &Integer'image(conv_integer(ZD)) & "loaded@" & Integer'image(conv_integer(forforformer_addr(7 downto 0)));
-      report "memval=" & integer'image(conv_integer( TEST_mem(conv_INTEGER(forforformer_addr(7 downto 0)))));
-      ZD<=TEST_mem(conv_INTEGER(forforformer_addr(7 downto 0)));
+      report "@mem" &Integer'image(conv_integer(ZD)) & "loaded@" & Integer'image(conv_integer(forforformer_addr(15 downto 0)));
+      report "memval=" & integer'image(conv_integer( TEST_mem(conv_INTEGER(forforformer_addr(15 downto 0)))));
+      ZD<=TEST_mem(conv_INTEGER(forforformer_addr(15 downto 0)));
 --      ZD<=x"cafecafe";
-      mem_val<=TEST_mem(conv_INTEGER(forforformer_addr(7 downto 0)));
+      mem_val<=TEST_mem(conv_INTEGER(forforformer_addr(15 downto 0)));
     end if;
   end if;
   end process;

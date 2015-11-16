@@ -31,8 +31,8 @@ end cpu;
 
 architecture RTL of cpu is
 
-  constant IS_DEBUG:boolean:=false;
-  constant IS_SIM:boolean:=true;
+  constant IS_DEBUG:boolean:=true;
+  constant IS_SIM:boolean:=false;
   component BRAM_INST
     port(
       addra: in BRAM_ADDRT;
@@ -472,16 +472,17 @@ begin
           if IS_SIM then
             assert false report "Halted" severity failure;
           end if;
-          if IS_DEBUG then
-            if IO_full='0' then
-              IO_we<='1';
-              IO_send_data<=total_instruction;
-              core_state<=INIT;
-              exe_state<=WB;
-            else
-              IO_we<='0';
-            end if;
-          end if;
+          
+--          if IS_DEBUG then
+--            if IO_full='0' then
+--              IO_we<='1';
+--              IO_send_data<=total_instruction;
+--              core_state<=INIT;
+--              exe_state<=WB;
+--            else
+--              IO_we<='0';
+--            end if;
+--          end if;
       end case;
     end if;
   end process;
