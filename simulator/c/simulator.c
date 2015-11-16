@@ -670,7 +670,7 @@ int inst_out(simulator* sim_p, instruction inst)
 {
 	if(INST_CNT)inst_cnt_arr[INST_OUT_IDX]++;
 	operands ops = decode_R(inst);
-	fprintf(stderr, "%c", (char)sim_p->reg[ops.reg_t_idx]);
+	printf(stdout, "%c", (char)sim_p->reg[ops.reg_t_idx]);
 	sim_p->pc++;
 	return 1;
 }
