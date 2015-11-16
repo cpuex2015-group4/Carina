@@ -52,7 +52,7 @@ uint32_t get_sign(myfloat mf)
 
 int pow_2(int n)
 {
-	//calt 2\n
+	//return (int)pow(2, n);
 	if(n == 0) return 1;
 	if(n == 1) return 2;
 	if(n % 2 == 0) return pow_2(n / 2) * pow_2(n / 2);
@@ -76,7 +76,6 @@ int get_binary_signed_(int n, int start, int end)
 	n = n >> (32 - len);
 	return n;
 }
-
 
 uint32_t get_msb1_idx(uint32_t ui)
 {
@@ -125,7 +124,7 @@ uint32_t fmul(uint32_t f1, uint32_t f2)
 	myfloat mf1 = {f1};
 	mf1.muint = f1;
 	myfloat mf2 = {f2};
-	mf1.muint = f2;
+	mf2.muint = f2;
 	//mf1.muint = bit_round(mf1.muint);
 	//mf2.muint = bit_round(mf2.muint);
 	//step1 step2
@@ -143,7 +142,6 @@ uint32_t fmul(uint32_t f1, uint32_t f2)
 
 	//step3
 	uint32_t tmp = (fraction1_higher13bit * fraction2_higher13bit) + ((fraction1_higher13bit * fraction2_lower11bit) >> 11 ) + ((fraction2_higher13bit * fraction1_lower11bit) >> 11) + 2;
-
 	//step4
 	int is_underflow = 0;
 	tmp = step4(tmp, &is_underflow);
@@ -162,15 +160,3 @@ uint32_t fmul(uint32_t f1, uint32_t f2)
 	return mf_ans.muint;
 }
 
-/*
-int main(void)
-{
-	myfloat mf1;
-	mf1.mfloat = 1.5;
-	myfloat mf2;
-	mf2.mfloat = 1.5;
-	myfloat mfans;
-	mfans.muint = fmul(mf1.muint, mf2.muint);
-	printf("%f\n", mfans.mfloat);
-}
-*/
