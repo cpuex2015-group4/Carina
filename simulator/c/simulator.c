@@ -574,14 +574,10 @@ int inst_muls(simulator* sim_p, instruction inst)
 	myfloat mf1;
 	myfloat mf2;
 	myfloat mf_ans;
-	//mf1.mfloat = fs;
-	//mf2.mfloat = ft;
-	mf1.mfloat = 0.100;
-	mf2.mfloat = 2.3;
-	printf("mf1.mfloat = %f, mf2.mfloat = %f\n", mf1.mfloat, mf2.mfloat);
+	mf1.mfloat = fs;
+	mf2.mfloat = ft;
 	mf_ans.muint = fmul(mf1.muint, mf2.muint);
 	float fd = mf_ans.mfloat;
-	printf("mf_ans.mfloat = %f\n", mf_ans.mfloat);
 	//float fd = fs * ft; 
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
