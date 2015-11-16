@@ -571,18 +571,16 @@ int inst_muls(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
+	/*
 	myfloat mf1;
 	myfloat mf2;
 	myfloat mf_ans;
 	mf1.mfloat = fs;
 	mf2.mfloat = ft;
-	//mf1.mfloat = 3.0;
-	//mf2.mfloat = 0.3;
-	//fprintf(stderr, "mf1.mfloat = %f, mf2.mfloat = %f\n", mf1.mfloat, mf2.mfloat);
 	mf_ans.muint = fmul(mf1.muint, mf2.muint);
-	//fprintf(stderr, "mf_ans.mfloat = %f\n", mf_ans.mfloat);
 	float fd = mf_ans.mfloat;
-	//float fd = fs * ft; 
+	*/
+	float fd = fs * ft; 
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
