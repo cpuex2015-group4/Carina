@@ -117,6 +117,10 @@ def test_cls_bug2(c, py):
 def test_spill(c, py):
 	assert c == py == -431
 
+@runtest("tests/spill2", "int")
+def test_spill2(c, py):
+	assert c == py == 77880
+
 @runtest("tests/spill3", "int")
 def test_spill3(c, py):
 	assert c == py == 1617
