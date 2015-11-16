@@ -52,21 +52,22 @@ uint32_t get_sign(myfloat mf)
 
 int pow_2(int n)
 {
+	return (int)pow(2, n);
 	//calt 2\n
-	if(n == 0) return 1;
-	if(n == 1) return 2;
-	if(n % 2 == 0) return pow_2(n / 2) * pow_2(n / 2);
-	return pow_2(n / 2) * pow_2(n / 2) * 2;
+	//if(n == 0) return 1;
+	//if(n == 1) return 2;
+	//if(n % 2 == 0) return pow_2(n / 2) * pow_2(n / 2);
+	//return pow_2(n / 2) * pow_2(n / 2) * 2;
 }
 
 uint32_t set_bit(uint32_t ui, int idx)
 {
-	return ui | pow_2(idx);
+	return ui | (int)pow(2, idx);
 }
 
 uint32_t unset_bit(uint32_t ui, int idx)
 {
-	return ui & (~pow_2(idx));
+	return ui & (~(int)pow(2, idx));
 }
 
 int get_binary_signed_(int n, int start, int end)
@@ -81,7 +82,7 @@ int get_binary_signed_(int n, int start, int end)
 uint32_t get_msb1_idx(uint32_t ui)
 {
 	int i;
-	uint32_t tmp = pow_2(31);
+	uint32_t tmp = (int)pow(2, 31);
 	if (ui == 0) return -1;
 	for(i = 0; i < 32; i++){
 		if(ui == (ui | tmp)){
@@ -162,15 +163,3 @@ uint32_t fmul(uint32_t f1, uint32_t f2)
 	return mf_ans.muint;
 }
 
-/*
-int main(void)
-{
-	myfloat mf1;
-	mf1.mfloat = 1.5;
-	myfloat mf2;
-	mf2.mfloat = 1.5;
-	myfloat mfans;
-	mfans.muint = fmul(mf1.muint, mf2.muint);
-	printf("%f\n", mfans.mfloat);
-}
-*/
