@@ -139,6 +139,18 @@ def test_join_reg(c, py):
 def test_join_reg2(c, py):
 	assert c == py == 789
 
+@runtest("tests/join-stack", "int")
+def test_join_stack(c, py):
+	assert c == py == 1037
+
+@runtest("tests/join-stack2", "int")
+def test_join_stack2(c, py):
+	assert c == py == 246
+
+@runtest("tests/join-stack3", "int")
+def test_join_stack3(c, py):
+	assert c == py == 912
+
 @runtest("tests/even-odd", "int")
 def test_even_odd(c, py):
 	assert c == py == 456
