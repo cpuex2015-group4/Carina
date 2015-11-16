@@ -135,6 +135,10 @@ def test_mdb(c, py):
 def test_join_reg(c, py):
 	assert c == py == 912
 
+@runtest("tests/join-reg2", "int")
+def test_join_reg2(c, py):
+	assert c == py == 789
+
 @runtest("tests/even-odd", "int")
 def test_even_odd(c, py):
 	assert c == py == 456
@@ -146,6 +150,11 @@ def test_inprod(c, py):
 
 @runtest("tests/inprod-loop", "int")
 def test_inprod_loop(c, py):
+	# assert c == 16826400
+	assert py == 16826400
+
+@runtest("tests/inprod-rec", "int")
+def test_inprod_rec(c, py):
 	# assert c == 16826400
 	assert py == 16826400
 
