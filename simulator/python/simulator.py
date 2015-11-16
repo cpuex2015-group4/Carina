@@ -74,11 +74,12 @@ class Simulator:
 				self.dic += 1
 				inst = self.inst_mem[self.pc]
 				if verbose:
-					sys.stderr.write(  self.pc,
+					sys.stderr.write(str(
+							(self.pc,
 							self.dic,
 							utils.bin2int(self.reg["11100"]),
 							utils.bin2int(self.reg["11101"]),
-							disas.disassember(inst))
+							disas.disassember(inst))) + "\n")
 				res = self.fetch_instruction(inst)
 				# halting at `hlt` instruction
 				if(res == 0): break
