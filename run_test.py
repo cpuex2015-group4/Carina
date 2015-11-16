@@ -182,6 +182,10 @@ def test_sum(c, py):
 def test_sum_tail(c, py):
 	assert c == py == 50005000
 
+@runtest("tests/funcomp", "int")
+def test_funcomp(c, py):
+	assert c == py == 247
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))
