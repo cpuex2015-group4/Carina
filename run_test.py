@@ -174,6 +174,14 @@ def test_inprod_rec(c, py):
 	# assert c == 16826400
 	assert py == 16826400
 
+@runtest("tests/sum", "int")
+def test_sum(c, py):
+	assert c == py == 50005000
+
+@runtest("tests/sum-tail", "int")
+def test_sum_tail(c, py):
+	assert c == py == 50005000
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))
