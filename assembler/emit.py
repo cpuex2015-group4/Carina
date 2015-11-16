@@ -14,10 +14,15 @@ $ python emit.py [assembly-file]
 import sys
 import re
 
+SIGNATURE = "# emit.py executed\n"
+
 if __name__ == "__main__":
 	with open(sys.argv[1], "r") as ic:
 		text = ic.readlines()
 	
+	if text[0] == SIGNATURE:
+		sys.exit()
+
 	pc = 0
 	pat = re.compile(r"[^#]*:")
 	for i in range(len(text)):
@@ -33,4 +38,5 @@ if __name__ == "__main__":
 			pc += 1
 
 	with open(sys.argv[1], "w") as oc:
+		oc.write(SIGNATURE)
 		oc.writelines(text)
