@@ -67,14 +67,14 @@ class Simulator:
 			the content of return value register %v0
 		"""
 		if verbose:
-			print("(pc, dyn_inst_cnt, %gp, %sp, disas)")
+			sys.stderr.write("(pc, dyn_inst_cnt, %gp, %sp, disas)")
 
 		try:
 			while(True):
 				self.dic += 1
 				inst = self.inst_mem[self.pc]
 				if verbose:
-					print(  self.pc,
+					sys.stderr.write(  self.pc,
 							self.dic,
 							utils.bin2int(self.reg["11100"]),
 							utils.bin2int(self.reg["11101"]),
