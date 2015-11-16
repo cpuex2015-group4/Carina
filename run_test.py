@@ -75,6 +75,13 @@ def test_gcd_216_3375():
 	assert csim(tb)[0] == expected
 	assert int(pysim(tb), 2) == expected
 
+def test_abs():
+	tb = "tests/abs"
+	compile(tb)
+	expected = 0
+	assert csim(tb)[0] == expected
+	assert int(pysim(tb), 2) == expected
+
 def test_fadd():
 	tb = "tests/fadd"
 	compile(tb)
