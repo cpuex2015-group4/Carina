@@ -131,6 +131,10 @@ def test_mdb(c, py):
 	# assert c == 676
 	assert py == 676
 
+@runtest("tests/join-reg", "int")
+def test_join_reg(c, py):
+	assert c == py == 912
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))
