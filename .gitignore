@@ -15,3 +15,5 @@ output.ppm
 output.jpg
 log*
 python-tmp.*
+*.png
+*.jpg

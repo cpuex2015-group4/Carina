@@ -22,7 +22,7 @@ $(TARGET): $(MINCAML) $(MINRT).s
 
 $(MINRT).s: $(MINRT).ml
 	$(MINCAML) $(MINRT)
-	if [ $$? -eq 0 ]; then \
+	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $(MINRT).s; \
 	else \
 		rm $(MINRT).s; \
@@ -31,7 +31,7 @@ $(MINRT).s: $(MINRT).ml
 # the rule to make binary (compile -> cat with library -> assemble)
 %.o: %.ml $(LIBMINCAML)
 	$(MINCAML) $*
-	if [ $$? -eq 0 ]; then \
+	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $*.s; \
 		$(AS) $*.s; \
 	fi
