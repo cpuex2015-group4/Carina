@@ -82,8 +82,7 @@ def test_abs(c, py):
 @runtest("tests/fadd", "float")
 def test_fadd(c, py):
 	# 2.9
-	assert c  == 0x4039999a
-	assert py == 0x4039999a
+	assert c == py == 0x4039999a
 
 @runtest("tests/fmul", "float")
 def test_fmul(c, py):
@@ -98,8 +97,7 @@ def test_sin(c, py):
 @runtest("tests/sqrt", "float")
 def test_sqrt(c, py):
 	# 1.4142135
-	assert c  == 0x3fb504f3
-	assert py == 0x3fb504f3
+	assert c == py == 0x3fb504f3
 
 @runtest("tests/closure", "int")
 def test_closure(c, py):
@@ -136,8 +134,7 @@ def test_logistic(c, py):
 
 @runtest("tests/mdb", "int")
 def test_mdb(c, py):
-	assert c == 676
-	assert py == 676
+	assert c == py == 676
 
 @runtest("tests/join-reg", "int")
 def test_join_reg(c, py):
@@ -165,18 +162,15 @@ def test_even_odd(c, py):
 
 @runtest("tests/inprod", "int")
 def test_inprod(c, py):
-	assert c == 32000000
-	assert py == 32000000
+	assert c == py == 32000000
 
 @runtest("tests/inprod-loop", "int")
 def test_inprod_loop(c, py):
-	assert c == 16826400
-	assert py == 16826400
+	assert c == py == 16826400
 
 @runtest("tests/inprod-rec", "int")
 def test_inprod_rec(c, py):
-	assert c == 16826400
-	assert py == 16826400
+	assert c == py == 16826400
 
 @runtest("tests/sum", "int")
 def test_sum(c, py):
