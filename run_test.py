@@ -124,6 +124,20 @@ def test_cls_bug2():
 	assert csim(tb)[0] == expected 
 	assert int(pysim(tb), 2) == expected
 
+def test_spill():
+	tb = "tests/spill"
+	compile(tb)
+	expected = -431
+	assert csim(tb)[0] == expected
+	assert int(pysim(tb), 2) == expected
+
+def test_spill3():
+	tb = "tests/spill3"
+	compile(tb)
+	expected = 1617
+	assert csim(tb)[0] == expected
+	assert int(pysim(tb), 2) == expected
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))
