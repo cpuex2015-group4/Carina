@@ -79,4 +79,4 @@ clean:
 	@rm -rf *.pyc tests/*.s tests/*.o \
 		assembler/*.pyc simulator/*.pyc \
 		raytracer/*.s raytracer/*.o raytracer/raytracer \
-		.mem-dump
+		.mem-dump output.png output.ppm

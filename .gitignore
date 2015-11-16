@@ -11,3 +11,6 @@ __pycache__
 .python-version
 raytracer/raytracer
 .mem-dump
+output.ppm
+output.jpg
+log*
