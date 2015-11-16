@@ -12,21 +12,23 @@ MIN_CAML = os.path.join(ROOT, "min-caml/min-caml")
 CSIM = os.path.join(ROOT, "simulator/c/csim")
 
 def compile(name):
-	subprocess.call([MIN_CAML, name])
-	os.system("cat min-caml/libmincaml.S >> {}.s".format(name))
-	asmblr = Assembler()
-	asmblr.assemble(name + ".s")
+	if subprocess.call([MIN_CAML, name]) == 0:
+		os.system("cat min-caml/libmincaml.S >> {}.s".format(name))
+		asmblr = Assembler()
+		asmblr.assemble(name + ".s")
+	else:
+		assert False, "compile error"
 
 def csim(name):
 	# execute on c simulator
-	p = subprocess.Popen([CSIM, name + ".o"],
+	p = subprocess.Popen([CSIM, "-f" + name + ".o"],
 			stdin  = subprocess.PIPE,
 			stdout = subprocess.PIPE,
 			stderr = subprocess.PIPE,
 			shell = False)
 	# capture output in stdout as return value
 	# output := int:[int_return],float:[float_return]
-	rvs = p.stdout.readlines()[1].split(",") #["int"+Vi, "float"+Vf]
+	rvs = p.stderr.readlines()[1].split(",") #["int"+Vi, "float"+Vf]
 	rvi = rvs[0].replace("int:", "")
 	rvf = rvs[1].replace("float:", "")
 	return (int(rvi), float(rvf))
@@ -37,92 +39,150 @@ def pysim(name, t = "int"):
 	d = {"int": 0, "float": 1}
 	return sim.simulate()[d[t]]
 
-def float_eq(f1, f2):
-	print(f1)
-	print("---------------------")
-	print(f2)
-	# floating point value must be compared based on binary
-	def float2bin(f):
-		v = struct.pack('>f', f)
-		v = struct.unpack('>I', v)[0]
-		return format(v, '032b')
+def runtest(tb, ty):
+	def runtest_sub(func):
+		import functools
 
-	assert len(f1) == 32
-	print f1, float2bin(f2)
-	return f1 == float2bin(f2)
+		def float2int(f):
+			v = struct.pack('>f', f)
+			v = struct.unpack('>I', v)[0]
+			return v
 
-def test_recfib13():
-	# calculate recursive-fib(13)
-	tb = "tests/fib"
-	compile("tests/fib")
-	expected = 233
-	assert csim(tb)[0] == expected
-	assert int(pysim(tb), 2) == expected
+		@functools.wraps(func)
+		def wrapper(*args, **kwargs):
+			compile(tb)
+			if ty == "int":
+				c_result = csim(tb)[0]
+				py_result = int(pysim(tb), 2)
+			elif ty == "float":
+				c_result = float2int(csim(tb)[1])
+				py_result = int(pysim(tb, "float"), 2)
+			else:
+				assert False, "type specification must be int or float"
+			func(c_result, py_result)
+		return wrapper
+	return runtest_sub
 
-def test_ack_3_2():
-	# calculate ack(3,2)
-	tb = "tests/ack"
-	compile(tb)
-	expected = 29
-	assert csim(tb)[0] == expected
-	assert int(pysim(tb), 2) == expected
+@runtest("tests/fib", "int")
+def test_fib(c, py):
+	assert c == py == 233
 
-def test_gcd_216_3375():
-	# caluculate gcd(216, 3375)
-	tb = "tests/gcd"
-	compile(tb)
-	expected = 27
-	assert csim(tb)[0] == expected
-	assert int(pysim(tb), 2) == expected
+@runtest("tests/ack", "int")
+def test_ack(c, py):
+	assert c == py == 29
 
-def test_fadd():
-	tb = "tests/fadd"
-	compile(tb)
-	expected = 2.9
-	#assert csim(tb)[1] == expected 
-	assert float_eq(pysim(tb, "float"), expected)
+@runtest("tests/gcd", "int")
+def test_gcd(c, py):
+	assert c == py == 27
 
-def test_fmul():
-	tb = "tests/fmul"
-	compile(tb)
-	expected = 2.25
-	assert csim(tb)[1] == expected 
-	assert float_eq(pysim(tb, "float"), expected)
+@runtest("tests/abs", "int")
+def test_abs(c, py):
+	assert c == py == 0
 
-def test_sin():
-	tb = "tests/sin"
-	compile(tb)
-	expected = -1.0
-	assert csim(tb)[1] == expected 
-	assert float_eq(pysim(tb, "float"), expected)
+@runtest("tests/fadd", "float")
+def test_fadd(c, py):
+	# 2.9
+	assert c == py == 0x4039999a
 
-def test_sqrt():
-	tb = "tests/sqrt"
-	compile(tb)
-	expected = 1.41421356
-	#assert csim(tb)[1] == expected 
-	assert float_eq(pysim(tb, "float"), expected)
+@runtest("tests/fmul", "float")
+def test_fmul(c, py):
+	# 2.25
+	assert c == py == 0x40100000
 
-def test_closure():
-	tb = "tests/closure"
-	compile(tb)
-	expected = 10
-	assert csim(tb)[0] == expected 
-	assert int(pysim(tb), 2) == expected
+@runtest("tests/sin", "float")
+def test_sin(c, py):
+	# -1.0
+	assert c == py == 0xbf800000
 
-def test_cls_bug():
-	tb = "tests/cls-bug"
-	compile(tb)
-	expected = 912
-	assert csim(tb)[0] == expected 
-	assert int(pysim(tb), 2) == expected
+@runtest("tests/sqrt", "float")
+def test_sqrt(c, py):
+	# 1.4142135
+	assert c == py == 0x3fb504f3
 
-def test_cls_bug2():
-	tb = "tests/cls-bug2"
-	compile(tb)
-	expected = 45
-	assert csim(tb)[0] == expected 
-	assert int(pysim(tb), 2) == expected
+@runtest("tests/closure", "int")
+def test_closure(c, py):
+	assert c == py == 10
+
+@runtest("tests/cls-bug", "int")
+def test_cls_bug(c, py):
+	assert c == py == 912
+
+@runtest("tests/cls-bug2", "int")
+def test_cls_bug2(c, py):
+	assert c == py == 45
+
+@runtest("tests/cls-rec", "int")
+def test_cls_rec(c, py):
+	assert c == py == 1230
+
+@runtest("tests/spill", "int")
+def test_spill(c, py):
+	assert c == py == -431
+
+@runtest("tests/spill2", "int")
+def test_spill2(c, py):
+	assert c == py == 77880
+
+@runtest("tests/spill3", "int")
+def test_spill3(c, py):
+	assert c == py == 1617
+
+@runtest("tests/logistic", "float")
+def test_logistic(c, py):
+	#assert c == py == 0x3f486f60
+	pass
+
+@runtest("tests/mdb", "int")
+def test_mdb(c, py):
+	assert c == py == 676
+
+@runtest("tests/join-reg", "int")
+def test_join_reg(c, py):
+	assert c == py == 912
+
+@runtest("tests/join-reg2", "int")
+def test_join_reg2(c, py):
+	assert c == py == 789
+
+@runtest("tests/join-stack", "int")
+def test_join_stack(c, py):
+	assert c == py == 1037
+
+@runtest("tests/join-stack2", "int")
+def test_join_stack2(c, py):
+	assert c == py == 246
+
+@runtest("tests/join-stack3", "int")
+def test_join_stack3(c, py):
+	assert c == py == 912
+
+@runtest("tests/even-odd", "int")
+def test_even_odd(c, py):
+	assert c == py == 456
+
+@runtest("tests/inprod", "int")
+def test_inprod(c, py):
+	assert c == py == 32000000
+
+@runtest("tests/inprod-loop", "int")
+def test_inprod_loop(c, py):
+	assert c == py == 16826400
+
+@runtest("tests/inprod-rec", "int")
+def test_inprod_rec(c, py):
+	assert c == py == 16826400
+
+@runtest("tests/sum", "int")
+def test_sum(c, py):
+	assert c == py == 50005000
+
+@runtest("tests/sum-tail", "int")
+def test_sum_tail(c, py):
+	assert c == py == 50005000
+
+@runtest("tests/funcomp", "int")
+def test_funcomp(c, py):
+	assert c == py == 247
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]

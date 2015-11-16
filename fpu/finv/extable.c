@@ -66,7 +66,6 @@ uint32_t todownto(uint32_t from, uint32_t to, int up, int down){
 
 int main(int argc, char *argv[]){
 	union hoge input;
-	union hoge answer;
 	union hoge a0;
 	union hoge x0; // initial number
 	union hoge x1; // to derive initial number
@@ -76,9 +75,7 @@ int main(int argc, char *argv[]){
 	union hoge one;
 	uint32_t key;
 
-	uint32_t a1; // 13bit
 	uint32_t gr; // 9bit gradient(+hidden bit)
-	union hoge out;
 
 	input.f  = 1.0;
 	one.f    = 1.0;
@@ -86,18 +83,17 @@ int main(int argc, char *argv[]){
   puts("MEMORY_INITIALIZATION_RADIX=2;\nMEMORY_INITIALIZATION_VECTOR=");
 	for(key = 0; key < 0x400; key++){
 		input.i = todownto(key, input.i, 22, 13);
-		answer.f = one.f / input.f;
 		a0.i = fromdownto(input.i, 31, 13) << 13;
 
 		x1.f = one.f / a0.f;
-		x2.i = a0.i + 0x2000;
+		x2.i = a0.i + ((uint32_t)1 << 13);
 		x2.f = one.f / x2.f;
 		x0.f = (x1.f + x2.f)/2;
 
 		constant.f = 2*x0.f - a0.f * x0.f * x0.f;
 		gradient.f = x0.f * x0.f;
 
-		gr = fromdownto(gradient.i, 22, 14) + 0x200;
+		gr = fromdownto(gradient.i, 22, 14) + ((uint32_t)1 << 9);
 
 		printbit("constant", constant.i, 22, 0);
 		printbit("gradient", gr   ,  8, 0);

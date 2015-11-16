@@ -1,19 +1,67 @@
+/*
+ * USAGE
+ * -------------------------
+ * /path/to/this/dir/csim -f [objectfile] 
+ *
+ * OPTION
+ * -------------------------
+ *  NEEDS ARGUMENT:
+ * // -b [Dynamic InstCnt] Break Point
+ *  -f [objectfile] Essential
+ *
+ *  NOT NEED ARGUMENT:
+ *  -c Instruction Count Flag
+ *  -d Debug Flag
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <getopt.h>
 #include "./simulator.h"
-#define USE_FPU_SIM 0
 
 int IS_DEBUG = 0;
-int MEM_SIZE = 1000000;
+int INST_CNT = 0;
+unsigned long MEM_SIZE = 100000000000LL;
 
-int main(int argc, char* argvs[])
+int main(int argc, char* argv[])
 {
-	char* filename_binary = argvs[1];
 	FILE* fp_binary;
-	if ((fp_binary = fopen(filename_binary, "rb")) == NULL) {
-		printf("file open error!!\n");
-		exit(EXIT_FAILURE);
+	int result;
+	while((result=getopt(argc,argv,"cdf:"))!=-1){
+		switch(result){
+			/* 
+			 * Option that does not need arg
+			 */
+			case 'd':
+				fprintf(stderr, "DEBUG ON\n");
+				IS_DEBUG = 1;
+				break;
+
+			case 'c':
+				fprintf(stderr, "INST CNT ON\n");
+				INST_CNT = 1;
+				break;
+				
+			/*
+			 * Option that needs arg
+			 */
+			case 'f':
+				if ((fp_binary = fopen(optarg, "rb")) == NULL) {
+					fprintf(stderr, "file open error!!\n");
+					exit(EXIT_FAILURE);
+				}
+				if(IS_DEBUG)fprintf(stderr,"Object File : %s\n", optarg);
+				break;
+			
+			case ':':
+				fprintf(stderr,"%c needs value\n",result);
+				break;
+
+			case '?':
+				fprintf(stderr,"unknown\n");
+				break;
+		}
 	}
 
 	simulator *sim = init_sim();

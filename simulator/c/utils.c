@@ -82,4 +82,9 @@ float ui2float(unsigned int ui)
   return f_ui.f;
 }
    
-
+unsigned int float2ui(float f)
+{
+	union float_ui_ f_ui;
+	f_ui.f = f;
+	return f_ui.ui;
+}

@@ -102,7 +102,7 @@ uint32_t fadd(uint32_t a, uint32_t b) {
 		uint32_t expdiff = ae - be;
 		/* add G bit and R bit */
 		uint32_t guard;
-		switch(as != bs) {
+		switch((int)(as != bs)) {
 			case 0: guard = 2; break;
 			case 1: guard = 3; break;
 		}

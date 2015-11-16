@@ -66,7 +66,6 @@ void printbit(char *name, uint32_t f, int up, int down){
 
 int main(int argc, char *argv[]){
 	union hoge input;
-	union hoge answer;
 	union hoge a0;
 	union hoge x0; // initial number
 	union hoge x1; // to derive initial number
@@ -79,28 +78,24 @@ int main(int argc, char *argv[]){
 	uint32_t gr; // 9bit gradient(+hidden bit)
 	union hoge out;
 
-	input.i  = (uint32_t)125 << 23;
+	input.f  = 3.0; // input 
 	one.f    = 1.0;
-	answer.f = one.f / input.f;
 
-	while(fromdownto(input.i,30,23) < 129){
-		input.i += ((uint32_t)1 << 10);
-		a0.i = fromdownto(input.i, 31, 13) << 13;
-		a1 = fromdownto(input.i, 12,  0);
+	a0.i = fromdownto(input.i, 31, 13) << 13;
+	a1 = fromdownto(input.i, 12,  0);
 
-		x1.f = one.f / a0.f;
-		x2.i = a0.i + ((uint32_t)1 << 13);
-		x2.f = one.f / x2.f;
-		x0.f = (x1.f + x2.f)/2;
+	x1.f = one.f / a0.f;
+	x2.i = a0.i + ((uint32_t)1 << 13);
+	x2.f = one.f / x2.f;
+	x0.f = (x1.f + x2.f)/2;
 
-		constant.f = 2*x0.f - a0.f * x0.f * x0.f;
-		gradient.f = x0.f * x0.f;
+	constant.f = 2*x0.f - a0.f * x0.f * x0.f;
+	gradient.f = x0.f * x0.f;
 
-		gr = fromdownto(gradient.i, 22, 14) + ((uint32_t)1 << 9);
-		out.i = constant.i - ((a1 * gr) >> 10);
+	gr = fromdownto(gradient.i, 22, 14) + ((uint32_t)1 << 9);
+	out.i = constant.i - ((a1 * gr) >> 10);
 
-	  printf("%20.14e,%20.14e,%20.14e\n", input.f, out.f, 1/input.f);
-	}
+  printf("%f,%f\n", input.f, out.f);
 
 
 	return 0;
