@@ -67,7 +67,7 @@ class Simulator:
 			the content of return value register %v0
 		"""
 		if verbose:
-			sys.stderr.write("(pc, dyn_inst_cnt, %gp, %sp, disas)")
+			sys.stderr.write("(dyn_inst_cnt, pc, %gp, %sp, disas)")
 
 		try:
 			while(True):
@@ -75,11 +75,11 @@ class Simulator:
 				inst = self.inst_mem[self.pc]
 				if verbose:
 					sys.stderr.write(str(
-							(self.pc,
-							self.dic,
-							utils.bin2int(self.reg["11100"]),
-							utils.bin2int(self.reg["11101"]),
-							disas.disassember(inst))) + "\n")
+							(self.dic,
+							 self.pc,
+							 utils.bin2int(self.reg["11100"]),
+							 utils.bin2int(self.reg["11101"]),
+							 disas.disassember(inst))) + "\n")
 				res = self.fetch_instruction(inst)
 				# halting at `hlt` instruction
 				if(res == 0): break
