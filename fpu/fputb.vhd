@@ -42,14 +42,22 @@ architecture testbench of top is
     mode   : in  std_logic_vector ( 5 downto 0);
     output : out std_logic);
   end component;
-
-  signal inputA    : std_logic_vector (31 downto 0) := "01000000010000000000000000000000"; -- 3.0
-  signal inputB    : std_logic_vector (31 downto 0) := "01000000101000000000000000000000"; -- 5.0
+  
+  component fadd port (
+    ina    : in  std_logic_vector (31 downto 0);
+    inb    : in  std_logic_vector (31 downto 0);
+    output : out std_logic_vector (31 downto 0));
+  end component;
+  
+  signal inputA    : std_logic_vector (31 downto 0) := "00111111111011001100110011001101"; -- 1.85
+  signal inputB    : std_logic_vector (31 downto 0) := "00111111100001100110011001100110"; -- 1.05
   signal mode      : std_logic_vector ( 5 downto 0) := "111100";
   signal muloutput : std_logic_vector (31 downto 0);
   signal mulanswer : std_logic_vector (31 downto 0) := "01000001011100000000000000000001";
   signal invoutput : std_logic_vector (31 downto 0);
   signal invanswer : std_logic_vector (31 downto 0) := "00111110101010101010101010101001"; -- 0.33...
+  signal addoutput : std_logic_vector (31 downto 0);
+  signal addanswer : std_logic_vector (31 downto 0) := "01000000001110011001100110011010"; -- 2.90
   signal cmpoutput : std_logic;
   signal cmpanswer : std_logic := '1';
   signal tb_result : std_logic_vector (7 downto 0) := "00000000";
@@ -57,6 +65,7 @@ architecture testbench of top is
   signal mulcorrect: std_logic;
   signal invcorrect: std_logic;
   signal cmpcorrect: std_logic;
+  signal addcorrect: std_logic;
 begin
   ib : IBUFG port map (
     i => MCLK1,
@@ -80,6 +89,11 @@ begin
     inputB => inputB,
     mode   => mode,
     output => cmpoutput);
+    
+  add_u : fadd port map (
+    ina    => inputA,
+    inb    => inputB,
+    output => addoutput);
   
   rc232c : serialif port map (
     serialO => rs_tx,
@@ -93,15 +107,27 @@ begin
     if rising_edge(clk) then
       if muloutput = mulanswer then
         mulcorrect <= '1';
+      else
+        mulcorrect <= '0';
       end if;
       if invoutput = invanswer then
         invcorrect <= '1';
+      else
+        invcorrect <= '0';
       end if;
       if cmpoutput = cmpanswer then
         cmpcorrect <= '1';
+      else
+        cmpcorrect <= '0';
+      end if;
+      if addoutput = addanswer then
+        addcorrect <= '1';
+      else
+        addcorrect <= '0';
       end if;
 	  end if;
   end process;
-  tb_result <= "00000" & mulcorrect & invcorrect & cmpcorrect;
+  
+  tb_result <= "0000" & addcorrect & mulcorrect & invcorrect & cmpcorrect;
   send <= not full;
 end;
