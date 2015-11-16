@@ -14,3 +14,4 @@ raytracer/raytracer
 output.ppm
 output.jpg
 log*
+python-tmp.*
