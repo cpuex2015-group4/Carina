@@ -12,10 +12,12 @@ MIN_CAML = os.path.join(ROOT, "min-caml/min-caml")
 CSIM = os.path.join(ROOT, "simulator/c/csim")
 
 def compile(name):
-	subprocess.call([MIN_CAML, name])
-	os.system("cat min-caml/libmincaml.S >> {}.s".format(name))
-	asmblr = Assembler()
-	asmblr.assemble(name + ".s")
+	if subprocess.call([MIN_CAML, name]) == 0:
+		os.system("cat min-caml/libmincaml.S >> {}.s".format(name))
+		asmblr = Assembler()
+		asmblr.assemble(name + ".s")
+	else:
+		assert False, "compile error"
 
 def csim(name):
 	# execute on c simulator
@@ -118,6 +120,16 @@ def test_spill(c, py):
 @runtest("tests/spill3", "int")
 def test_spill3(c, py):
 	assert c == py == 1617
+
+@runtest("tests/logistic", "float")
+def test_logistic(c, py):
+	# assert c == py == 0x3f486f60
+	pass
+
+@runtest("tests/mdb", "int")
+def test_mdb(c, py):
+	# assert c == 676
+	assert py == 676
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
