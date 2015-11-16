@@ -93,7 +93,7 @@ def or_bin(bin1, bin2):
 	ans_bin = ""
 	for i, bit1 in enumerate(bin1):
 		bit2 = bin2[i]
-		and_bin += str(int(bit1) + int(bit2))
+		ans_bin += str(int(bit1) + int(bit2))
 		if ans_bin == 2:
 			ans_bin += 1
 	return ans_bin
