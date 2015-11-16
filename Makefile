@@ -45,6 +45,10 @@ debug: $(TARGET)
 	@echo "begin running raytracer ... " 1>&2
 	@cat $(SLD) | $(PYSIM) -v $(TARGET) 2> log-trace
 
+.PHONY: sim
+sim:
+	@cd $(CSIM_DIR); make
+
 .PHONY: $(TEST)
 $(TEST):
 	@echo "--------------------\nresolving test dependecies ...\n--------------------"
