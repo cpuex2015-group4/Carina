@@ -89,7 +89,7 @@ void print_mem(simulator* sim)
 	int i;
 	for(i = 0; i < MEM_SIZE; i++){
 		if(sim->mem[i] != 0){
-			printf("mem[%d] = %d\n", i, sim->mem[i]);
+			fprintf(stderr, "mem[%d] = %d\n", i, sim->mem[i]);
 		}
 	}
 	return;
@@ -98,22 +98,22 @@ void print_mem(simulator* sim)
 void print_reg(simulator* sim)
 {
 	int i;
-	puts("------------------reg---------------");
+	fprintf(stderr, "------------------reg---------------\n");
 	for(i = 0; i < 32; i++){
-		printf("reg[%d] = %d\n", i, sim->reg[i]);
+		fprintf(stderr, "reg[%d] = %d\n", i, sim->reg[i]);
 	}
-	puts("------------------------------------");
+	fprintf(stderr, "------------------------------------\n");
 	return;
 }
 
 void print_f_reg(simulator* sim)
 {
 	int i;
-	puts("------------------reg---------------");
+	fprintf(stderr, "------------------reg---------------\n");
 	for(i = 0; i < 32; i++){
-		printf("freg[%d] = %f\n", i, sim->f_reg[i]);
+		fprintf(stderr, "freg[%d] = %f\n", i, sim->f_reg[i]);
 	}
-	puts("------------------------------------");
+	fprintf(stderr, "------------------------------------\n");
 	return;
 }
 
@@ -121,7 +121,7 @@ void print_inst_cnt(void)
 {
 	int i;
 	for(i = 0; i < 35; i++){
-		printf("%s : %d\n", inst_name_arr[i], inst_cnt_arr[i]);
+		fprintf(stderr, "%s : %d\n", inst_name_arr[i], inst_cnt_arr[i]);
 	}
 	return;
 }
@@ -578,9 +578,9 @@ int inst_muls(simulator* sim_p, instruction inst)
 	mf2.mfloat = ft;
 	//mf1.mfloat = 3.0;
 	//mf2.mfloat = 0.3;
-	//printf("mf1.mfloat = %f, mf2.mfloat = %f\n", mf1.mfloat, mf2.mfloat);
+	//fprintf(stderr, "mf1.mfloat = %f, mf2.mfloat = %f\n", mf1.mfloat, mf2.mfloat);
 	mf_ans.muint = fmul(mf1.muint, mf2.muint);
-	//printf("mf_ans.mfloat = %f\n", mf_ans.mfloat);
+	//fprintf(stderr, "mf_ans.mfloat = %f\n", mf_ans.mfloat);
 	float fd = mf_ans.mfloat;
 	//float fd = fs * ft; 
 	sim_p->f_reg[ops.fd_idx] = fd;
@@ -670,7 +670,7 @@ int inst_out(simulator* sim_p, instruction inst)
 {
 	if(INST_CNT)inst_cnt_arr[INST_OUT_IDX]++;
 	operands ops = decode_R(inst);
-	printf("%c", (char)sim_p->reg[ops.reg_t_idx]);
+	fprintf(stderr, "%c", (char)sim_p->reg[ops.reg_t_idx]);
 	sim_p->pc++;
 	return 1;
 }
@@ -769,12 +769,12 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 	/*
 	 * Unexpected Instruction
 	 */
-	puts("Not Found");
-	printf("operation_binary = %d\n", operation_binary);
-	printf("fmt_binary = %d\n", fmt_binary);
-	printf("ft_binary = %d\n", ft_binary);
-	printf("function_binary = %d\n", function_binary);
-	printf("inst_binary = ");
+	fprintf(stderr, "Not Found\n");
+	fprintf(stderr, "operation_binary = %d\n", operation_binary);
+	fprintf(stderr, "fmt_binary = %d\n", fmt_binary);
+	fprintf(stderr, "ft_binary = %d\n", ft_binary);
+	fprintf(stderr, "function_binary = %d\n", function_binary);
+	fprintf(stderr, "inst_binary = ");
 	print_int2bin(inst);
 	return 0;
 }
@@ -821,12 +821,12 @@ void simulate(simulator* sim_p)
 	 * Dynamic Instruction Count
 	 */
 	if(INST_CNT)print_inst_cnt();
-	printf("dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
+	fprintf(stderr, "dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
 
 	/*
 	 * Print Resut
 	 * ---------------------------------------
 	 *  Format:  "int:[int_res],float:[float_res]"
 	 */
-	printf("int:%d,float:%.8f\n", sim_p->reg[2], sim_p->f_reg[2]);
+	fprintf(stderr, "int:%d,float:%.8f\n", sim_p->reg[2], sim_p->f_reg[2]);
 }

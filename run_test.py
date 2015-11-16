@@ -26,7 +26,7 @@ def csim(name):
 			shell = False)
 	# capture output in stdout as return value
 	# output := int:[int_return],float:[float_return]
-	rvs = p.stdout.readlines()[1].split(",") #["int"+Vi, "float"+Vf]
+	rvs = p.stderr.readlines()[1].split(",") #["int"+Vi, "float"+Vf]
 	rvi = rvs[0].replace("int:", "")
 	rvf = rvs[1].replace("float:", "")
 	return (int(rvi), float(rvf))
