@@ -11,6 +11,7 @@ PC_EMITTER=$(PYTHON) ./assembler/emit.py
 CSIM_DIR=./simulator/c
 FSIM_DIR=./simulator/fpu
 PYSIM=$(PYTHON) ./simulator/python/main.py
+CSIM=$(CSIM_DIR)/csim
 DEPENDENCY_MODULES=.install.txt
 SLD=./raytracer/contest.sld
 
@@ -36,9 +37,10 @@ $(MINRT).s: $(MINRT).ml
 	fi
 
 .PHONY: run
-run: $(TARGET)
+run: $(TARGET) $(CSIM)
 	@echo "begin running raytracer ... " 1>&2
-	@cat $(SLD) | $(PYSIM) $(TARGET)
+	@time cat $(SLD) | $(CSIM) -f $(TARGET) 1> output.ppm
+	convert output.ppm output.jpg
 
 .PHONY: debug
 debug: $(TARGET)
@@ -47,6 +49,9 @@ debug: $(TARGET)
 
 .PHONY: sim
 sim:
+	@cd $(CSIM_DIR); make
+
+$(CSIM):
 	@cd $(CSIM_DIR); make
 
 .PHONY: $(TEST)
