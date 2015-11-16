@@ -21,7 +21,10 @@ def byte2int(bytecode):
 	return sum([ord(c) * 256**(3-i) for i, c in enumerate(bytecode)])
 
 def reg2float(v):
-	v = struct.pack('>I', int(v, 2))
+	if v[0] != "-":  # positive
+		v = struct.pack('>I', int(v, 2))
+	else:  # negative
+		v = struct.pack('>I', int(v[1:], 2))
 	return struct.unpack('>f', v)[0]
 
 def float2reg(f):
