@@ -135,6 +135,20 @@ def test_mdb(c, py):
 def test_join_reg(c, py):
 	assert c == py == 912
 
+@runtest("tests/even-odd", "int")
+def test_even_odd(c, py):
+	assert c == py == 456
+
+@runtest("tests/inprod", "int")
+def test_inprod(c, py):
+	# assert c == 32000000
+	assert py == 32000000
+
+@runtest("tests/inprod-loop", "int")
+def test_inprod_loop(c, py):
+	# assert c == 16826400
+	assert py == 16826400
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))
