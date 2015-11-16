@@ -37,13 +37,13 @@ $(MINRT).s: $(MINRT).ml
 
 .PHONY: run
 run: $(TARGET)
-	@echo "begin running raytracer ... "
+	@echo "begin running raytracer ... " 1>&2
 	@cat $(SLD) | $(PYSIM) $(TARGET)
 
 .PHONY: debug
 debug: $(TARGET)
-	@echo "begin running raytracer ... "
-	@cat $(SLD) | $(PYSIM) -v $(TARGET)
+	@echo "begin running raytracer ... " 1>&2
+	@cat $(SLD) | $(PYSIM) -v $(TARGET) 2> log-trace
 
 .PHONY: $(TEST)
 $(TEST):
