@@ -5,7 +5,7 @@ import sys
 import struct
 from bind import *
 
-def runtest(tb, ty):
+def runtest(tb, ty, omit_py = False):
 	def runtest_sub(func):
 		import functools
 
@@ -19,13 +19,17 @@ def runtest(tb, ty):
 			compile(tb, quiet = True)
 			if ty == "int":
 				c_result = csim(tb)[0]
-				py_result = int(pysim(tb), 2)
+				if not omit_py: py_result = int(pysim(tb), 2)
 			elif ty == "float":
 				c_result = float2int(csim(tb)[1])
-				py_result = int(pysim(tb, "float"), 2)
+				if not omit_py: py_result = int(pysim(tb, "float"), 2)
 			else:
 				assert False, "type specification must be int or float"
-			func(c_result, py_result)
+
+			if omit_py:
+				func(c_result)
+			else:
+				func(c_result, py_result)
 		return wrapper
 	return runtest_sub
 
@@ -149,6 +153,12 @@ def test_sum_tail(c, py):
 @runtest("tests/funcomp", "int")
 def test_funcomp(c, py):
 	assert c == py == 247
+
+@runtest("tests/oscillation", "float", omit_py = True)
+def test_oscillation(c):
+	# -1.9199612
+	# assert c == 0xbff5c14a, "0x{:08x}, 0x{:08x}".format(c, 0xbff5c14a)
+	pass
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
