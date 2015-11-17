@@ -160,6 +160,10 @@ def test_oscillation(c):
 	# assert c == 0xbff5c14a, "0x{:08x}, 0x{:08x}".format(c, 0xbff5c14a)
 	pass
 
+@runtest("tests/flib", "int")
+def test_flib(c, py):
+	assert c == py == 1
+
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
 	print(pysim(tb_name))
