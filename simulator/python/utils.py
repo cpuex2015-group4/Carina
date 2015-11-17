@@ -21,7 +21,10 @@ def byte2int(bytecode):
 	return sum([ord(c) * 256**(3-i) for i, c in enumerate(bytecode)])
 
 def reg2float(v):
-	v = struct.pack('>I', int(v, 2))
+	if v[0] != "-":  # positive
+		v = struct.pack('>I', int(v, 2))
+	else:  # negative
+		v = struct.pack('>I', int(v[1:], 2))
 	return struct.unpack('>f', v)[0]
 
 def float2reg(f):
@@ -87,15 +90,6 @@ def and_bin(bin1, bin2):
 	for i, bit1 in enumerate(bin1):
 		bit2 = bin2[i]
 		and_bin += str(int(bit1) * int(bit2))
-	return ans_bin
-
-def or_bin(bin1, bin2):
-	ans_bin = ""
-	for i, bit1 in enumerate(bin1):
-		bit2 = bin2[i]
-		ans_bin += str(int(bit1) + int(bit2))
-		if ans_bin == 2:
-			ans_bin += 1
 	return ans_bin
 
 def nor_bin(bin1, bin2):

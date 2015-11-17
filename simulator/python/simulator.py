@@ -316,7 +316,7 @@ class Simulator:
 	@classmethod
 	def ori(cls, sim, inst_bin):
 		reg_s_bin, reg_t_bin, imm_bin = cls.decode_I(inst_bin)
-		sim.reg[reg_t_bin] = utils.or_bin("0000000000000000" + imm_bin, sim.reg[reg_s_bin])
+		sim.reg[reg_t_bin] = format(int("0000000000000000" + imm_bin, 2) | int(sim.reg[reg_s_bin], 2), "032b")
 		sim.pc += 1
 		return 1
 
