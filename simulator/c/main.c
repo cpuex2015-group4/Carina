@@ -24,6 +24,8 @@ int IS_DEBUG = 0;
 int INST_CNT = 0;
 unsigned long MEM_SIZE = 100000000000LL;
 
+extern void debugger_main(void);
+
 int main(int argc, char* argv[])
 {
 	FILE* fp_binary = NULL;
@@ -34,7 +36,7 @@ int main(int argc, char* argv[])
 			 * Option that does not need arg
 			 */
 			case 'd':
-				fprintf(stderr, "DEBUG ON\n");
+				main_debugger();
 				IS_DEBUG = 1;
 				break;
 

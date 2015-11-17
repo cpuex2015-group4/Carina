@@ -19,6 +19,7 @@
  * Hatsukoi DeBugger
  *
  * Command
+ * ------------------------------------------------------------------
  * - next:
  *   run the next instruction
  *
@@ -30,7 +31,21 @@
  *
  */
 
-char* PROMPT = "Hatsukoi > ";
+char* PROMPT = "Hdb > ";
+
+void main_debugger(void)
+{
+	printf("88        88           88  88          \n"); 
+	printf("88        88           88  88          \n"); 
+	printf("88        88           88  88          \n"); 
+	printf("88aaaaaaaa88   ,adPPYb,88  88,dPPYba,  \n"); 
+	printf("88\"\"\"\"\"\"\"\"88  a8\"    `Y88  88P'    \"8a \n"); 
+	printf("88        88  8b       88  88       d8 \n"); 
+	printf("88        88  \"8a,   ,d88  88b,   ,a8\" \n"); 
+	printf("88        88   `\"8bbdP\"Y8  8Y\"Ybbd8\"'  \n"); 
+	printf("=======================================\n"); 
+	printf("\n");
+}
 
 extern int simulate_inst(simulator* , instruction, unsigned char, unsigned char, unsigned char, unsigned char);
 
