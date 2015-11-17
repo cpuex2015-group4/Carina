@@ -26,7 +26,7 @@ unsigned long MEM_SIZE = 100000000000LL;
 
 int main(int argc, char* argv[])
 {
-	FILE* fp_binary;
+	FILE* fp_binary = NULL;
 	int result;
 	while((result=getopt(argc,argv,"cdf:"))!=-1){
 		switch(result){
