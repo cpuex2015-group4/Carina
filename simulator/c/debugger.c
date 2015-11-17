@@ -78,6 +78,7 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 			is_running = 0;
 		}
 
+		printf("PC = %d\n", sim_p->pc);
 		printf("%s", PROMPT);
 
 		scanf("%[^\n]", input);
