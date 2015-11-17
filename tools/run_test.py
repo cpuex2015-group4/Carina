@@ -16,7 +16,7 @@ def runtest(tb, ty):
 
 		@functools.wraps(func)
 		def wrapper(*args, **kwargs):
-			compile(tb)
+			compile(tb, quiet = True)
 			if ty == "int":
 				c_result = csim(tb)[0]
 				py_result = int(pysim(tb), 2)
