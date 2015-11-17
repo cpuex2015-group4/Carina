@@ -293,7 +293,6 @@ int inst_andi(simulator* sim_p, instruction inst)
 	operands ops = decode_I(inst);
 	int reg_s = sim_p->reg[ops.reg_s_idx];
 	sim_p->reg[ops.reg_t_idx] = ops.imm & reg_s;
-	sim_p->pc++; 
 	sim_p->pc++;
 	return 1;
 }
