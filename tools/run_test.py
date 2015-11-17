@@ -6,6 +6,9 @@ import struct
 from bind import *
 
 def runtest(tb, ty, omit_py = False):
+	# if the test case is too large to run on Python simulator,
+	# please designate `omit_py` option
+
 	def runtest_sub(func):
 		import functools
 
@@ -99,8 +102,8 @@ def test_spill3(c, py):
 
 @runtest("tests/logistic", "float")
 def test_logistic(c, py):
-	#assert c == py == 0x3f486f60
-	pass
+	# 0.78293926
+	assert c == py == 0x3f486eb5
 
 @runtest("tests/mdb", "int")
 def test_mdb(c, py):
@@ -154,11 +157,9 @@ def test_sum_tail(c, py):
 def test_funcomp(c, py):
 	assert c == py == 247
 
-@runtest("tests/oscillation", "float", omit_py = True)
-def test_oscillation(c):
-	# -1.9199612
-	# assert c == 0xbff5c14a, "0x{:08x}, 0x{:08x}".format(c, 0xbff5c14a)
-	pass
+@runtest("tests/oscillation", "float")
+def test_oscillation(c, py):
+	assert c == py
 
 @runtest("tests/flib", "int")
 def test_flib(c, py):

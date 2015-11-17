@@ -3,7 +3,7 @@
  *   mr'' = -kr
  * をRunge-Kutta法で解き、t=10.0における変位を求める
  *)
-let dt = 0.001 in
+let dt = 0.01 in
 let m = 20.0 in
 let k = 5.0 in
 let z = -. k /. m in
