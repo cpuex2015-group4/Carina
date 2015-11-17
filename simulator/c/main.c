@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include "./simulator.h"
+#include "./debugger.h"
 
 int IS_DEBUG = 0;
 int INST_CNT = 0;

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "./utils.h"
 #include "./simulator.h"
+#include "./debugger.h"
 
 /*
  *
