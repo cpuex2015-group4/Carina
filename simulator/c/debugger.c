@@ -36,16 +36,16 @@ char* PROMPT = "Hdb > ";
 
 void main_debugger(void)
 {
-	printf("88        88           88  88          \n"); 
-	printf("88        88           88  88          \n"); 
-	printf("88        88           88  88          \n"); 
-	printf("88aaaaaaaa88   ,adPPYb,88  88,dPPYba,  \n"); 
-	printf("88\"\"\"\"\"\"\"\"88  a8\"    `Y88  88P'    \"8a \n"); 
-	printf("88        88  8b       88  88       d8 \n"); 
-	printf("88        88  \"8a,   ,d88  88b,   ,a8\" \n"); 
-	printf("88        88   `\"8bbdP\"Y8  8Y\"Ybbd8\"'  \n"); 
-	printf("=======================================\n"); 
-	printf("\n");
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88aaaaaaaa88   ,adPPYb,88  88,dPPYba,  \n"); 
+	fprintf(stderr, "88\"\"\"\"\"\"\"\"88  a8\"    `Y88  88P'    \"8a \n"); 
+	fprintf(stderr, "88        88  8b       88  88       d8 \n"); 
+	fprintf(stderr, "88        88  \"8a,   ,d88  88b,   ,a8\" \n"); 
+	fprintf(stderr, "88        88   `\"8bbdP\"Y8  8Y\"Ybbd8\"'  \n"); 
+	fprintf(stderr, "=======================================\n"); 
+	fprintf(stderr, "\n");
 }
 
 extern int simulate_inst(simulator* , instruction, unsigned char, unsigned char, unsigned char, unsigned char);
@@ -94,8 +94,8 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 			is_running = 0;
 		}
 
-		printf("PC = %d\n", sim_p->pc);
-		printf("%s", PROMPT);
+		fprintf(stderr, "PC = %d\n", sim_p->pc);
+		fprintf(stderr, "%s", PROMPT);
 
 		scanf("%[^\n]", input);
 		getchar(); //dummy to throw \n away
@@ -120,11 +120,11 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 		}
 
 		if(strcmp("break", input) == 0){
-			printf("break nees a argument\n");
+			fprintf(stderr, "break nees a argument\n");
 			continue;
 		}
 
-		printf("invalid command\n");
+		fprintf(stderr, "invalid command\n");
 		continue;
 	}
 	return simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
