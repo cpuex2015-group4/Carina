@@ -255,6 +255,10 @@ begin
           DEBUG.f1<=fpu_reg_file(1);
           DEBUG.f2<=fpu_reg_file(2);
           DEBUG.f3<=fpu_reg_file(3);
+          DEBUG.f4<=fpu_reg_file(4);
+          DEBUG.f5<=fpu_reg_file(5);
+          DEBUG.f6<=fpu_reg_file(6);
+          DEBUG.f7<=fpu_reg_file(7);
           DEBUG.fp<=reg_file(30);
           DEBUG.gp<=reg_file(28);
           DEBUG.sp<=reg_file(29);

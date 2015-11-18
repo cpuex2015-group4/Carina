@@ -91,6 +91,10 @@ package p_type is
     f1:datat;
     f2:datat;
     f3:datat;
+    f4:datat;
+    f5:datat;
+    f6:datat;
+    f7:datat;
     gp:datat;
     sp:datat;
     fp:datat;
