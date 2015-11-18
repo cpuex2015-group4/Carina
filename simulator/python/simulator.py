@@ -67,7 +67,7 @@ class Simulator:
 			the content of return value register %v0
 		"""
 		if verbose:
-			sys.stderr.write("(dyn_inst_cnt, pc, %gp, %sp, disas)")
+			sys.stderr.write("(dyn_inst_cnt, pc, %gp, %sp, disas)\n")
 
 		try:
 			while(True):
