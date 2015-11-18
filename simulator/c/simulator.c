@@ -830,7 +830,7 @@ void simulate(simulator* sim_p)
 	 * Dynamic Instruction Count
 	 */
 	if(INST_CNT)print_inst_cnt();
-	fprintf(stderr, "dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
+	fprintf(stderr, "dynamic_inst_cnt = %lu\n", sim_p->dynamic_inst_cnt);
 
 	/*
 	 * Print Resut

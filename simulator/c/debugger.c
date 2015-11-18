@@ -74,7 +74,21 @@ int get_break_point(char* input)
 	return pc;
 }
 
+char* REGISTERS_G[] = {"\%zero", "\%at",
+	"\%v0", "\%v1",
+	"\%a0", "\%a1", "\%a2", "\%a3",
+	"\%t0", "\%t1", "\%t2", "\%t3", "\%t4", "\%t5", "\%t6", "\%t7",
+	"\%s0", "\%s1", "\%s2", "\%s3", "\%s4", "\%s5", "\%s6", "\%s7",
+	"\%t8", "\%t9",
+	"\%k0", "\%k1",
+	"\%gp", "\%sp", "\%fp", "\%ra"};
 
+char* REGISTERS_F[] = {"\%f0", "\%f1", "\%f2", "\%f3", "\%f4", "\%f5", "\%f6",
+   	"\%f7", "\%f8", "\%f9", "\%f10", "\%f11", "\%f12",
+   	"\%f13", "\%f14", "\%f15", "\%f16", "\%f17", "\%f18",
+   	"\%f19", "\%f20", "\%f21", "\%f22", "\%f23", "\%f24",
+	"\%f25", "\%f26", "\%f27", "\%f28", "\%f29", "\%f30",
+   	"\%f31"};
 /*
  * reference from simlator.c
  */
@@ -91,139 +105,161 @@ extern operands decode_FI(instruction);
 int print_inst_add(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "add %s, %s, %s\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], REGISTERS_G[ops.reg_t_idx]);
 	return 1;
 }
 
 int print_inst_addi(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "addi %s, %s, $%d\n", REGISTERS_G[ops.reg_t_idx], REGISTERS_G[ops.reg_s_idx], ops.imm);
 	return 1;
 }
 
 int print_inst_and(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "and %s, %s, %s\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], REGISTERS_G[ops.reg_t_idx]);
 	return 1;
 }
 
 int print_inst_andi(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "andi %s, %s, $%d\n", REGISTERS_G[ops.reg_t_idx], REGISTERS_G[ops.reg_s_idx], ops.imm);
 	return 1;
 }
 
 int print_inst_beq(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "beq %s, %s, $%d\n", REGISTERS_G[ops.reg_t_idx], REGISTERS_G[ops.reg_s_idx], ops.imm);
 	return 1;
 }
 
 int print_inst_bne(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "bne %s, %s, $%d\n", REGISTERS_G[ops.reg_t_idx], REGISTERS_G[ops.reg_s_idx], ops.imm);
 	return 1;
 }
 
 int print_inst_j(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_J(inst);
+	fprintf(stderr, "j %d\n", ops.imm);
 	return 1;
 }
 
 int print_inst_jal(simulator* sim_p, instruction inst)
 {
-	sim_p->reg[31] = ((sim_p->pc + 1));
 	operands ops = decode_J(inst);
-	sim_p->pc = ops.imm;
+	fprintf(stderr, "jal %d\n", ops.imm);
 	return 1;
 }
 
 int print_inst_jr(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "jr %s\n", REGISTERS_G[ops.reg_s_idx]);
 	return 1;
 }
 
 int print_inst_jral(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "jral %s\n", REGISTERS_G[ops.reg_s_idx]);
 	return 1;
 }
 
 int print_inst_lw(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "lw %s, %d(%s)\n", REGISTERS_G[ops.reg_t_idx], ops.imm, REGISTERS_G[ops.reg_s_idx]);
 	return 1;
 }
 
 int print_inst_nor(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "nor %s, %s, %s\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], REGISTERS_G[ops.reg_t_idx]);
 	return 1;
 }
 
 int print_inst_or(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "or %s, %s, %s\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], REGISTERS_G[ops.reg_t_idx]);
 	return 1;
 }
 
 int print_inst_ori(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "ori %s, %s, $%d\n", REGISTERS_G[ops.reg_t_idx], REGISTERS_G[ops.reg_s_idx], ops.imm);
 	return 1;
 }
 
 int print_inst_slt(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "slt %s, %s, %s\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], REGISTERS_G[ops.reg_t_idx]);
 	return 1;
 }
 
 int print_inst_slti(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "slti %s, %s, $%d\n", REGISTERS_G[ops.reg_t_idx], REGISTERS_G[ops.reg_s_idx], ops.imm);
 	return 1;
 }
 
 int print_inst_sll(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "sll %s, %s, $%d\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], ops.shamt);
 	return 1;
 }
 
 int print_inst_srl(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "slr %s, %s, $%d\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], ops.shamt);
 	return 1;
 }
 
 int print_inst_sw(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "sw %s, %d(%s)\n", REGISTERS_G[ops.reg_t_idx], ops.imm, REGISTERS_G[ops.reg_s_idx]);
 	return 1;
 }
 
 int print_inst_sub(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "sub %s, %s, %s\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], REGISTERS_G[ops.reg_t_idx]);
 	return 1;
 }
 
 int print_inst_bclt(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FI(inst);
+	fprintf(stderr, "bclt %d\n", ops.imm);
 	return 1;
 }
+
 int print_inst_bclf(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FI(inst);
+	fprintf(stderr, "bclf %d\n", ops.imm);
 	return 1;
 }
 
 int print_inst_div(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "div %s, %s, %s\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], REGISTERS_G[ops.reg_t_idx]);
 	return 1;
 }
 
@@ -232,24 +268,28 @@ extern uint32_t fadd(uint32_t, uint32_t);
 int print_inst_adds(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FR(inst);
+	fprintf(stderr, "fadd %s, %s, %s\n", REGISTERS_F[ops.fd_idx], REGISTERS_F[ops.fs_idx], REGISTERS_F[ops.ft_idx]);
 	return 1;
 }
 
 int print_inst_cseq(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FR(inst);
+	fprintf(stderr, "c.eq.s %s, %s\n", REGISTERS_F[ops.ft_idx], REGISTERS_F[ops.fs_idx]);
 	return 1;
 }
 
 int print_inst_cslt(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FR(inst);
+	fprintf(stderr, "c.lt.s %s, %s\n", REGISTERS_F[ops.ft_idx], REGISTERS_F[ops.fs_idx]);
 	return 1;
 }
 
 int print_inst_csle(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FR(inst);
+	fprintf(stderr, "c.le.s %s, %s\n", REGISTERS_F[ops.ft_idx], REGISTERS_F[ops.fs_idx]);
 	return 1;
 }
 
@@ -263,54 +303,63 @@ typedef union myfloat_{
 int print_inst_muls(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FR(inst);
+	fprintf(stderr, "fmul %s, %s, %s\n", REGISTERS_F[ops.fd_idx], REGISTERS_F[ops.fs_idx], REGISTERS_F[ops.ft_idx]);
 	return 1;
 }
 
 int print_inst_invs(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FR(inst);
+	fprintf(stderr, "finv %s, %s\n", REGISTERS_F[ops.fd_idx], REGISTERS_F[ops.ft_idx]);
 	return 1;
 }
 
 int print_inst_divs(simulator* sim_p, instruction inst)
 {
-	operands ops = decode_FR(inst);
+	//FDIV does not exist
+	//operands ops = decode_FR(inst);
 	return 1;
 }
 
 int print_inst_subs(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_FR(inst);
+	fprintf(stderr, "fsub %s, %s, %s\n", REGISTERS_F[ops.fd_idx], REGISTERS_F[ops.fs_idx], REGISTERS_F[ops.ft_idx]);
 	return 1;
 }
 
 int print_inst_lws(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "flw %s, %d(%s)\n", REGISTERS_F[ops.ft_idx], ops.imm, REGISTERS_F[ops.fs_idx]);
 	return 1;
 }
 
 int print_inst_mult(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "mult %s, %s, %s\n", REGISTERS_G[ops.reg_d_idx], REGISTERS_G[ops.reg_s_idx], REGISTERS_G[ops.reg_t_idx]);
 	return 1;
 }
 
 int print_inst_sws(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_I(inst);
+	fprintf(stderr, "fsw %s, %d(%s)\n", REGISTERS_F[ops.ft_idx], ops.imm, REGISTERS_F[ops.fs_idx]);
 	return 1;
 }
 
 int print_inst_in_(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "in %s\n", REGISTERS_F[ops.fs_idx]);
 	return 1;
 }
 
 int print_inst_out(simulator* sim_p, instruction inst)
 {
 	operands ops = decode_R(inst);
+	fprintf(stderr, "out %s\n", REGISTERS_F[ops.fs_idx]);
 	return 1;
 }
 
@@ -321,9 +370,6 @@ int print_inst_hlt(simulator* sim_p, instruction inst)
 
 int print_inst(simulator* sim_p, instruction inst, unsigned char operation_binary, unsigned char fmt_binary, unsigned char ft_binary, unsigned char function_binary)
 {
-	/*
-	 *
-	 */
 	if(operation_binary == 0 && function_binary == 32) return print_inst_add(sim_p, inst);
 
 	if(operation_binary == 8) return print_inst_addi(sim_p, inst);
@@ -401,7 +447,9 @@ int print_inst(simulator* sim_p, instruction inst, unsigned char operation_binar
 
 	if(operation_binary == 63 && function_binary == 63) return print_inst_hlt(sim_p, inst);
 
+	return -1;
 }
+
 /*
  * Debugger Global Variable
  */
@@ -414,7 +462,6 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 	char input[100];
 	int pc;
 	while(1){
-
 		if(is_running && !breakpoint[sim_p->pc])break; //if not breakpoint && some breakpoint is set, run continuously
 
 		if(breakpoint[sim_p->pc]){
@@ -423,7 +470,9 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 			is_running = 0;
 		}
 
-		fprintf(stderr, "PC = %lu\n", sim_p->pc);
+		fprintf(stderr, "%lu : ", sim_p->pc);
+		print_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
+
 		fprintf(stderr, "%s", PROMPT);
 
 		scanf("%[^\n]", input);
@@ -441,11 +490,11 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 		if(strcmp("break", input) < 0 && strcmp(input, "break~") < 0){ //command == break && exists argument
 			pc = get_break_point(input);
 			if(breakpoint[pc]){
-				break;
+				continue;
 			}
 			breakpoint[pc] = 1;
 			breakpoint_cnt++;
-			break;
+			continue;
 		}
 
 		if(strcmp("break", input) == 0){
@@ -458,4 +507,3 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 	}
 	return simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
 }
-
