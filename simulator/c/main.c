@@ -23,7 +23,7 @@
 
 int IS_DEBUG = 0;
 int INST_CNT = 0;
-unsigned long MEM_SIZE = 100000000000LL;
+unsigned long MEM_SIZE = 100000000000L;
 
 extern void debugger_main(void);
 
