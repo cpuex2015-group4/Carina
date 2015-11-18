@@ -1,45 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys, os
+import sys
 import struct
-import subprocess
-from assembler.assembler import Assembler
-from simulator.python.simulator import Simulator
+from bind import *
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
-MIN_CAML = os.path.join(ROOT, "min-caml/min-caml")
-CSIM = os.path.join(ROOT, "simulator/c/csim")
+def runtest(tb, ty, stdin = None, omit_py = False):
+	# if the test case is too large to run on Python simulator,
+	# please designate `omit_py` option
 
-def compile(name):
-	if subprocess.call([MIN_CAML, name]) == 0:
-		os.system("cat min-caml/libmincaml.S >> {}.s".format(name))
-		asmblr = Assembler()
-		asmblr.assemble(name + ".s")
-	else:
-		assert False, "compile error"
-
-def csim(name):
-	# execute on c simulator
-	p = subprocess.Popen([CSIM, "-f" + name + ".o"],
-			stdin  = subprocess.PIPE,
-			stdout = subprocess.PIPE,
-			stderr = subprocess.PIPE,
-			shell = False)
-	# capture output in stdout as return value
-	# output := int:[int_return],float:[float_return]
-	rvs = p.stderr.readlines()[1].split(",") #["int"+Vi, "float"+Vf]
-	rvi = rvs[0].replace("int:", "")
-	rvf = rvs[1].replace("float:", "")
-	return (int(rvi), float(rvf))
-
-def pysim(name, t = "int"):
-	# execute on python simulator
-	sim = Simulator(name + ".o")
-	d = {"int": 0, "float": 1}
-	return sim.simulate()[d[t]]
-
-def runtest(tb, ty):
 	def runtest_sub(func):
 		import functools
 
@@ -50,16 +19,23 @@ def runtest(tb, ty):
 
 		@functools.wraps(func)
 		def wrapper(*args, **kwargs):
-			compile(tb)
+			compile(tb, quiet = True)
+
+			f = stdin
+
 			if ty == "int":
-				c_result = csim(tb)[0]
-				py_result = int(pysim(tb), 2)
+				c_result = csim(tb, stdin=f)[0]
+				if not omit_py: py_result = int(pysim(tb, stdin=f), 2)
 			elif ty == "float":
-				c_result = float2int(csim(tb)[1])
-				py_result = int(pysim(tb, "float"), 2)
+				c_result = float2int(csim(tb, stdin=f)[1])
+				if not omit_py: py_result = int(pysim(tb, "float", stdin=f), 2)
 			else:
 				assert False, "type specification must be int or float"
-			func(c_result, py_result)
+
+			if omit_py:
+				func(c_result)
+			else:
+				func(c_result, py_result)
 		return wrapper
 	return runtest_sub
 
@@ -129,12 +105,12 @@ def test_spill3(c, py):
 
 @runtest("tests/logistic", "float")
 def test_logistic(c, py):
-	#assert c == py == 0x3f486f60
-	pass
+	# 0.78293926
+	assert c == py == 0x3f486eb5
 
 @runtest("tests/mdb", "int")
 def test_mdb(c, py):
-	assert c == py == 676
+	assert c == py == 677
 
 @runtest("tests/join-reg", "int")
 def test_join_reg(c, py):
@@ -183,6 +159,18 @@ def test_sum_tail(c, py):
 @runtest("tests/funcomp", "int")
 def test_funcomp(c, py):
 	assert c == py == 247
+
+@runtest("tests/oscillation", "float")
+def test_oscillation(c, py):
+	assert c == py
+
+@runtest("tests/flib", "int")
+def test_flib(c, py):
+	assert c == py == 1
+
+@runtest("tests/sld_io", "int", stdin=os.path.join(ROOT, "raytracer", "contest.sld"))
+def test_sld_io(c, py):
+	assert c == py == 325
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]

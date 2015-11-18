@@ -23,8 +23,8 @@ begin
 				'1' when inputA(31) = '0' and inputB(31) = '0' and inputA(30 downto 0) < inputB(30 downto 0) else
 				'0';
 
-	output <= (lt and eq) when mode = "111110" else
-	          lt          when mode = "111100" else
-						eq          when mode = "110010" else
+	output <= (lt or eq) when mode = "111110" else
+	          lt         when mode = "111100" else
+						eq         when mode = "110010" else
             '0';
 end struct;
