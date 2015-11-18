@@ -29,10 +29,10 @@ end cpu;
 ----pipeline mo nanimo sitenai yo
 ----pipeline ga sitai naa
 
-
-
 architecture RTL of cpu is
 
+  constant IS_DEBUG:boolean:=true;
+  constant IS_SIM:boolean:=false;
   component BRAM_INST
     port(
       addra: in BRAM_ADDRT;
@@ -64,10 +64,21 @@ architecture RTL of cpu is
       SRAM_WE:out std_logic:='1';
       entry:out datat;
       IO_RE,loaded: out std_logic:='0';
+      heap_head:out datat;
       reset:in std_logic:='0'
       );
   end component;
 
+  component fpu    --single しか使わないので fmt は省いてあります
+    port (
+      clk:in std_logic;
+      funct:in functt;
+      data1: in datat:=x"00000000";
+      data2: in datat:=x"00000000";
+      result:out datat:=x"00000000";
+      FPCond:out std_logic:='0'
+      );
+  end component;
 
   constant ZERO:datat:=x"00000000";
 --zentaiseigyo kei
@@ -75,8 +86,7 @@ architecture RTL of cpu is
   signal PC :datat:=ZERO;
   signal reg_file:reg_filet:=(others=>ZERO);
   signal fpu_reg_file:reg_filet:=(others=>ZERO);
-  signal FPCOND:std_logic:='0';
-
+  signal FPCOND:std_logic;
 
   signal core_state:CORE_STATE_TYPE:=INIT;
   signal exe_state:EXE_STATE_TYPE:=F;
@@ -88,12 +98,11 @@ architecture RTL of cpu is
   signal data:data_file;
   signal control:control_file;
   signal io_re_cpu:std_logic:='0';
-  
-signal alu_control:alu_controlt;
+  signal alu_control:alu_controlt;
 
   --debug
   signal pohe:std_logic:='0';
-
+  signal total_instruction:datat:=ZERO;
 --signal operand1:datat;-
 --signal operand2:datat;
 --signal alu_control:alu_controlt;
@@ -112,11 +121,21 @@ signal isZero:std_logic;
   signal loader_SRAM_ADDR: std_logic_vector(19 downto 0):="00000000000000000000";
   signal loader_SRAM_DATA: datat:="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
   signal loader_SRAM_WE:std_logic:='1';
-
+  signal heap_head:datat;
 -- 
   constant memory_write_wait:std_logic_vector(2 downto 0):="010";
-  constant memory_read_wait:std_logic_vector(2 downto 0):="011";
+  constant memory_read_wait:std_logic_vector(2 downto 0):="101";
   signal memory_count:std_logic_vector(2 downto 0):="000";
+
+
+--fpu
+constant fpu_wait_max:std_logic_vector(2 downto 0):="010";
+signal fpu_wait:std_logic_vector(2 downto 0):="000";
+signal fpu_funct:functt:="000000";
+signal fpu_data1:datat:=x"00000000";
+signal fpu_data2:datat:=x"00000000";
+signal fpu_result:datat:=x"00000000";
+signal fpu_FPCond:std_logic:='0';
   
   signal count:integer:=0;
 begin
@@ -135,6 +154,18 @@ begin
     result=>result,
     isZero=>isZero);
 
+  fpu_main: fpu    --single しか使わないので fmt は省いてあります
+   port map(
+     clk,
+      fpu_funct,
+      fpu_data1,
+      fpu_data2,
+      fpu_result,
+      fpu_FPCond
+      );
+
+ 
+
   lod:loader port map(
     clk=>clk,
 	 IO_empty=>IO_empty,
@@ -148,14 +179,15 @@ begin
     sram_we=>loader_sram_we,
      entry=>entry_point,
 	 io_re=>loader_io_re,
+    heap_head=>heap_head,
 	 loaded=>loaded,
      reset=>loader_reset);
-      
+
   alu_control<=make_alu_control(inst.opecode,inst.funct);
-  
+
   inst_addr<=loader_addr(BRAM_ADDR_SIZE-1 downto 0) when core_state=WAIT_HEADER else
               PC(BRAM_ADDR_SIZE-1 downto 0);
-  
+
   io_re<=loader_io_re when core_state=Wait_header else
 			io_re_cpu;
   main:process (clk)
@@ -163,23 +195,29 @@ begin
     variable controlv:control_file;
     variable vPC:datat;
   begin
-    if rising_edge(clk) then  
+    if rising_edge(clk) then
       case (core_state) is
         when INIT=>
+          total_instruction<=ZERO;
           loader_reset<='0';
-          if io_full='0' then
-            io_we<='1';
-            io_send_data<=x"4341524e";
+
+          if IS_DEBUG then
+            if io_full='0' then
+              io_we<='1';
+              io_send_data<=x"4341524e";
+            else
+              io_we<='0';
+              core_state<=WaIT_HEADER;
+            end if;
           else
-            io_we<='0';
             core_state<=WaIT_HEADER;
+            io_we<='0';
           end if;
         when WAIT_HEADER =>
       --debug
-          DEBUG.data1<=inst_out;
-          DEBUG.core_state<=core_state;
+          DEBUG.detail.core_state<=core_state;
           DEBUG.PC<=CONV_STD_LOGIC_VECTOR(count,32);
-          DEBUG.control<=control;
+          DEBUG.detail.control<=control;
       --/debug
 
 
@@ -188,8 +226,10 @@ begin
           sram_we<=loader_sram_we;
           loader_activate<='1';
           if loaded='1' then
-			io_send_data<=x"52435644";
-			IO_WE<='1';
+            if IS_DEBUG then
+              io_send_data<=x"52435644";
+              IO_WE<='1';
+            end if;
             PC<=entry_point;
             core_state<=EXE_READY;
 --       else
@@ -197,28 +237,40 @@ begin
 --        io_we<=loader_io_re;
           end if;
         when EXE_READY=>
+          reg_file(29)<="00000000000011111111111111111111";   --sp=mem_max;
+          reg_file(28)<=heap_head; --gp=heap_head
           io_we<='0';
           word_access<='0';
           report "exe ready";
           core_state<=EXECUTING;    --data source no kirikae
         when EXECUTING =>
       --debug
-          DEBUG.opecode<=inst.opecode;
-          DEBUG.control<=control;
+          DEBUG.detail.opecode<=inst.opecode;
+          DEBUG.detail.control<=control;
 
           DEBUG.data<=data;
-          DEBUG.data1<=reg_file(1);
-          DEBUG.data2<=reg_file(2);
-          DEBUG.data3<=reg_file(31);
-          DEBUG.exe_state<=exe_state;
-          DEBUG.core_state<=core_state;
+          DEBUG.t0<=reg_file(8);
+          DEBUG.t1<=reg_file(9);
+          DEBUG.v0<=reg_file(2);
+          DEBUG.f1<=fpu_reg_file(1);
+          DEBUG.f2<=fpu_reg_file(2);
+          DEBUG.f3<=fpu_reg_file(3);
+          DEBUG.fp<=reg_file(30);
+          DEBUG.gp<=reg_file(28);
+          DEBUG.sp<=reg_file(29);
+          DEBUG.ra<=reg_file(31);
+          DEBUG.at<=reg_file(1);
+          DEBUG.detail.exe_state<=exe_state;
+          DEBUG.detail.core_state<=core_state;
           DEBUG.PC<=PC;
-          DEBUG.inst<=inst;
-          DEBUG.alucont<=alu_control;
+          DEBUG.detail.inst<=inst;
+          DEBUG.detail.alucont<=alu_control;
+          DEBUG.FPCond<=FPcond;
   --/debug
 
           case ( exe_state) is
             when F =>
+              total_instruction<=total_instruction+x"00000001";
 --		    report "inst_out:" & integer'image(conv_integer(inst_out));
 --			 report "PC:" &  integer'image(conv_integer(PC));
 -- ###################################DEBUG############################
@@ -242,9 +294,9 @@ begin
               instv.shamt:=inst_out(10 downto 6);
               instv.funct:=inst_out(5 downto 0);
               instv.immediate:=inst_out(15 downto 0);
-              instv.addr:=inst_out(25 downto 0); 
+              instv.addr:=inst_out(25 downto 0);
               exe_state<=EX;
-              if inst_out=x"FFFFFFFF" then
+              if inst_out=x"FFFFFFFF" then-------------------------------hlt
                core_state<=HALTED;
                 loader_reset<='1';
                 word_access<='1';
@@ -252,14 +304,27 @@ begin
               end if;
               controlv:=make_control(instv.opecode,instv.rs,instv.funct);
               if controlv.RegDst='0' then
-                instv.reg_dest:=instv.rd;
+                if controlv.fpu_data='0' then
+                  instv.reg_dest:=instv.rd;
+                else
+                  instv.reg_dest:=instv.shamt;
+                end if;
               else
                 instv.reg_dest:=instv.rt;
               end if;
               inst<=instv;
-              data.operand1<=reg_file(CONV_INTEGER(instv.rs));
+              if controlv.fpu_data='0' then
+                data.operand1<=reg_file(CONV_INTEGER(instv.rs));
+              else
+                data.operand1<=fpu_reg_file(CONV_INTEGER(instv.rd));
+              end if;
+
               if controlv.ALUSrc='0' then
-                data.operand2<=reg_file(CONV_INTEGER(instv.rt));
+                if controlv.fpu_data='0' then
+                  data.operand2<=reg_file(CONV_INTEGER(instv.rt));
+                else
+                  data.operand2<=fpu_reg_file(CONV_INTEGER(instv.rt));
+                end if;
               else
                 if instv.immediate(15) ='0' then
                   data.operand2<="0000000000000000" & instv.immediate;
@@ -269,13 +334,33 @@ begin
               end if;
               control<=controlv;
             when EX =>
-              exe_state<=MEM;
-
+              if control.fpu_data='1' then
+                fpu_data1<=data.operand1;
+                fpu_data2<=data.operand2;
+                fpu_funct<=inst.funct;
+                if fpu_wait<fpu_wait_max then
+                  fpu_wait<=fpu_wait+"001";
+                else
+                  data.result<=fpu_result;
+                  exe_state<=MEM;
+                  fpu_wait<="000";
+                  if inst.funct(5 downto 4)="11" then
+                    FPCOND<=fpu_FPCOND;
+                  end if;
+                end if;
+              else
+                exe_state<=MEM;
+                 data.result<=result;
+             end if;
 --          operand1<=data.operand1;
 --          operand2<=data.operand2;
 --          alu_control<=make_alu_control(inst.opecode,inst.funct);
 --          shamt<=inst.shamt;
-              data.result<=result;
+
+
+
+
+
               case (control.PC_control) is
                 when normal =>
                   data.newPC<=PC+1;
@@ -318,7 +403,11 @@ begin
                   when memory_write_wait =>
                     sram_we<='1';
                     memory_count<="000";
-                    sram_data<=reg_file(conv_integer(inst.rt));
+                    if inst.opecode/="111001" then
+                      sram_data<=reg_file(conv_integer(inst.rt));
+                    else
+                      sram_data<=fpu_reg_file(conv_integer(inst.rt));
+                    end if;
                     exe_state<=WB;
                   when others=>
                     SRAM_WE<='1';
@@ -348,15 +437,15 @@ begin
               SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
               if control.RegWrite='1' then
                 if inst.reg_dest /= x"00000" then
-                  if inst.opecode(5 downto 4)="11" then
+                  if inst.opecode="010001" or inst.opecode="110001" then  --flu(0x11) and lw.s(0x31)
                     fpu_reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
                   else
-                    reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
+                      reg_file(CONV_INTEGER(inst.reg_dest))<=data.result;
                   end if;
                 end if;
               end if;
               exe_state<=F;
-              if inst.opecode="000011" then  --jump and link
+              if inst.opecode="000011" or (inst.opecode="000000" and inst.funct="01001") then  --jal,jral
                 reg_file(31)<=PC+x"00000001";
                 report "j_l";
               end if;
@@ -378,9 +467,22 @@ begin
               PC<=vPC;
           end case;
         when HALTED =>
-      -- do nothing;
-       core_state<=INIT;
+      -- do nothing
 
+          if IS_SIM then
+            assert false report "Halted" severity failure;
+          end if;
+          
+--          if IS_DEBUG then
+--            if IO_full='0' then
+--              IO_we<='1';
+--              IO_send_data<=total_instruction;
+--              core_state<=INIT;
+--              exe_state<=WB;
+--            else
+--              IO_we<='0';
+--            end if;
+--          end if;
       end case;
     end if;
   end process;

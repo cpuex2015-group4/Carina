@@ -5,9 +5,16 @@
 *.s
 *~
 core/working
+core/_impact*
 core/hakeisimu
+core/iseconfig
 #*#
 __pycache__
 .python-version
 raytracer/raytracer
 .mem-dump
+output.ppm
+output.jpg
+python-tmp.*
+*.png
+*.jpg

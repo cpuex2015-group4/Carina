@@ -5,14 +5,14 @@
 typedef unsigned int instruction;
 
 typedef struct simulator_{
-	int pc;
-	int dynamic_inst_cnt;
+	unsigned long pc;
+	unsigned long dynamic_inst_cnt;
 	int* reg;
 	float* f_reg;
 	int fpcond;
 	int Hi;
 	int Lo; 
-	int inst_cnt;
+	unsigned long inst_cnt;
 	instruction* inst_mem;
 	int* mem;
 	unsigned int binary_size;

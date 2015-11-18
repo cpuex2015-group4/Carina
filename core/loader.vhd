@@ -18,6 +18,7 @@ entity loader is
     SRAM_WE:out std_logic:='1';
     entry:out datat;
     IO_RE,loaded: out std_logic:='0';
+    heap_head:out datat:=x"00000000";
     reset:in std_logic:='0'
   );
 end loader;
@@ -36,6 +37,7 @@ architecture kaisensionoodle of loader is
   constant sram_wait:std_logic_vector(2 downto 0):="010";
   signal sram_count:std_logic_vector(2 downto 0):="000";
 begin
+  heap_head<=text_size+data_size;
   data_offset<=text_size;
   entry<=entry_point;
   main:process(clk)

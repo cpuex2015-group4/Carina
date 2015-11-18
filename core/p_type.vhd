@@ -1,8 +1,8 @@
 --
 --	Package File Template
 --
---	Purpose: This package defines supplemental types, subtypes, 
---		 constants, and functions 
+--	Purpose: This package defines supplemental types, subtypes,
+--		 constants, and functions
 --
 --   To use any of the example code shown below, uncomment the lines and modify as necessary
 --
@@ -20,8 +20,8 @@ package p_type is
   subtype imdt is std_logic_vector(15 downto 0);
   subtype addrt is std_logic_vector( 25 downto 0);
   subtype memaddrt is std_logic_vector(19 downto 0);
-  type reg_filet is array(0 to 31) of datat;  
-  type PC_controlt is (j,jr,b,normal);  
+  type reg_filet is array(0 to 31) of datat;
+  type PC_controlt is (j,jr,b,normal);
    type INST_TYPE is (I,R,J);
   type inst_file is record
     PC:datat;
@@ -32,7 +32,7 @@ package p_type is
     rt:regt;
     rd:regt;
     reg_dest:regt;
-    reg_source:regt;
+ --   reg_source:regt;
     shamt:regt;
     funct:functt;
     immediate:imdt;
@@ -60,6 +60,7 @@ package p_type is
     IOWrite:std_logic;
     MemtoReg:std_logic;
     isZero:std_logic;
+    fpu_data:std_logic;
     PC_control:PC_controlt;
   end record;
 
@@ -67,25 +68,38 @@ package p_type is
   function make_control (opecode:opet;fmt:regt;funct:functt) return control_file;
 
   type ALU_CONTROLT is (ALUADD,ALUSUB,ALUAND,ALUOR,ALUSLT,ALUNOR,ALUSLL,ALUSLR);
-
+  type FPU_CONTROLT is (FADD,FSUB,FMUL,FINV,FCOMP);
+  
   function make_alu_control(opecode:opet; funct:functt) return ALU_CONTROLT;
   function sign_extension(imd:imdt) return memaddrt;
-  
-  type top_debug_out is record  
-    data1:datat;
-    data2:datat;
-    data3:datat;
+
+  type detail_debug_info is record
     exe_state:EXE_STATE_TYPE;
     core_state:CORE_STATE_TYPE;
+    alucont:ALU_CONTROLT;
     control:control_file;
     opecode:opet;
-    data:data_file;
-    PC:datat;
     inst:inst_file;
-    alucont:ALU_CONTROLT;
-    
+  end record;  
+  
+  type top_debug_out is record
+    PC:datat;
+    ra:datat;
+    v0:datat;
+    t0:datat;
+    t1:datat;
+    f1:datat;
+    f2:datat;
+    f3:datat;
+    gp:datat;
+    sp:datat;
+    fp:datat;
+    at:datat;
+    FPCond:std_logic;
+    data:data_file;
+    detail:detail_debug_info;
   end record;
-
+  
 -- procedure <procedure_nam >(<type_declaration> <constant_name>	: in <type_d@eclaration>);
 --
 
@@ -95,7 +109,7 @@ package body p_type is
   function make_control (opecode:opet;fmt:regt;funct:functt) return control_file is
     variable control:control_file;
   begin
-    if opecode ="000000" OR opecode="011011" or opecode="000100" or opecode="000101"  then
+    if opecode ="000000" OR opecode="011011" or opecode="000100" or opecode="000101"  or opecode="010001" then
       control.RegDst:='0';
       control.ALUSrc:='0';
     else
@@ -104,7 +118,7 @@ package body p_type is
     end if;
 
     if opecode="000000" or opecode="001000" or opecode="001010"
-      or opecode = "001011" or opecode ="001100" or opecode = "011010" or opecode = "100011" or opecode="110001" then
+      or opecode = "001011" or opecode ="001100" or opecode = "011010" or opecode = "100011" or opecode="110001" or opecode="010001" then
       control.RegWrite:='1';
     else
       control.RegWrite:='0';
@@ -131,7 +145,7 @@ package body p_type is
       when "000010" | "000011" =>
         control.PC_control:=j;
       when "000000" =>
-        if funct="001000" then
+        if funct="001000" or funct="001001" then
           control.PC_control:=jr;
         else
           control.PC_control:=normal;
@@ -157,7 +171,14 @@ package body p_type is
     eLSE
 		control.IOWrite:='0';
 	 end if;
+    if opecode="010001" then
+      control.fpu_data:='1';
+    else
+      control.fpu_data:='0';
+    end if;
+
     return control;
+
   end make_control;
 
   function make_alu_control(opecode:opet;funct:functt) return ALU_CONTROLT is
@@ -201,6 +222,7 @@ package body p_type is
     end if;
     return AC;
   end make_alu_control;
+
 
   function sign_extension(imd:imdt) return memaddrt is
     variable s:std_logic;

@@ -287,6 +287,16 @@ int inst_and(simulator* sim_p, instruction inst)
 	return 1;
 }
 
+int inst_andi(simulator* sim_p, instruction inst)
+{
+	if(INST_CNT)inst_cnt_arr[INST_AND_IDX]++;
+	operands ops = decode_I(inst);
+	int reg_s = sim_p->reg[ops.reg_s_idx];
+	sim_p->reg[ops.reg_t_idx] = ops.imm & reg_s;
+	sim_p->pc++;
+	return 1;
+}
+
 int inst_beq(simulator* sim_p, instruction inst)
 {
 	if(INST_CNT)inst_cnt_arr[INST_BEQ_IDX]++;
@@ -694,6 +704,8 @@ int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_bi
 
 	if(operation_binary == 0 && function_binary == 36) return inst_and(sim_p, inst);
 
+	if(operation_binary == 12) return inst_andi(sim_p, inst);
+
 	if(operation_binary == 4) return inst_beq(sim_p, inst);
 
 	if(operation_binary == 5) return inst_bne(sim_p, inst);
@@ -818,7 +830,7 @@ void simulate(simulator* sim_p)
 	 * Dynamic Instruction Count
 	 */
 	if(INST_CNT)print_inst_cnt();
-	fprintf(stderr, "dynamic_inst_cnt = %d\n", sim_p->dynamic_inst_cnt);
+	fprintf(stderr, "dynamic_inst_cnt = %lu\n", sim_p->dynamic_inst_cnt);
 
 	/*
 	 * Print Resut
