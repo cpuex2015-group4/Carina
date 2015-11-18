@@ -29,10 +29,14 @@ def compile(name, quiet=False):
 	else:
 		assert False, "compile error"
 
-def csim(name):
+def csim(name, stdin = None):
 	# execute on c simulator
+	if stdin is not None:
+		stdin_pipe = open(stdin)
+	else:
+		stdin_pipe = subprocess.PIPE
 	p = subprocess.Popen([CSIM, "-f" + name + ".o"],
-			stdin  = subprocess.PIPE,
+			stdin  = stdin_pipe,
 			stdout = subprocess.PIPE,
 			stderr = subprocess.PIPE,
 			shell = False)
@@ -42,11 +46,13 @@ def csim(name):
 	rvs = p.stderr.readlines()[1].split(",") #["int"+Vi, "float"+Vf]
 	rvi = rvs[0].replace("int:", "")
 	rvf = rvs[1].replace("float:", "")
+	if stdin is not None:
+		stdin_pipe.close()
 	return (int(rvi), float(rvf))
 
-def pysim(name, t = "int"):
+def pysim(name, t = "int", stdin = None):
 	# execute on python simulator
-	sim = Simulator(name + ".o")
+	sim = Simulator(name + ".o", stdin = stdin)
 	d = {"int": 0, "float": 1}
 	return sim.simulate()[d[t]]
 

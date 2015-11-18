@@ -5,7 +5,7 @@ import sys
 import struct
 from bind import *
 
-def runtest(tb, ty, omit_py = False):
+def runtest(tb, ty, stdin = None, omit_py = False):
 	# if the test case is too large to run on Python simulator,
 	# please designate `omit_py` option
 
@@ -20,12 +20,15 @@ def runtest(tb, ty, omit_py = False):
 		@functools.wraps(func)
 		def wrapper(*args, **kwargs):
 			compile(tb, quiet = True)
+
+			f = stdin
+
 			if ty == "int":
-				c_result = csim(tb)[0]
-				if not omit_py: py_result = int(pysim(tb), 2)
+				c_result = csim(tb, stdin=f)[0]
+				if not omit_py: py_result = int(pysim(tb, stdin=f), 2)
 			elif ty == "float":
-				c_result = float2int(csim(tb)[1])
-				if not omit_py: py_result = int(pysim(tb, "float"), 2)
+				c_result = float2int(csim(tb, stdin=f)[1])
+				if not omit_py: py_result = int(pysim(tb, "float", stdin=f), 2)
 			else:
 				assert False, "type specification must be int or float"
 
@@ -164,6 +167,10 @@ def test_oscillation(c, py):
 @runtest("tests/flib", "int")
 def test_flib(c, py):
 	assert c == py == 1
+
+@runtest("tests/sld_io", "int", stdin=os.path.join(ROOT, "raytracer", "contest.sld"))
+def test_sld_io(c, py):
+	assert c == py == 325
 
 if __name__ == "__main__":
 	tb_name = sys.argv[1]
