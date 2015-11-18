@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -37,9 +38,54 @@ def float_of_int(xran):
 	plt.plot(X, Y)
 	plt.savefig("float_of_int.png")
 
+def fcos(xran):
+	Y = []
+	sys.stdout.write("x = ")
+	for x in xran:
+		with open(TMP_ML + ".ml", "w") as f:
+			f.write("cos({:f})".format(x))
+		compile(TMP_ML, quiet = True)
+		sys.stdout.write("{0}8D{0}K{1:-8}".format("\033[", x))
+		Y.append(csim(TMP_ML)[1])
+	plt.plot(X, Y)
+	plt.savefig("cos.png")
+
+def fsin(xran):
+	Y = []
+	sys.stdout.write("x = ")
+	for x in xran:
+		with open(TMP_ML + ".ml", "w") as f:
+			f.write("sin({:f})".format(x))
+		compile(TMP_ML, quiet = True)
+		sys.stdout.write("{0}8D{0}K{1:-8}".format("\033[", x))
+		Y.append(csim(TMP_ML)[1])
+	plt.plot(X, Y)
+	plt.savefig("sin.png")
+
+def fatan(xran):
+	Y = []
+	sys.stdout.write("x = ")
+	for x in xran:
+		with open(TMP_ML + ".ml", "w") as f:
+			f.write("atan({:f})".format(x))
+		compile(TMP_ML, quiet = True)
+		sys.stdout.write("{0}8D{0}K{1:-8}".format("\033[", x))
+		Y.append(csim(TMP_ML)[1])
+	plt.plot(X, Y)
+	plt.savefig("atan.png")
+
 if __name__ == "__main__":
-	X = np.arange(-10000, 10000, 10)
+	X = np.arange(-10, 10, 0.1)
+	spec = sys.argv[1]
 	clean()
-#	int_of_float(X)
-	float_of_int(X)
+	if spec == "int_of_float":
+		int_of_float(X)
+	elif spec == "float_of_int":
+		float_of_int(X)
+	elif spec == "cos":
+		fcos(X)
+	elif spec == "sin":
+		fsin(X)
+	elif spec == "atan":
+		fatan(X)
 	clean()
