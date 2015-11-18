@@ -16,7 +16,7 @@ class Simulator:
 	A class representing for Carina ISA simulator.
 	"""
 
-	def __init__(self, filename):
+	def __init__(self, filename, stdin = None):
 		"""
 		Parameters
 		----------
@@ -33,6 +33,9 @@ class Simulator:
 		self.mem = {}
 		self.fpcond = 0
 		self.dic = 0  # dynamic instruction count
+		self.stdin = None
+		if stdin is not None:
+			self.stdin = open(stdin)
 
 		with open(filename, "rb") as file_in:
 			self.binary = file_in.read()
@@ -51,6 +54,9 @@ class Simulator:
 		self.reg["11101"] = format(0xfffff, "032b")
 		self.pc = self.entry_point
 
+	def __del__(self):
+		if self.stdin is not None:
+			self.stdin.close()
 	
 	def simulate(self, verbose = False):
 		"""
@@ -67,7 +73,7 @@ class Simulator:
 			the content of return value register %v0
 		"""
 		if verbose:
-			sys.stderr.write("(dyn_inst_cnt, pc, %gp, %sp, disas)")
+			sys.stderr.write("(dyn_inst_cnt, pc, %gp, %sp, disas)\n")
 
 		try:
 			while(True):
@@ -466,7 +472,10 @@ class Simulator:
 	@classmethod
 	def in_(cls, sim, inst_bin):
 		_, rs, _, _ = cls.decode_R(inst_bin)
-		sim.reg[rs] = "0"*24 + format(ord(sys.stdin.read(1)), "08b")
+		if sim.stdin is not None:
+			sim.reg[rs] = "0"*24 + format(ord(sim.stdin.read(1)), "08b")
+		else:
+			sim.reg[rs] = "0"*24 + format(ord(sys.stdin.read(1)), "08b")
 		sim.pc += 1
 		return 1
 
