@@ -107,7 +107,7 @@ def test_logistic(c, py):
 
 @runtest("tests/mdb", "int")
 def test_mdb(c, py):
-	assert c == py == 676
+	assert c == py == 677
 
 @runtest("tests/join-reg", "int")
 def test_join_reg(c, py):
