@@ -1464,6 +1464,7 @@ in
 (* Vscan から、交点 crashed_point と衝突したオブジェクト         *)
 (* crashed_object を返す。関数自体の返り値は交点の有無の真偽値。 *)
 let rec judge_intersection dirvec = (
+  print_int 484;
   tmin.(0) <- (1000000000.0);
   trace_or_matrix 0 (or_net.(0)) dirvec;
   let t = tmin.(0) in
@@ -1755,7 +1756,9 @@ in
 let rec trace_ray nref energy dirvec pixel dist =
   if nref <= 4 then (
     let surface_ids = p_surface_ids pixel in
+	(*debug*)print_int 64;
     if judge_intersection dirvec then (
+	  (*debug*)print_int 81;
     (* オブジェクトにぶつかった場合 *)
       let obj_id = intersected_object_id.(0) in
       let obj = objects.(obj_id) in
@@ -1817,7 +1820,7 @@ let rec trace_ray nref energy dirvec pixel dist =
       
      ) else ( 
       (* どの物体にも当たらなかった場合。光源からの光を加味 *)
-
+	  	  (*debug*)print_int 82;
       surface_ids.(nref) <- -1;
 
       if nref <> 0 then (
