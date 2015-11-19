@@ -129,7 +129,6 @@ package body p_type is
     end if;
 
     if opecode="110000" or opecode="100011" or opecode="110001" then
-      report "mem_read";
       control.MemRead:='1';
       control.MemToReg:='1';
     else
@@ -207,8 +206,6 @@ package body p_type is
         when "000010" =>
           AC:=ALUSLR;
         when others =>
-          assert false
-            report "invalid input in make_alu_control";
       end case;
     else
       case (opecode) is

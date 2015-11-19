@@ -77,8 +77,6 @@ begin
             end if;
           end if;
         else
-          report "i,tsize,doft,dsize=" & integer'image (conv_integer(i)) & ","& integer'image(conv_integer(text_size)) & ","  &
-            integer'image(conv_integer(data_offset)) & "," & integer'image(conv_integer(data_size));
           i<=x"00000000";
           state<=TEXT_RECEIVING;
         end if;
@@ -91,9 +89,6 @@ begin
             BRAM_WE<="0";
           else
             if IO_empty='0' then
-              report "text_recv:i,tsize,doft,dsize=" & integer'image (conv_integer(i)) & ","& integer'image(conv_integer(text_size)) & ","  &
-              integer'image(conv_integer(data_offset)) & "," & integer'image(conv_integer(data_size));
-              report "write_inst@" & integer'image(conv_integer(i)) & ":" & integer'image(conv_integer(io_recv_data));
               din<=IO_recv_data;
               addr<=i(13 downto 0);
               justread<=true;
@@ -128,7 +123,6 @@ begin
             end case;
           else
             if IO_empty='0' then
-              report "data_receiving@" & integer'image(conv_integer(i)) & ":" & integer'IMAGE(conv_integer(io_recv_data)) ;     
               recvdata<=IO_recv_data;
               io_re<='1';
               justread<=true;

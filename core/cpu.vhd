@@ -241,7 +241,6 @@ begin
           reg_file(28)<=heap_head; --gp=heap_head
           io_we<='0';
           word_access<='0';
-          report "exe ready";
           core_state<=EXECUTING;    --data source no kirikae
         when EXECUTING =>
       --debug
@@ -370,10 +369,8 @@ begin
                   data.newPC<=PC+1;
                 when b=>
                   if inst.immediate(15)='0' then
-                    report "PLUS";
                     data.newPC<=PC+1+("0000000000000000" & inst.immediate);
                   else
-                    report "MINUS";
                     data.newPC<=PC+1+("1111111111111111" & inst.immediate);
                   end if;
                 when j=>
@@ -419,7 +416,6 @@ begin
                     memory_count<=memory_count+"001";
                 end case;
               elsif control.MemRead='1' then
-                report "memread";
                 case (memory_count) is
                   when "000" =>
                     SRAM_ADDR<=inst.memaddr;
@@ -451,7 +447,6 @@ begin
               exe_state<=F;
               if inst.opecode="000011" or (inst.opecode="000000" and inst.funct="01001") then  --jal,jral
                 reg_file(31)<=PC+x"00000001";
-                report "j_l";
               end if;
               case (control.PC_control) is
                 when normal =>
