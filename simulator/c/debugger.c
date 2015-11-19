@@ -28,7 +28,7 @@
  * - break n:
  *   set BreakPoint to the instruction whose PC is 'n'
  *
- * - run:
+ * - continue:
  *   run the program until reaches a BreakPoint
  *
  */
@@ -483,12 +483,12 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 			break;
 		}
 
-		if(strcmp(input, "run") == 0){
+		if(strcmp(input, "continue") == 0){
 			is_running = 1;
 			break;
 		}
 
-		if(strcmp("break", input) < 0 && strcmp(input, "break~") < 0){ //command == break && exists argument
+		if(strcmp("continue", input) < 0 && strcmp(input, "continue~") < 0){ //command == break && exists argument
 			pc = get_break_point(input);
 			if(breakpoint[pc]){
 				continue;
