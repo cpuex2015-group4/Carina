@@ -31,7 +31,7 @@ end cpu;
 
 architecture RTL of cpu is
 
-  constant IS_DEBUG:boolean:=true;
+  constant IS_DEBUG:boolean:=false;
   constant IS_SIM:boolean:=false;
   component BRAM_INST
     port(
@@ -138,6 +138,16 @@ signal fpu_result:datat:=x"00000000";
 signal fpu_FPCond:std_logic:='0';
   
   signal count:integer:=0;
+
+
+
+
+
+--dump
+  type dump_state_type is (D_INIT,D_GPR,D_FPR_INIT,D_FPR,D_PC_INIT,D_PC,DEAD);
+  signal dump_state:dump_state_type:=D_INIT;
+  signal dump_gpr_i:std_logic_vector(6 downto 0); --hitotu ooku torimashita
+  signal dump_fpr_i:std_logic_vector(6 downto 0); --hitotu ooku torimashita
 begin
   inst_mem:BRAM_INST port map(
     addra=>inst_addr,
@@ -471,6 +481,68 @@ begin
           if IS_SIM then
             assert false report "Halted" severity failure;
           end if;
+          word_access<='1';
+
+          case (dump_state) is
+            when d_init =>
+                if IO_full='0' then
+                  IO_we<='1';
+                  IO_send_data<=x"cafecafe";
+                  dump_state<=d_gpr;
+                else
+                  IO_we<='0';
+                end if;
+            when d_gpr =>
+                if IO_full='0' then
+                  IO_we<='1';
+                  dump_gpr_i<=dump_gpr_i+1;
+                  IO_send_data<=reg_file(CONV_INTEGER(dump_gpr_i));
+                  if dump_gpr_i=31 then
+                    dump_state<=d_fpr_init;
+                  end if;
+                else
+                  IO_we<='0';
+                end if;
+            when d_fpr_init =>
+                if IO_full='0' then
+                  IO_we<='1';
+                  IO_send_data<=x"cafecafe";
+                  dump_state<=d_fpr;
+                else
+                  IO_we<='0';
+                end if;
+            when d_fpr =>
+                if IO_full='0' then
+                  IO_we<='1';
+                  dump_fpr_i<=dump_fpr_i+1;
+                  IO_send_data<=fpu_reg_file(CONV_INTEGER(dump_fpr_i));
+                  if dump_fpr_i=31 then
+                    dump_state<=d_pc_init;
+                  end if;
+                else
+                  IO_we<='0';
+                end if;
+            when d_pc_init =>
+                if IO_full='0' then
+                  IO_we<='1';
+                  IO_send_data<=x"cafecafe";
+                  dump_state<=d_pc;
+                else
+                  IO_we<='0';
+                end if;
+            when d_pc =>
+                if IO_full='0' then
+                  IO_we<='1';
+                  IO_send_data<=PC;
+                  dump_state<=dead;
+                else
+                  IO_we<='0';
+                end if;
+            when dead =>
+              io_we<='0';
+          end case;
+
+
           
 --          if IS_DEBUG then
 --            if IO_full='0' then

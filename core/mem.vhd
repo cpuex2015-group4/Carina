@@ -25,7 +25,7 @@ end mem_monkey;
 
 architecture kaze_ga_yabai_arashi of mem_monkey is
   constant Z:datat:=(others=>'Z');
-  type memt is array(0 to 65535) of datat;
+  type memt is array(0 to 1048575) of datat;
   signal test_mem:memt:=(others=>x"FFFFFFFF");
   signal former_xwa:std_logic:='1';
   signal forformer_xwa:std_logic:='1';
@@ -51,11 +51,11 @@ begin
     if former_xwa='0' then
       ZD<=Z;
     elsif forformer_xwa='0' then
-      TEST_mem(conv_integer(forformer_addr(15 downto 0)))<=ZD;
+      TEST_mem(conv_integer(forformer_addr(19 downto 0)))<=ZD;
     else
-      ZD<=TEST_mem(conv_INTEGER(forforformer_addr(15 downto 0)));
+      ZD<=TEST_mem(conv_INTEGER(forforformer_addr(19 downto 0)));
 --      ZD<=x"cafecafe";
-      mem_val<=TEST_mem(conv_INTEGER(forforformer_addr(15 downto 0)));
+      mem_val<=TEST_mem(conv_INTEGER(forforformer_addr(19 downto 0)));
     end if;
   end if;
   end process;

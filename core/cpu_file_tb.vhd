@@ -91,7 +91,7 @@ architecture pohe of cpu_tb is
 
 --FILEIO
   type    BIN is file of character;
-  file    FILEPOINT   :   BIN open READ_MODE is "mandelonedot4.o";
+  file    FILEPOINT   :   BIN open READ_MODE is "raytracer_and_contest.o";
 BEGIN
 	-- Instantiate the Unit Under Test (UUT)
   uut: cpu PORT MAP (
@@ -131,6 +131,7 @@ BEGIN
    begin
      if rising_edge(clk) then
        if io_we='1' then
+         report "OUTPUT!";
          io_full<='1';
        else
          io_full<='0';
@@ -174,4 +175,12 @@ BEGIN
       wait;
    end process;
 
+   debug_reports :process(clk)
+   begin
+     if rising_edge(clk) then
+       if CONV_INTEGER(DEBUG.PC)=6506 then
+         report "Hier ist JRAL!";
+       end if;
+     end if;
+   end process;
 end;
