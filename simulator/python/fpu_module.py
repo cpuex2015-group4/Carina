@@ -13,7 +13,7 @@ class FpuModule:
 	c_fop1_func_type = CFUNCTYPE(c_uint, c_uint)
 	c_fadd_func = cast(c_module.fadd, c_fop2_func_type)
 	c_fmul_func = cast(c_module.fmul, c_fop2_func_type)
-	c_fint_func = cast(c_module.fmul, c_fop1_func_type)
+	c_finv_func = cast(c_module.finv, c_fop1_func_type)
 
 	@classmethod
 	def fadd(cls, f1, f2):
