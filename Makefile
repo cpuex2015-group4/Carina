@@ -58,7 +58,6 @@ $(CSIM):
 .PHONY: $(TEST)
 $(TEST):
 	@echo "--------------------\nresolving test dependecies ...\n--------------------"
-	git submodule update
 	pip install -r $(DEPENDENCY_MODULES)
 	@echo "--------------------\ngenerating min-caml compiler ...\n--------------------"
 	@cd $(MINCAML_DIR); ./to_carina; $(MAKE) min-caml
