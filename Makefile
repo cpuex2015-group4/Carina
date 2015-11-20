@@ -30,7 +30,7 @@ $(MINRT).s: $(MINRT).ml
 	fi
 
 # the rule to make binary (compile -> cat with library -> assemble)
-%.o: %.ml $(LIBMINCAML)
+%.o: %.ml $(LIBMINCAML) $(MINCAML)
 	$(MINCAML) $(MLFLAGS) $*
 	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $*.s; \
