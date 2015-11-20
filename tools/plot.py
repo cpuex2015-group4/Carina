@@ -110,6 +110,19 @@ def sqrt(xran):
 	plt.plot(X, Y)
 	plt.savefig("sqrt.png")
 
+def inv(xran):
+	Y = []
+	sys.stdout.write("x = ")
+	for x in xran:
+		with open(TMP_ML + ".ml", "w") as f:
+			f.write("1.0 /. ({:f})".format(x))
+		compile(TMP_ML, quiet = True)
+		sys.stdout.write("{0}20D{0}K{1:-8}".format("\033[", x))
+		Y.append(csim(TMP_ML)[1])
+	plt.plot(X, Y)
+	plt.savefig("inv.png")
+
+
 if __name__ == "__main__":
 	X = np.arange(-10, 10, 0.1)
 	spec = sys.argv[1]
@@ -130,6 +143,8 @@ if __name__ == "__main__":
 		floor(X)
 	elif spec == "sqrt":
 		sqrt(X)
+	elif spec == "inv":
+		inv(X)
 	else:
 		assert "invalid spec"
 	clean()
