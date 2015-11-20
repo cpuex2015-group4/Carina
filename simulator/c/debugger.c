@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <signal.h>
 #include "./utils.h"
 #include "./simulator.h"
 #include "./debugger.h"
-
+#define handle_error(msg) \
+	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 /*
  *
  * 88        88           88  88           
@@ -35,6 +37,12 @@
 
 char* PROMPT = "Hdb > ";
 
+void segfault_sigaction(int signal, siginfo_t *si, void *arg)
+{
+    printf("Caught segfault at address %p\n", si->si_addr);
+    exit(0);
+}
+
 void main_debugger(void)
 {
 	fprintf(stderr, "88        88           88  88          \n"); 
@@ -47,6 +55,16 @@ void main_debugger(void)
 	fprintf(stderr, "88        88   `\"8bbdP\"Y8  8Y\"Ybbd8\"'  \n"); 
 	fprintf(stderr, "=======================================\n"); 
 	fprintf(stderr, "\n");
+
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sigaction));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_sigaction = segfault_sigaction;
+	sa.sa_flags = SA_SIGINFO;
+	sigaction(SIGSEGV, &sa, NULL);
+	//float  *foo, *foo2; 
+	//foo = (float*)malloc(1000);
+	//foo2[0] = 1.0;
 }
 
 extern int simulate_inst(simulator* , instruction, unsigned char, unsigned char, unsigned char, unsigned char);
