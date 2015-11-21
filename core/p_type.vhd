@@ -11,6 +11,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 
 package p_type is
+
+  
   constant BRAM_ADDR_SIZE:integer:=15;
   subtype BRAM_ADDRT is std_logic_vector(BRAM_ADDR_SIZE-1 downto 0);
   subtype datat is std_logic_vector(31 downto 0);
@@ -20,6 +22,35 @@ package p_type is
   subtype imdt is std_logic_vector(15 downto 0);
   subtype addrt is std_logic_vector( 25 downto 0);
   subtype memaddrt is std_logic_vector(19 downto 0);
+
+
+--ISA------------------------------------------------------------------
+  constant OP_REGREG    :opet:="000000";
+  constant OP_J         :opet:="000010";
+  constant OP_JAL       :opet:="000011";
+  constant OP_BEQ       :opet:="000100";
+  constant OP_BNE       :opet:="000101";
+  constant OP_ADDI      :opet:="001000";
+  constant OP_ORI       :opet:="001101";
+  constant OP_SLTI      :opet:="001010";
+  constant OP_ANDI      :opet:="001100";
+  constant OP_LW        :opet:="100011";
+  constant OP_SW        :opet:="101011";
+
+  constant OP_FP        :opet:="010001";
+  constant OP_LWCL      :opet:="110001";
+  constant OP_SWCL      :opet:="111001";
+
+  constant OP_IN        :opet:="011010";
+  constant OP_OUT       :opet:="011011";
+  constant OP_HLT       :opet:="111111";
+  
+  
+--/ISA-----------------------------------------------------------------
+
+
+
+
   type reg_filet is array(0 to 31) of datat;
   type PC_controlt is (j,jr,b,normal);
    type INST_TYPE is (I,R,J);
