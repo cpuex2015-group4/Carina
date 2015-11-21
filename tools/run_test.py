@@ -165,10 +165,6 @@ def test_funcomp(c, py):
 def test_oscillation(c, py):
 	assert c == py
 
-@runtest("tests/flib", "int")
-def test_flib(c, py):
-	assert c == py == 1
-
 @runtest("tests/sld_io", "int", stdin=os.path.join(ROOT, "raytracer", "contest.sld"))
 def test_sld_io(c, py):
 	assert c == py == 325
