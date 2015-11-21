@@ -20,7 +20,7 @@ entity loader is
     IO_RE,loaded: out std_logic:='0';
     heap_head:out datat:=x"00000000";
     reset:in std_logic:='0'
-  );
+    );
 end loader;
 
 architecture kaisensionoodle of loader is
@@ -42,69 +42,69 @@ begin
   entry<=entry_point;
   main:process(clk)
   begin
-   if rising_edge(clk) then
-     if reset='1' then
-       bram_we<="0";
-       IO_RE<='0';
-       loaded<='0';
-       i<=x"00000000";
-       state<=header;
-       justread<=false;
-       else
-    case (state) is
-      when HEADER=>
+    if rising_edge(clk) then
+      if reset='1' then
+        bram_we<="0";
+        IO_RE<='0';
+        loaded<='0';
+        i<=x"00000000";
+        state<=header;
+        justread<=false;
+      else
+        case (state) is
+          when HEADER=>
 --		 report "head";
-        if i<4 then
-          if justread then
-            IO_RE<='0';
-            i<=i+x"00000001";
-            justread<=false;
-          else
-            if IO_empty='0' then
-              IO_RE<='1';
-              case (i) is
-                when x"00000001" =>
-                  text_size<=IO_recv_data;
-                when x"00000002" =>
-                  data_size<=IO_recv_data;
-                when x"00000003" =>
-                  entry_point<=IO_recv_data;
-                when others =>
+            if i<4 then
+              if justread then
+                IO_RE<='0';
+                i<=i+x"00000001";
+                justread<=false;
+              else
+                if IO_empty='0' then
+                  IO_RE<='1';
+                  case (i) is
+                    when x"00000001" =>
+                      text_size<=IO_recv_data;
+                    when x"00000002" =>
+                      data_size<=IO_recv_data;
+                    when x"00000003" =>
+                      entry_point<=IO_recv_data;
+                    when others =>
                   --assert false
-                 --   report "crazy i in loader_HEADER:" & integer'image(i);
-              end case;
-              justread<=true;
+                  --   report "crazy i in loader_HEADER:" & integer'image(i);
+                  end case;
+                  justread<=true;
+                end if;
+              end if;
+            else
+              i<=x"00000000";
+              state<=TEXT_RECEIVING;
             end if;
-          end if;
-        else
-          i<=x"00000000";
-          state<=TEXT_RECEIVING;
-        end if;
-      when TEXT_RECEIVING=>
-        if i<conv_integer(text_size) then
-          if justread then
-            io_re<='0';
-            justread<=false;
-            i<=i+x"00000001";
-            BRAM_WE<="0";
-          else
-            if IO_empty='0' then
-              din<=IO_recv_data;
-              addr<=i(BRAM_ADDR_SIZE-1 downto 0);
-              justread<=true;
-              BRAM_WE<="1";
-              io_re<='1';
+          when TEXT_RECEIVING=>
+            if i<conv_integer(text_size) then
+              if justread then
+                io_re<='0';
+                justread<=false;
+                i<=i+x"00000001";
+                BRAM_WE<="0";
+              else
+                if IO_empty='0' then
+                  din<=IO_recv_data;
+                  addr<=i(BRAM_ADDR_SIZE-1 downto 0);
+                  justread<=true;
+                  BRAM_WE<="1";
+                  io_re<='1';
+                end if;
+              end if;
+            else
+              state<=DATA_RECEIVING;
+              i<=data_offset;
             end if;
-          end if;
-        else
-          state<=DATA_RECEIVING;
-          i<=data_offset;
-        end if;
-      when DATA_RECEIVING =>
-        if i<conv_integer(data_offset+data_size) then
-          if justread then
-            io_re<='0';
-            case (sram_count) is
+          when DATA_RECEIVING =>
+            if i<conv_integer(data_offset+data_size) then
+              if justread then
+                io_re<='0';
+                case (sram_count) is
                   when "000" =>
                     SRAM_ADDR<=i(19 downto 0);
                     SRAM_WE<='0';
@@ -120,27 +120,27 @@ begin
                     SRAM_WE<='1';
                     SRAM_DATA<="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
                     sram_count<=sram_count+"001";
-            end case;
-          else
-            if IO_empty='0' then
-              recvdata<=IO_recv_data;
-              io_re<='1';
-              justread<=true;
+                end case;
+              else
+                if IO_empty='0' then
+                  recvdata<=IO_recv_data;
+                  io_re<='1';
+                  justread<=true;
+                end if;
+              end if;
+            else
+              state<=FINISHED;
             end if;
-          end if;
-        else
-          state<=FINISHED;
-        end if;
-      when FINISHED=>
-        loaded<='1';
-    end case;
+          when FINISHED=>
+            loaded<='1';
+        end case;
+      end if;
     end if;
-   end if;
   end process;
   
   debug:process(state)
   begin
-	--report "state:" & statet'image(state);
+  --report "state:" & statet'image(state);
   end process;
 --  debueg:process(i)
 --  begin

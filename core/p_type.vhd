@@ -53,7 +53,7 @@ package p_type is
 
   type reg_filet is array(0 to 31) of datat;
   type PC_controlt is (j,jr,b,normal);
-   type INST_TYPE is (I,R,J);
+  type INST_TYPE is (I,R,J);
   type inst_file is record
     PC:datat;
     instruction:datat;
@@ -63,7 +63,7 @@ package p_type is
     rt:regt;
     rd:regt;
     reg_dest:regt;
- --   reg_source:regt;
+    --   reg_source:regt;
     shamt:regt;
     funct:functt;
     immediate:imdt;
@@ -77,11 +77,11 @@ package p_type is
     result:datat;
     newPC:datat;
   end record;
- type CORE_STATE_TYPE is (INIT,WAIT_HEADER,EXE_READY,EXECUTING,HALTED);
+  type CORE_STATE_TYPE is (INIT,WAIT_HEADER,EXE_READY,EXECUTING,HALTED);
   type EXE_STATE_TYPE is (F,D,EX,MEM,WB);
 
   type control_file is record
-                                --negate /assert
+    --negate /assert
     RegDst:std_logic;           --rd->0 rt->1
     RegWrite:std_logic;         --we
     ALUSrc:std_logic;           --reg2/imd
@@ -196,15 +196,15 @@ package body p_type is
 
     if opecode="011010" then
       control.IORead:='1';
-	 else
-	   control.IORead:='0';
+    else
+      control.IORead:='0';
     end if;
     
     if opecode="011011" then
       control.IOWrite:='1';
     eLSE
-		control.IOWrite:='0';
-	 end if;
+      control.IOWrite:='0';
+    end if;
     if opecode="010001" then
       control.fpu_data:='1';
     else
@@ -292,5 +292,5 @@ package body p_type is
 --  begin
 --    
 --  end <procedure_name>;
- 
+  
 end p_type;

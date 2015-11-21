@@ -6,13 +6,13 @@ library work;
 use work.p_type.all;
 
 entity alu is
-port (
-  operand1,operand2:in datat;
-  ALU_control:in alu_controlt;
-  shamt:in REGT;
-  result:out datat;
-  isZero:out std_logic
-);
+  port (
+    operand1,operand2:in datat;
+    ALU_control:in alu_controlt;
+    shamt:in REGT;
+    result:out datat;
+    isZero:out std_logic
+    );
 end alu;
 
 architecture pohe of alu is

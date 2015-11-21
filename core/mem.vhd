@@ -10,12 +10,12 @@ library work;
 use work.p_type.all;
 
 entity mem_monkey is
-port (
-  ZD    : inout std_logic_vector(31 downto 0):=(others=>'Z');
-  ZA    : in   std_logic_vector(19 downto 0);
-  XWA   : in   std_logic;
-  clk   : in   std_logic
-);
+  port (
+    ZD    : inout std_logic_vector(31 downto 0):=(others=>'Z');
+    ZA    : in   std_logic_vector(19 downto 0);
+    XWA   : in   std_logic;
+    clk   : in   std_logic
+    );
 end mem_monkey;
 
 
@@ -39,7 +39,7 @@ begin
 --          TEST_mem(conv_INTEGER(forforformer_addr(7 downto 0)));
   process(clk)
   begin
-  if rising_edge(clk) then
+    if rising_edge(clk) then
 --      current_xwa<=xwa;
       former_xwa<=xwa;
       forformer_xwa<=former_xwa;
@@ -48,16 +48,16 @@ begin
       former_addr<=ZA;
       forformer_addr<=former_addr;
       forforformer_addr<=forformer_addr;
-    if former_xwa='0' then
-      ZD<=Z;
-    elsif forformer_xwa='0' then
-      TEST_mem(conv_integer(forformer_addr(19 downto 0)))<=ZD;
-    else
-      ZD<=TEST_mem(conv_INTEGER(forforformer_addr(19 downto 0)));
+      if former_xwa='0' then
+        ZD<=Z;
+      elsif forformer_xwa='0' then
+        TEST_mem(conv_integer(forformer_addr(19 downto 0)))<=ZD;
+      else
+        ZD<=TEST_mem(conv_INTEGER(forforformer_addr(19 downto 0)));
 --      ZD<=x"cafecafe";
-      mem_val<=TEST_mem(conv_INTEGER(forforformer_addr(19 downto 0)));
+        mem_val<=TEST_mem(conv_INTEGER(forforformer_addr(19 downto 0)));
+      end if;
     end if;
-  end if;
   end process;
 
 end kaze_ga_yabai_arashi;
