@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 TMP_ML = ".python-tmp"
-X87 = "./x87.sqrt"
+X87 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "x87.sqrt")
 
 def sim_sqrt(x):
 	with open(TMP_ML + ".ml", "w") as f:
