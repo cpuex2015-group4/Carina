@@ -55,7 +55,7 @@ architecture RTL of cpu is
   component loader
     port (
       clk,IO_empty,activate: in std_logic;
-      IO_recv_data: in std_logic_vector(31 downto 0);
+      IO_recv_data: in std_logic_vector(31 Downto 0);
       addr:out BRAM_ADDRT;
       din:out datat;
       bram_we:out std_logic_vector(0 downto 0);
@@ -146,8 +146,9 @@ signal fpu_FPCond:std_logic:='0';
 --dump
   type dump_state_type is (D_INIT,D_GPR,D_FPR_INIT,D_FPR,D_PC_INIT,D_PC,DEAD);
   signal dump_state:dump_state_type:=D_INIT;
-  signal dump_gpr_i:std_logic_vector(6 downto 0); --hitotu ooku torimashita
-  signal dump_fpr_i:std_logic_vector(6 downto 0); --hitotu ooku torimashita
+  signal dump_gpr_i:std_logic_vector(6 downto 0):="0000000"; --hitotu ooku torimashita
+  signal dump_fpr_i:std_logic_vector(6 downto 0):="0000000"; --hitotu ooku torimashita
+  signal wait_count:std_logic_vector(2 downto 0):="000";
 begin
   inst_mem:BRAM_INST port map(
     addra=>inst_addr,
@@ -482,9 +483,11 @@ begin
             assert false report "Halted" severity failure;
           end if;
           word_access<='1';
-
+          if IS_DEBUG then
           case (dump_state) is
             when d_init =>
+              if wait_count=3 then
+                wait_count<="000";
                 if IO_full='0' then
                   IO_we<='1';
                   IO_send_data<=x"cafecafe";
@@ -492,7 +495,12 @@ begin
                 else
                   IO_we<='0';
                 end if;
+              else
+                wait_count<=wait_count+1;
+              end if;
             when d_gpr =>
+              if wait_count=3 then
+                wait_count<="000";
                 if IO_full='0' then
                   IO_we<='1';
                   dump_gpr_i<=dump_gpr_i+1;
@@ -503,7 +511,12 @@ begin
                 else
                   IO_we<='0';
                 end if;
+                else
+                  wait_count<=wait_count+1;
+                end if;
             when d_fpr_init =>
+              if wait_count<=3 then
+                wait_count<="000";
                 if IO_full='0' then
                   IO_we<='1';
                   IO_send_data<=x"cafecafe";
@@ -511,7 +524,12 @@ begin
                 else
                   IO_we<='0';
                 end if;
+                else
+                  wait_count<=wait_count+1;
+                end if;
             when d_fpr =>
+              if wait_count=3 then
+                wait_count<="000";
                 if IO_full='0' then
                   IO_we<='1';
                   dump_fpr_i<=dump_fpr_i+1;
@@ -522,7 +540,12 @@ begin
                 else
                   IO_we<='0';
                 end if;
+                else
+                  wait_count<=wait_count+1;
+                end if;
             when d_pc_init =>
+              if wait_count<=3 then
+                wait_count<="000";
                 if IO_full='0' then
                   IO_we<='1';
                   IO_send_data<=x"cafecafe";
@@ -530,19 +553,27 @@ begin
                 else
                   IO_we<='0';
                 end if;
+              else
+                wait_count<=wait_count+1;
+              end if;
             when d_pc =>
-                if IO_full='0' then
+              if wait_count=3 then
+                wait_count<="000";
+              if IO_full='0' then
                   IO_we<='1';
                   IO_send_data<=PC;
                   dump_state<=dead;
                 else
                   IO_we<='0';
                 end if;
+              else
+                wait_count<=wait_count+1;
+              end if;
             when dead =>
               io_we<='0';
           end case;
 
-
+          end if;
           
 --          if IS_DEBUG then
 --            if IO_full='0' then

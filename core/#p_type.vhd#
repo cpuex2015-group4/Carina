@@ -11,7 +11,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 
 package p_type is
-  constant BRAM_ADDR_SIZE:integer:=14;
+  constant BRAM_ADDR_SIZE:integer:=15;
   subtype BRAM_ADDRT is std_logic_vector(BRAM_ADDR_SIZE-1 downto 0);
   subtype datat is std_logic_vector(31 downto 0);
   subtype opet is std_logic_vector(5 downto 0);

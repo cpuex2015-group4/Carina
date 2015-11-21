@@ -41,6 +41,10 @@ begin
         vresult:=SHL(operand1,shamt);
       when ALUSLR =>
         vresult:=SHR(operand1,shamt);
+      when ALUDIV2 =>
+        vresult:='0' & operand1(31 downto 1);
+      when ALUMUL4 =>
+        vresult:=operand1(29 downto 0) & "00";
     end case;
     result<=vresult;
     if vresult=x"00000000" then

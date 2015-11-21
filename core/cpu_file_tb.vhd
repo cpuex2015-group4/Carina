@@ -91,7 +91,7 @@ architecture pohe of cpu_tb is
 
 --FILEIO
   type    BIN is file of character;
-  file    FILEPOINT   :   BIN open READ_MODE is "raytracer_and_contest.o";
+  file    FILEPOINT   :   BIN open READ_MODE is "fib.o";
 BEGIN
 	-- Instantiate the Unit Under Test (UUT)
   uut: cpu PORT MAP (
