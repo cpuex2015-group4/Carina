@@ -1,1 +1,0 @@
-yukiimai@yukiimai-ThinkPad-T440p.10475:1448088473

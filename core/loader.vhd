@@ -10,7 +10,7 @@ entity loader is
   port (
     clk,IO_empty,activate: in std_logic;
     IO_recv_data: in std_logic_vector(31 downto 0);
-    addr:out BRAM_ADDRT:="00000000000000";
+    addr:out BRAM_ADDRT:="000000000000000";
     din:out datat:=x"00000000";
     bram_we:out std_logic_vector(0 downto 0):="0";
     SRAM_ADDR:out std_logic_vector(19 downto 0):="00000000000000000000";
@@ -90,7 +90,7 @@ begin
           else
             if IO_empty='0' then
               din<=IO_recv_data;
-              addr<=i(13 downto 0);
+              addr<=i(BRAM_ADDR_SIZE-1 downto 0);
               justread<=true;
               BRAM_WE<="1";
               io_re<='1';
