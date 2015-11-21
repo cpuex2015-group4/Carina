@@ -5,6 +5,7 @@ MINRT=raytracer/raytracer
 TARGET=$(MINRT)
 MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
+MLFLAGS=-inline 100
 LIBMINCAML=$(MINCAML_DIR)/libmincaml.S
 AS=$(PYTHON) ./assembler/main.py
 PC_EMITTER=$(PYTHON) ./assembler/emit.py
@@ -21,7 +22,7 @@ $(TARGET): $(MINCAML) $(MINRT).s
 	mv $(MINRT).o $(MINRT)
 
 $(MINRT).s: $(MINRT).ml
-	$(MINCAML) $(MINRT)
+	$(MINCAML) $(MLFLAGS) $(MINRT)
 	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $(MINRT).s; \
 	else \
@@ -29,8 +30,8 @@ $(MINRT).s: $(MINRT).ml
 	fi
 
 # the rule to make binary (compile -> cat with library -> assemble)
-%.o: %.ml $(LIBMINCAML)
-	$(MINCAML) $*
+%.o: %.ml $(LIBMINCAML) $(MINCAML)
+	$(MINCAML) $(MLFLAGS) $*
 	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $*.s; \
 		$(AS) $*.s; \
@@ -49,15 +50,14 @@ debug: $(TARGET)
 
 .PHONY: sim
 sim:
-	@cd $(CSIM_DIR); make
+	@cd $(CSIM_DIR); $(MAKE)
 
 $(CSIM):
-	@cd $(CSIM_DIR); make
+	@cd $(CSIM_DIR); $(MAKE)
 
 .PHONY: $(TEST)
 $(TEST):
 	@echo "--------------------\nresolving test dependecies ...\n--------------------"
-	git submodule update
 	pip install -r $(DEPENDENCY_MODULES)
 	@echo "--------------------\ngenerating min-caml compiler ...\n--------------------"
 	@cd $(MINCAML_DIR); ./to_carina; $(MAKE) min-caml
@@ -70,9 +70,7 @@ $(TEST):
 	@exit 0
 
 $(MINCAML):
-	@cd min-caml
-	@$(MAKE) min-caml
-	@cd ..
+	@cd min-caml; $(MAKE) min-caml
 
 .PHONY: clean
 clean:
@@ -80,3 +78,6 @@ clean:
 		assembler/*.pyc simulator/*.pyc \
 		raytracer/*.s raytracer/*.o raytracer/raytracer \
 		.mem-dump output.png output.ppm
+	@cd $(MINCAML_DIR); $(MAKE) clean
+	@cd $(CSIM_DIR); $(MAKE) clean
+	@cd $(FSIM_DIR); $(MAKE) clean

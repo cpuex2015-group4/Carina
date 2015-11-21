@@ -21,6 +21,6 @@ let rec solve t r v k1 k2 k3 k4 l1 l2 l3 l4 =
   let t' = t +. dt in
   let r' = r +. 1.0/.6.0 *. (k1' +. 2.0*.k2' +. 2.0*.k3' +. k4') in
   let v' = v +. 1.0/.6.0 *. (l1' +. 2.0*.l2' +. 2.0*.l3' +. l4') in
-  if fless 10.0 t' then r'
+  if 10.0 < t' then r'
   else solve t' r' v' k1' k2' k3' k4' l1' l2' l3' l4'
 in (solve 0.0 0.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0)
