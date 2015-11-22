@@ -7,6 +7,8 @@ MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
 MLFLAGS=-inline 100
 LIBMINCAML=$(MINCAML_DIR)/libmincaml.S
+LIBREAD=$(MINCAML_DIR)/read.S
+LIBREADBIN=$(MINCAML_DIR)/read_bin.S
 AS=$(PYTHON) ./assembler/main.py
 PC_EMITTER=$(PYTHON) ./assembler/emit.py
 CSIM_DIR=./simulator/c
@@ -25,6 +27,7 @@ $(MINRT).s: $(MINRT).ml
 	$(MINCAML) $(MLFLAGS) $(MINRT)
 	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $(MINRT).s; \
+		cat $(LIBREAD) >> $(MINRT).s; \
 	else \
 		rm $(MINRT).s; \
 	fi
@@ -34,6 +37,7 @@ $(MINRT).s: $(MINRT).ml
 	$(MINCAML) $(MLFLAGS) $*
 	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $*.s; \
+		cat $(LIBREAD) >> $*.s; \
 		$(AS) $*.s; \
 	fi
 

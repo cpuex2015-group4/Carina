@@ -24,6 +24,7 @@ def compile(name, quiet=False):
 		ret_code = subprocess.call([MIN_CAML, "-inline", "100", name])
 	if ret_code == 0:
 		os.system("cat {}/min-caml/libmincaml.S >> {}.s".format(ROOT, name))
+		os.system("cat {}/min-caml/read.S >> {}.s".format(ROOT, name))
 		asmblr = Assembler()
 		asmblr.assemble(name + ".s")
 	else:
