@@ -30,7 +30,7 @@ end cpu;
 ----pipeline ga sitai naa
 
 architecture RTL of cpu is
-
+  constant IS_SERVER:boolean:=true;
   constant IS_DEBUG:boolean:=false;
   constant IS_SIM:boolean:=false;
   component BRAM_INST
@@ -127,7 +127,8 @@ signal isZero:std_logic;
   constant memory_read_wait:std_logic_vector(2 downto 0):="101";
   signal memory_count:std_logic_vector(2 downto 0):="000";
 
-
+--io
+  signal io_send_aa_wait:std_logic_vector(2 downto 0):="000";
 --fpu
 constant fpu_wait_max:std_logic_vector(2 downto 0):="010";
 signal fpu_wait:std_logic_vector(2 downto 0):="000";
@@ -221,7 +222,11 @@ begin
               core_state<=WaIT_HEADER;
             end if;
           else
-            core_state<=WaIT_HEADER;
+            if IS_SERVER then
+              core_state<=exe_ready;
+            else
+              core_state<=WaIT_HEADER;
+            end if;
             io_we<='0';
           end if;
         when WAIT_HEADER =>
@@ -248,12 +253,23 @@ begin
 --        io_we<=loader_io_re;
           end if;
         when EXE_READY=>
-          reg_file(29)<="00000000000011111111111111111111";   --sp=mem_max;
-          reg_file(28)<=heap_head; --gp=heap_head
-          io_we<='0';
-          word_access<='0';
-          core_state<=EXECUTING;    --data source no kirikae
-        when EXECUTING =>
+          if IS_SERVER then
+            if io_full='0' then
+              word_access<='0';
+              io_send_data<=x"000000aa";
+              io_we<='1';
+            else
+              io_we<='0';
+              core_state<=EXECUTING;
+            end if;
+          else
+            reg_file(29)<="00000000000011111111111111111111";   --sp=mem_max;
+            reg_file(28)<=heap_head; --gp=heap_head
+            io_we<='0';
+            word_access<='0';
+            core_state<=EXECUTING;    --data source no kirikae
+          end if;
+          when EXECUTING =>
       --debug
           DEBUG.detail.opecode<=inst.opecode;
           DEBUG.detail.control<=control;
