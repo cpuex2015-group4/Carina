@@ -19,3 +19,4 @@ python-tmp.*
 .python-tmp.*
 *.png
 *.jpg
+*.coe
