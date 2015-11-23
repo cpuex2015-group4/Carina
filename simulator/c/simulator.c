@@ -525,7 +525,6 @@ int inst_adds(simulator* sim_p, instruction inst)
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
 	float fd = int2float(fadd(float2int(fs),  float2int(ft)));
-	fd = fs + ft;
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
@@ -589,18 +588,22 @@ int inst_muls(simulator* sim_p, instruction inst)
 	mf2.mfloat = ft;
 	mf_ans.muint = fmul(mf1.muint, mf2.muint);
 	float fd = mf_ans.mfloat;
-	fd = fs * ft; 
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
 }
+
+extern uint32_t finv(uint32_t f1);
 
 int inst_invs(simulator* sim_p, instruction inst)
 {
 	if(INST_CNT)inst_cnt_arr[INST_INVS_IDX]++;
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
-	float fd = (1.0 / ft);
+	myfloat mf;
+	mf.mfloat = ft;
+	mf.muint = finv(mf.muint);
+	float fd = (mf.mfloat);
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;

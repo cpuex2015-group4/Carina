@@ -15,15 +15,16 @@ CSIM = os.path.join(ROOT, "simulator/c/csim")
 
 def compile(name, quiet=False):
 	if quiet:
-		p = subprocess.Popen([MIN_CAML, name],
+		p = subprocess.Popen([MIN_CAML, "-inline", "100", name],
 				stdout = subprocess.PIPE,
 				stderr = subprocess.PIPE,
 				shell = False)
 		ret_code = p.wait()
 	else:
-		ret_code = subprocess.call([MIN_CAML, name])
+		ret_code = subprocess.call([MIN_CAML, "-inline", "100", name])
 	if ret_code == 0:
 		os.system("cat {}/min-caml/libmincaml.S >> {}.s".format(ROOT, name))
+		os.system("cat {}/min-caml/read.S >> {}.s".format(ROOT, name))
 		asmblr = Assembler()
 		asmblr.assemble(name + ".s")
 	else:
