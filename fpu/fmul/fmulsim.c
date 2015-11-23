@@ -85,8 +85,8 @@ int main(int argc, char *argv[]){
 	union hoge out;
 
   // 入力値をここにいれてね
-	inputa.f = 3.5;
-	inputb.f = 2.22; 
+	inputa.i = 3208978104;
+	inputb.i = 3208978104; 
 
 	answer.f = inputa.f * inputb.f;
   manta    = fromdownto(inputa.i,22,0) + ((uint32_t)1 << 23);
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]){
 		expo  = expoa + expob - 127;
 	}
 
-	sign = fromdownto(inputa.i,31,31) & fromdownto(inputb.i,31,31);
+	sign = fromdownto(inputa.i,31,31) ^ fromdownto(inputb.i,31,31);
 
   // このへんはvhdl実装ではカバーしてないけどまぁレイトレでは関係ないらしいし
 	if(expo < 0 || expoa == 0 || expob == 0){ // アンダーフロー
@@ -122,8 +122,11 @@ int main(int argc, char *argv[]){
 
 	out.i = (sign << 31) + (fromdownto((uint32_t)expo,7,0) << 23) + manto;
 
+	printbit("inputa",inputa.i,31,0);
+	printbit("inputb",inputb.i,31,0);
 	printbit("output",out.i,31,0);
-	printbit("answer",answer.i,31,0);
+	printf("%d\n",out.i);
+	//    printbit("answer",answer.i,31,0);
 	//    printf("%20.14e,%20.14e\n",input.f, out.f - answer.f);
 
 	return 0;
