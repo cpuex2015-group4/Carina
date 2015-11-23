@@ -20,7 +20,7 @@ if __name__ == "__main__":
 	bram_size = int(sys.argv[3])
 
 	with open(sys.argv[2], "w") as carina_coe:
-		carina_coe.write("MEMORY_INITIALIZATION_RADIX=16\n")
+		carina_coe.write("MEMORY_INITIALIZATION_RADIX=16;\n")
 		carina_coe.write("MEMORY_INITIALIZATION_VECTOR=\n")
 		for i in range(bram_size):
 			if i < bin_size:
