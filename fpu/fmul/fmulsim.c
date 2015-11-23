@@ -85,8 +85,8 @@ int main(int argc, char *argv[]){
 	union hoge out;
 
   // 入力値をここにいれてね
-	inputa.i = 3208978104;
-	inputb.i = 3208978104; 
+	inputa.i = 8388608;
+	inputb.i = 8388608; 
 
 	answer.f = inputa.f * inputb.f;
   manta    = fromdownto(inputa.i,22,0) + ((uint32_t)1 << 23);
