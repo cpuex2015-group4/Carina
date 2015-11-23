@@ -12,7 +12,6 @@ LIBREAD=$(MINCAML_DIR)/read.S
 LIBREADBIN=$(MINCAML_DIR)/read_bin.S
 AS=$(PYTHON) ./assembler/main.py
 PC_EMITTER=$(PYTHON) ./assembler/emit.py
-CONVCOE=$(PYTHON) ./assembler/convert_coe.py
 CSIM_DIR=./simulator/c
 FSIM_DIR=./simulator/fpu
 PYSIM=$(PYTHON) ./simulator/python/main.py
@@ -33,9 +32,8 @@ $(CONTEST_TARGET): $(MINCAML)
 	else \
 		rm $(MINRT).s; \
 	fi
-	$(AS) $(MINRT).s
+	$(AS) --coe $(MINRT).s
 	$(PC_EMITTER) $(MINRT).s
-	$(CONVCOE) $(MINRT).o $(CONTEST_TARGET) 32768
 
 $(MINRT).s: $(MINRT).ml
 	$(MINCAML) $(MLFLAGS) $(MINRT)
