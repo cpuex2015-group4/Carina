@@ -3,10 +3,13 @@ PYTHON=python
 TEST=test
 MINRT=raytracer/raytracer
 TARGET=$(MINRT)
+CONTEST_TARGET=raytracer/raytracer_bin
 MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
 MLFLAGS=-inline 100
 LIBMINCAML=$(MINCAML_DIR)/libmincaml.S
+LIBREAD=$(MINCAML_DIR)/read.S
+LIBREADBIN=$(MINCAML_DIR)/read_bin.S
 AS=$(PYTHON) ./assembler/main.py
 PC_EMITTER=$(PYTHON) ./assembler/emit.py
 CSIM_DIR=./simulator/c
@@ -19,12 +22,25 @@ SLD=./raytracer/contest.sld
 $(TARGET): $(MINCAML) $(MINRT).s
 	$(AS) $(MINRT).s
 	$(PC_EMITTER) $(MINRT).s
-	mv $(MINRT).o $(MINRT)
+	mv $(MINRT).o $(TARGET)
+
+$(CONTEST_TARGET): $(MINCAML)
+	$(MINCAML) $(MLFLAGS) $(MINRT)
+	if [ $$? = 0 ]; then \
+		cat $(LIBMINCAML) >> $(MINRT).s; \
+		cat $(LIBREADBIN) >> $(MINRT).s; \
+	else \
+		rm $(MINRT).s; \
+	fi
+	$(AS) $(MINRT).s
+	$(PC_EMITTER) $(MINRT).s
+	mv $(MINRT).o $(CONTEST_TARGET)
 
 $(MINRT).s: $(MINRT).ml
 	$(MINCAML) $(MLFLAGS) $(MINRT)
 	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $(MINRT).s; \
+		cat $(LIBREAD) >> $(MINRT).s; \
 	else \
 		rm $(MINRT).s; \
 	fi
@@ -34,6 +50,7 @@ $(MINRT).s: $(MINRT).ml
 	$(MINCAML) $(MLFLAGS) $*
 	if [ $$? = 0 ]; then \
 		cat $(LIBMINCAML) >> $*.s; \
+		cat $(LIBREAD) >> $*.s; \
 		$(AS) $*.s; \
 	fi
 
@@ -42,6 +59,11 @@ run: $(TARGET) $(CSIM)
 	@echo "begin running raytracer ... " 1>&2
 	@time cat $(SLD) | $(CSIM) -f $(TARGET) 1> output.ppm
 	convert output.ppm output.jpg
+
+.PHONY: server-run
+server-run: $(CONTEST_TARGET) $(CSIM)
+	@echo "PLEASE BUILD CSERVER-COM HERE"
+	@echo "PLEASE RUN SERVER HERE"
 
 .PHONY: debug
 debug: $(TARGET)
@@ -76,7 +98,7 @@ $(MINCAML):
 clean:
 	@rm -rf *.pyc tests/*.s tests/*.o \
 		assembler/*.pyc simulator/*.pyc \
-		raytracer/*.s raytracer/*.o raytracer/raytracer \
+		raytracer/*.s raytracer/*.o raytracer/raytracer raytracer/raytracer_bin \
 		.mem-dump output.png output.ppm
 	@cd $(MINCAML_DIR); $(MAKE) clean
 	@cd $(CSIM_DIR); $(MAKE) clean

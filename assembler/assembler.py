@@ -84,6 +84,9 @@ class Assembler:
 			# merge label dict
 			data_label_dict = {k: v + len(text_lines) for k, v in data_label_dict.items()}
 			label_dict = {k: v for d in [text_label_dict, data_label_dict] for k, v in d.items()}
+			
+			# label represent for heap pointer
+			label_dict["min_caml_heap_pointer"] = len(text_lines) + len(data_lines)
 
 			for i, line in enumerate(text_lines):
 				# Each line correspond to one assembly instruction,
