@@ -112,7 +112,7 @@ int main(int argc, char *argv[]){
 	sign = fromdownto(inputa.i,31,31) ^ fromdownto(inputb.i,31,31);
 
   // このへんはvhdl実装ではカバーしてないけどまぁレイトレでは関係ないらしいし
-	if(expo < 0 || expoa == 0 || expob == 0){ // アンダーフロー
+	if(expo < 1 || expoa == 0 || expob == 0){ // アンダーフロー
 	  manto = 0;
 		expo  = 0;
 	}else if(expo > 254){ // オーバーフロー

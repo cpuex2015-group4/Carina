@@ -65,7 +65,7 @@ uint32_t fmul(uint32_t f1, uint32_t f2) {
 	sign = fromdownto(inputa.i,31,31) ^ fromdownto(inputb.i,31,31);
 
   // このへんはvhdl実装ではカバーしてないけどまぁレイトレでは関係ないらしいし
-	if(expo < 0 || expoa == 0 || expob == 0){ // アンダーフロー
+	if(expo < 1 || expoa == 0 || expob == 0){ // アンダーフロー
 	  manto = 0;
 		expo  = 0;
 	}else if(expo > 254){ // オーバーフロー
@@ -74,5 +74,6 @@ uint32_t fmul(uint32_t f1, uint32_t f2) {
 	}
 
 	out.i = (sign << 31) + (fromdownto((uint32_t)expo,7,0) << 23) + manto;
+
 	return out.i;
 }

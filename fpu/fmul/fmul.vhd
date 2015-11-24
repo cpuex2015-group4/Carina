@@ -73,9 +73,13 @@ begin
 
 
 	zeroFlag <= '1' when inputA_f.expo = "0" or inputB_f.expo = "0" else
+							'1' when shift = '0' and expoO1 = x"00" and uFlag1 = '0' else
+							'1' when shift = '1' and expoO2 = x"00" and uFlag2 = '0' else
 	            uFlag1 and expoO1(7) when shift = '0' else
               uFlag2 and expoO2(7) when shift = '1';
 	infFlag  <= '1' when inputA_f.expo = "11111111" or inputB_f.expo = "11111111" else
+	            '1' when expoO1 = x"ff" and shift = '0' and uFlag1 = '0' else
+							'1' when expoO2 = x"ff" and shift = '1' and uFlag2 = '0'else
 	            uFlag1 and (not expoO1(7)) when shift = '0' else
 							uFlag2 and (not expoO2(7)) when shift = '1';
 	
