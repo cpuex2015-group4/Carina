@@ -30,7 +30,7 @@ end cpu;
 ----pipeline ga sitai naa
 
 architecture RTL of cpu is
-  constant IS_SERVER:boolean:=true;
+  constant IS_SERVER:boolean:=false;
   constant IS_DEBUG:boolean:=false;
   constant IS_SIM:boolean:=false;
   component BRAM_INST
@@ -222,12 +222,7 @@ begin
               core_state<=WaIT_HEADER;
             end if;
           else
-            if IS_SERVER then
-              core_state<=exe_ready;
-              word_access<='0';
-            else
-              core_state<=WaIT_HEADER;
-            end if;
+            core_state<=wait_header;
             io_we<='0';
           end if;
         when WAIT_HEADER =>
@@ -247,30 +242,20 @@ begin
               io_send_data<=x"52435644";
               IO_WE<='1';
             end if;
+            word_access<='0';
             PC<=entry_point;
             core_state<=EXE_READY;
---       else
---        io_send_data<=io_recv_data;
---        io_we<=loader_io_re;
+--          else
+--            io_send_data<=io_recv_data;
+--            io_we<=loader_io_re;
           end if;
         when EXE_READY=>
-          if IS_SERVER then
-            if IO_full='0' then
---              PC<=x"000052a9";
-              IO_we<='1';
-              IO_send_data<=x"000000aa";
-            else
-              IO_we<='0';
-              core_state<=EXECUTING;
-            end if;
-          else
-            reg_file(29)<="00000000000011111111111111111111";   --sp=mem_max;
-            reg_file(28)<=heap_head; --gp=heap_head
-            io_we<='0';
-            word_access<='0';
-            core_state<=EXECUTING;    --data source no kirikae
-          end if;
-          when EXECUTING =>
+          reg_file(29)<="00000000000011111111111111111111";   --sp=mem_max;
+          reg_file(28)<=heap_head; --gp=heap_head
+          io_we<='0';
+          word_access<='0';
+          core_state<=EXECUTING;    --data source no kirikae
+        when EXECUTING =>
       --debug
           DEBUG.detail.opecode<=inst.opecode;
           DEBUG.detail.control<=control;
