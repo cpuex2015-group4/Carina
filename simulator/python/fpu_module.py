@@ -7,7 +7,7 @@ from ctypes import *
 CHDIR = os.path.dirname(os.path.abspath(__file__))
 
 class FpuModule:
-	c_module_path = os.path.join(CHDIR, "..", "fpu", "fpu.so")
+	c_module_path = os.path.join(CHDIR, "..", "fpu", "libfpu.so")
 	c_module = CDLL(c_module_path)
 	c_fop2_func_type = CFUNCTYPE(c_uint, c_uint, c_uint)
 	c_fop1_func_type = CFUNCTYPE(c_uint, c_uint)
