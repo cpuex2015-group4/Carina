@@ -1,3 +1,5 @@
 x87.sqrt
 x87.atan
 x87.sin
+x87.cos
+x87.tan

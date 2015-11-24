@@ -12,6 +12,8 @@ TMP_ML = ".python-tmp"
 X87SQRT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "x87.sqrt")
 X87ATAN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "x87.atan")
 X87SIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "x87.sin")
+X87COS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "x87.cos")
+X87TAN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "x87.tan")
 
 def sim_sqrt(x):
 	with open(TMP_ML + ".ml", "w") as f:
@@ -58,6 +60,36 @@ def x87_sin(x):
 	p.wait()
 	return float(p.stdout.readlines()[0])
 
+def sim_cos(x):
+	with open(TMP_ML + ".ml", "w") as f:
+		f.write("cos({:f})".format(x))
+	compile(TMP_ML, quiet = True)
+	return csim(TMP_ML)[1]
+
+def x87_cos(x):
+	p = subprocess.Popen([X87COS, str(x)],
+		stdin  = subprocess.PIPE,
+		stdout = subprocess.PIPE,
+		stderr = subprocess.PIPE,
+		shell = False)
+	p.wait()
+	return float(p.stdout.readlines()[0])
+
+def sim_tan(x):
+	with open(TMP_ML + ".ml", "w") as f:
+		f.write("sin({0:f}) /. cos({0:f})".format(x))
+	compile(TMP_ML, quiet = True)
+	return csim(TMP_ML)[1]
+
+def x87_tan(x):
+	p = subprocess.Popen([X87TAN, str(x)],
+		stdin  = subprocess.PIPE,
+		stdout = subprocess.PIPE,
+		stderr = subprocess.PIPE,
+		shell = False)
+	p.wait()
+	return float(p.stdout.readlines()[0])
+
 def iconv(x):
 	v = struct.pack('>f', x)
 	v = struct.unpack('>I', v)[0]
@@ -84,6 +116,18 @@ if __name__ == "__main__":
 			sys.exit()
 		sim = sim_sin
 		x87 = x87_sin
+	elif s == "cos":
+		if not os.path.exists(X87COS):
+			sys.stderr.write("compile x87.cos\n$ gcc -o x87.cos x87.cos.c\n")
+			sys.exit()
+		sim = sim_cos
+		x87 = x87_cos
+	elif s == "tan":
+		if not os.path.exists(X87TAN):
+			sys.stderr.write("compile x87.tan\n$ gcc -o x87.tan x87.tan.c\n")
+			sys.exit()
+		sim = sim_tan
+		x87 = x87_tan
 
 	x = 0
 	dx = 0.01
