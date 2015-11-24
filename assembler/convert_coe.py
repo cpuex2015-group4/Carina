@@ -27,11 +27,15 @@ def conv(data):
 	assert len(data) == 4
 	return (ord(data[0]) << 24) + (ord(data[1]) << 16) + (ord(data[2]) << 8) + ord(data[3])
 
-def convert_coe(input_binary, output_coe, bram_size = 32768):
+def convert_coe(input_binary, output_coe, skip_header = True, bram_size = 32768):
 	with open(input_binary) as carina_bin_file:
 		carina_bin = carina_bin_file.read()
 
-	carina_bin = [carina_bin[i:i+4] for i in range(0, len(carina_bin), 4)]
+	if skip_header:
+		offset = 16
+	else:
+		offset = 0
+	carina_bin = [carina_bin[i:i+4] for i in range(offset, len(carina_bin), 4)]
 	bin_size = len(carina_bin)
 
 	with open(output_coe, "w") as carina_coe:

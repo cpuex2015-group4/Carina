@@ -55,7 +55,7 @@ class Assembler:
 		"out" : Instruction.out,
 	}
 
-	def assemble(self, filename, mode = 'bin'):
+	def assemble(self, filename, coe = False, mode = None):
 		"""
 		Assemble the given file.
 
@@ -71,6 +71,10 @@ class Assembler:
 			lines = file_in.readlines()
 
 		text_lines, data_lines = Parser.read_section(lines)
+
+		# .coe file needs jump to entry point
+		if coe:
+			text_lines = ["j _min_caml_start"] + text_lines
 	
 		with open(oc_name, "wb") as file_out:
 			# build the correspondence between label and address
@@ -82,7 +86,7 @@ class Assembler:
 			file_out.write(header)
 
 			# merge label dict
-			if mode == "coe":
+			if mode == "add_header":
 				# COE file need header, so add 4 to all label addresses
 				offset = 4
 			else:
