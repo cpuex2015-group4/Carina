@@ -679,7 +679,7 @@ int inst_in_(simulator* sim_p, instruction inst)
 	operands ops = decode_R(inst);
 	char in_;
 	in_ = getchar();
-	sim_p->reg[ops.reg_t_idx] = (unsigned int)in_;
+	sim_p->reg[ops.reg_t_idx] = (unsigned int)in_ & 0xff;
 	sim_p->pc++;
 	return 1;
 }
