@@ -45,6 +45,7 @@ BRAM_INST/simulation/timing/wave_mti.do
 BRAM_INST/simulation/timing/wave_ncsim.sv
 BRAM_INST.asy
 BRAM_INST.gise
+BRAM_INST.mif
 BRAM_INST.ngc
 BRAM_INST.sym
 BRAM_INST.vhd

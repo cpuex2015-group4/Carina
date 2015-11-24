@@ -224,6 +224,7 @@ begin
           else
             if IS_SERVER then
               core_state<=exe_ready;
+              word_access<='0';
             else
               core_state<=WaIT_HEADER;
             end if;
@@ -254,12 +255,12 @@ begin
           end if;
         when EXE_READY=>
           if IS_SERVER then
-            if io_full='0' then
-              word_access<='0';
-              io_send_data<=x"000000aa";
-              io_we<='1';
+            if IO_full='0' then
+--              PC<=x"000052a9";
+              IO_we<='1';
+              IO_send_data<=x"000000aa";
             else
-              io_we<='0';
+              IO_we<='0';
               core_state<=EXECUTING;
             end if;
           else
