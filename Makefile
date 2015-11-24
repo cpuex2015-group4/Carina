@@ -3,7 +3,7 @@ PYTHON=python
 TEST=test
 MINRT=raytracer/raytracer
 TARGET=$(MINRT)
-CONTEST_TARGET=raytracer/raytracer.coe
+CONTEST_TARGET=raytracer/raytracer_bin
 MINCAML_DIR=./min-caml
 MINCAML=$(MINCAML_DIR)/min-caml
 MLFLAGS=-inline 100
@@ -32,8 +32,9 @@ $(CONTEST_TARGET): $(MINCAML)
 	else \
 		rm $(MINRT).s; \
 	fi
-	$(AS) --coe $(MINRT).s
+	$(AS) $(MINRT).s
 	$(PC_EMITTER) $(MINRT).s
+	mv $(MINRT).o $(CONTEST_TARGET)
 
 $(MINRT).s: $(MINRT).ml
 	$(MINCAML) $(MLFLAGS) $(MINRT)
