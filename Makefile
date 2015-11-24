@@ -97,6 +97,7 @@ $(MINCAML):
 clean:
 	@rm -rf *.pyc tests/*.s tests/*.o \
 		assembler/*.pyc simulator/*.pyc \
+		tools/*.pyc \
 		raytracer/*.s raytracer/*.o $(TARGET) $(CONTEST_TARGET) \
 		.mem-dump output.png output.ppm
 	@cd $(MINCAML_DIR); $(MAKE) clean
