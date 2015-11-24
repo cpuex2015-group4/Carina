@@ -23,6 +23,8 @@ def sim(s, x):
 			f.write("atan({:f})".format(x))
 		elif s == "sqrt":
 			f.write("sqrt({:f})".format(x))
+		elif s == "float_of_int":
+			f.write("float_of_int({})".format(x))
 	compile(TMP_ML, quiet = True)
 	return csim(TMP_ML)[1]
 
@@ -47,17 +49,34 @@ if __name__ == "__main__":
 		sys.stderr.write("compile x87\n$ gcc -o x87 x87.c\n")
 		sys.exit()
 
-	x = 0
-	dx = 0.01
-	X = []
-	err = []
-	for i in range(1000):
-		diff = np.abs(iconv(sim(s, x))-iconv(x87(s, x)))
-		X.append(x)
-		err.append(diff)
-		x += dx
-		sys.stderr.write("\033[20D\033[K{}".format(x))
-	plt.plot(X, err)
-	plt.xlabel("x")
-	plt.ylabel("ulp(sim_{0} - x87_{0})".format(s))
+	basic = ["sin", "cos", "tan", "atan", "sqrt"]
+
+	if s in basic:
+		x = 0
+		dx = 0.01
+		X = []
+		err = []
+		for i in range(1000):
+			diff = np.abs(iconv(sim(s, x))-iconv(x87(s, x)))
+			X.append(x)
+			err.append(diff)
+			x += dx
+			sys.stderr.write("\033[20D\033[K{}".format(x))
+		plt.plot(X, err)
+		plt.xlabel("x")
+		plt.ylabel("ulp(sim_{0} - x87_{0})".format(s))
+	else:
+		x = -500 
+		dx = 1
+		X = []
+		err = []
+		for i in range(1000):
+			diff = np.abs(iconv(sim(s, x))-iconv(x87(s, x)))
+			X.append(x)
+			err.append(diff)
+			x += dx
+			sys.stderr.write("\033[20D\033[K{}".format(x))
+		plt.plot(X, err)
+		plt.xlabel("x")
+		plt.ylabel("ulp(sim_{0} - x87_{0})".format(s))
 	plt.show()
