@@ -7,6 +7,7 @@
 
 extern int MEM_SIZE;
 extern int INST_CNT;
+extern int STATISTICS;
 extern int IS_DEBUG;
 
 char* REG_ARR[] = {""};
@@ -81,6 +82,7 @@ void free_sim(simulator *sim) {
 	SAFE_DELETE(sim->reg);
 	SAFE_DELETE(sim->f_reg);
 	SAFE_DELETE(sim->mem);
+	if(STATISTICS) SAFE_DELETE(sim->called_count_table);
 	SAFE_DELETE(sim);
 }
 
@@ -206,6 +208,12 @@ void load_binary(simulator* sim, FILE* fp)
 
 	sim->reg[28] = sim->text_size + sim->data_size; //heap pointer 
 	sim->reg[29] = 1048575;  //stack pointer 0xfffff
+
+	if(STATISTICS) {
+		sim->called_count_table = calloc(sizeof(unsigned int), sim->text_size);
+	} else {
+		sim->called_count_table = NULL;
+	}
 
 	return;
 }
@@ -701,6 +709,7 @@ int inst_hlt(simulator* sim_p, instruction inst)
 int simulate_inst(simulator* sim_p, instruction inst, unsigned char operation_binary, unsigned char fmt_binary, unsigned char ft_binary, unsigned char function_binary)
 {
 	sim_p->dynamic_inst_cnt++;
+	if(STATISTICS) sim_p->called_count_table[sim_p->pc]++;
 	if(operation_binary == 0 && function_binary == 32) return inst_add(sim_p, inst);
 
 	if(operation_binary == 8) return inst_addi(sim_p, inst);

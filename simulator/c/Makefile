@@ -4,18 +4,17 @@ CFLAGS=-Wall -std=c99 -O3
 SRC_MAIN=main.c
 SRC_UTILS=utils.c
 SRC_SIM=simulator.c
-OBJS=main.o utils.o simulator.o debugger.o fadd.o fmul.o finv.o
-OBJ_MAIN=main.o
-OBJ_UTILS=utils.o
-OBJ_SIM=simulator.o
+FPUDIR=../fpu
+OBJS=main.o utils.o simulator.o debugger.o fadd.o fmul.o finv.o fpu.o
 HEADER_SIM=simulator.h
 HEADER_UTILS=utils.h
 
 $(TARGET): $(OBJS)
-	$(CC) -o $(TARGET) $(CFLAGS) $(OBJS)
+	cd ../fpu; make
+	$(CC) -I$(FPUDIR) -o $(TARGET) $(CFLAGS) $(OBJS)
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $<
+	$(CC) -I$(FPUDIR) -c $(CFLAGS) $<
 
 .PHONY: clean
 clean:
