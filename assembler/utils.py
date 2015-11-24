@@ -18,18 +18,6 @@ REG_DICT = {"%zero" : 0, "%at" : 1,\
 		"%f16" : 16, "%f17" : 17, "%f18" : 18, "%f19" : 19, "%f20" : 20, "%f21" : 21, "%f22" : 22, "%f23" : 23, 
 		"%f24" : 24, "%f25" : 25, "%f26" : 26, "%f27" : 27, "%f28" : 28, "%f29" : 29, "%f30" : 30, "%f31" : 31 }
 
-def binary_inc(binary):
-	i = len(binary)
-	lst = list(binary)
-	while(True):
-		if lst[i - 1] == "0":
-			lst[i - 1] = "1"
-			break
-		else:
-			lst[i - 1] = "0"
-			i -= 1
-	return "".join(lst)
-
 def bin2hex(binary):
 	hex_len = len(binary) / 4
 	return format(int(binary, 2), '0' + str(hex_len) + 'x')
@@ -46,6 +34,7 @@ def imm2bin(immediate):
 
 def shamt2bin(shamt):
 	assert shamt >= 0, "shamt must be positive value"
+	assert shamt < 2**5, "shamt must be in the range of 0 <= shamt <= 31"
 	return format(shamt, '05b')
 
 def address2bin(address):

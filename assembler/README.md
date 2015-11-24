@@ -25,7 +25,3 @@ In the same directory, {[asm-file]%.s}.o will be generated.
 #### data section
 
 * floating point value is located by ` .long ` pseudo-instruction
-
-### Known Issues
-
-* have not supported overflow yet (for too large immediate)
