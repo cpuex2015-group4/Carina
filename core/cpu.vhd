@@ -242,6 +242,11 @@ begin
               io_send_data<=x"52435644";
               IO_WE<='1';
             end if;
+--            if IS_Server then
+              io_send_data<=x"000000aa";
+              IO_WE<='1';
+--            end if;
+
             word_access<='0';
             PC<=entry_point;
             core_state<=EXE_READY;
