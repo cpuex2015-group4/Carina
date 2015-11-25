@@ -52,14 +52,14 @@ uint32_t todownto(uint32_t from, uint32_t to, int up, int down){
 
 void printbit(char *name, uint32_t f, int up, int down){
 	int i,j;
-//	printf("%s =",name);
+	printf("%s =",name);
 	j = down;
 
 	for(i = 0; down < up+1; down++){
-//		if(up == 31 && j == 0){
-//			if(i == 0 || i == 1 || i == 9) printf(" ");
-//			i++;
-//		}
+		if(up == 31 && j == 0){
+			if(i == 0 || i == 1 || i == 9) printf(" ");
+			i++;
+		}
 		printf("%d", (int)((f & ((uint32_t)1 << (up-down))) >> (up-down)));
 	}
 	puts("");
@@ -85,9 +85,10 @@ int main(int argc, char *argv[]){
 	union hoge out;
 
 	// 入力値をここにいれてね
-	inputa.f = 2.32132134;
-	inputb.f = 38.1324352; 
+	inputa.i = 0x38170a2c;
+	inputb.i = 0x4868f5ac; 
 	answer.f = inputa.f + inputb.f;
+
 
 	// cmpExp
 	if(fromdownto(inputa.i,30,0) < fromdownto(inputb.i,30,0)){
@@ -101,31 +102,34 @@ int main(int argc, char *argv[]){
 	// shiftloser
 	expoa = fromdownto(winner.i,30,23);
 	expob = fromdownto(loser.i ,30,23);
-  manta = (fromdownto(winner.i,22,0) + ((uint32_t)1 << 23)) << 3;
-	mantb =((fromdownto(loser.i ,22,0) + ((uint32_t)1 << 23)) << 3) >> ((int)expoa - (int)expob);
+	manta = (fromdownto(winner.i,22,0) + ((uint32_t)1 << 23)) << 3;
+	mantb = (fromdownto(loser.i ,22,0) + ((uint32_t)1 << 23)) << 3;
+	for(i = 0; i < expoa - expob; i++){
+		mantb = (fromdownto(mantb,26,2) << 1) + (fromdownto(mantb,1,1) | fromdownto(mantb,0,0));
+	}
 
-  // mantadd *there is no underflow because manta grater than mantb
+	// mantadd *there is no underflow because manta grater than mantb
 	if(fromdownto(winner.i,31,31) == fromdownto(loser.i,31,31)){
-	  manto = manta + mantb;
+		manto = manta + mantb;
 	}else{
-    manto = manta - mantb;
+		manto = manta - mantb;
 	}
 	expo = expoa;
 	sign = fromdownto(winner.i,31,31);
 
 	// moveup
 	if(fromdownto(manto,27,27) != 0){ // when overflow
-		manto = (manto >> 1) | fromdownto(manto,0,0);
+		manto = (fromdownto(manto,27,2) << 1) + (fromdownto(manto,1,1) | fromdownto(manto,0,0));
 		expo  = expo + 1;
 	}
 
 	// shiftup
 	for(i = 0; i < 27; i++){
-    if(fromdownto(manto,26-i,26-i) == 1){
-		  if(i == 26){
-			  manto = 0;
+		if(fromdownto(manto,26-i,26-i) == 1){
+			if(i == 26){
+				manto = 0;
 			}else{
-			  manto = fromdownto(manto,25-i,0);
+				manto = (fromdownto(manto,25-i,0) << i);
 			}
 			expo = expo - i;
 			break;
@@ -134,34 +138,33 @@ int main(int argc, char *argv[]){
 
 	// round
 	if(fromdownto(manto,2,2) == 0 || fromdownto(manto,3,0) == 4){
-	  manto = fromdownto(manto,25,3);
+		manto = fromdownto(manto,25,3);
 	}else{
-	  if(fromdownto(manto,25,3) == 8388607){
-		  manto = 0;
+		if(fromdownto(manto,25,3) == 8388607){
+			manto = 0;
 			expo = expo + 1;
 		}else{
-		  manto = fromdownto(manto,25,3) + 1;
+			manto = fromdownto(manto,25,3) + 1;
 		}
 	}
 
-  // output
+	// output
 	if(fromdownto(winner.i,30,0) == fromdownto(loser.i,30,0) && fromdownto(winner.i,31,31) != fromdownto(loser.i,31,31)){ // 答えが0なら0を返す
 		out.i = 0;
 	}else if(expoa == 0 || expoa == 255 || expob == 0 || expob == 255){ // どちらかがzeroまたはinfならwinnerを返す
 		out.i = winner.i;
 	}else if(expo > 254){ // オーバーフロー
-    out.i = (sign << 31) + ((uint32_t)255 << 23);
+		out.i = (sign << 31) + ((uint32_t)255 << 23);
 	}else if(expo < 1){ // アンダーフロー
-    out.i = 0;
+		out.i = 0;
 	}else{
 		out.i = (sign << 31) + ((uint32_t)expo << 23) + manto;
 	}
-
-//	printbit("inputa",inputa.i,31,0);
-//	printbit("inputb",inputb.i,31,0);
+	//	printbit("inputa",inputa.i,31,0);
+	//	printbit("inputb",inputb.i,31,0);
 	printbit("output",out.i,31,0);
-//	printbit("answer",answer.i,31,0);
-//	printf("%20.14e,%20.14e\n",out.f, answer.f);
+	printbit("answer",answer.i,31,0);
+	//	printf("%20.14e,%20.14e\n",out.f, answer.f);
 
 	return 0;
 }
