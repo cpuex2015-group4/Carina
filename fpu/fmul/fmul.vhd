@@ -7,17 +7,17 @@ entity fmul is
 	  inputA : in  std_logic_vector (31 downto 0);
 		inputB : in  std_logic_vector (31 downto 0);
 		output : out std_logic_vector (31 downto 0));
---  	exflag : out std_logic_vector (3  downto 0); オーバーフロー、アンダーフローなどのフラグ管理用
+--  	exflag : out std_logic_vector (3  downto 0); for overflow and underflow 
 end fmul;
 
 architecture struct of fmul is
-  type float is record -- IEEE754に準拠した浮動少数型
+  type float is record -- IEEE754 float
 	  sign : std_logic;
 		expo : std_logic_vector ( 7 downto 0);
 		mant : std_logic_vector (22 downto 0);
 	end record;
 
-	component expoAdd port( -- 指数部の加算、バイアスの補正
+	component expoAdd port( -- exponent add
 	  expoA   : in  std_logic_vector (7 downto 0);
 		expoB   : in  std_logic_vector (7 downto 0);
 		expoO1  : out std_logic_vector (7 downto 0);
@@ -42,13 +42,13 @@ architecture struct of fmul is
 	signal expoO2   : std_logic_vector ( 7 downto 0);
 
 	signal mantO    : std_logic_vector (22 downto 0);
-	signal shift    : std_logic; -- 仮数部の乗算に伴う指数部の桁上がりの有無
+	signal shift    : std_logic;
 	signal uFlag1   : std_logic;
 	signal uFlag2   : std_logic;
 	signal infFlag  : std_logic;
 	signal zeroFlag : std_logic;
 begin
-  -- inputのデータをfloat型に変換
+  -- input to float
   inputA_f.sign <= inputA(31);
 	inputA_f.expo <= inputA(30 downto 23);
 	inputA_f.mant <= inputA(22 downto  0);
@@ -57,7 +57,6 @@ begin
 	inputB_f.expo <= inputB(30 downto 23);
 	inputB_f.mant <= inputB(22 downto  0);
 
-  -- 指数部の加算
   expoAddU : expoAdd port map (
 	  expoA  => inputA_f.expo,
 		expoB  => inputB_f.expo,
@@ -66,7 +65,6 @@ begin
 		uFlag1 => uFlag1,
 		uFlag2 => uFlag2);
 
-	-- 仮数部の乗算(&指数部の補正の計算)
 	mantMulU : mantMul port map (
 	  mantA => inputA_f.mant,
 		mantB => inputB_f.mant,
@@ -74,14 +72,20 @@ begin
 		shift => shift);
 
 
--- オーバーフロー、アンダーフローに関する処理が怪しいので明日以降見直し
 	zeroFlag <= '1' when inputA_f.expo = "0" or inputB_f.expo = "0" else
-              '0';
-	infFlag  <= '0';
+							'1' when shift = '0' and expoO1 = x"00" and uFlag1 = '0' else
+							'1' when shift = '1' and expoO2 = x"00" and uFlag2 = '0' else
+	            uFlag1 and expoO1(7) when shift = '0' else
+              uFlag2 and expoO2(7) when shift = '1';
+	infFlag  <= '1' when inputA_f.expo = "11111111" or inputB_f.expo = "11111111" else
+	            '1' when expoO1 = x"ff" and shift = '0' and uFlag1 = '0' else
+							'1' when expoO2 = x"ff" and shift = '1' and uFlag2 = '0'else
+	            uFlag1 and (not expoO1(7)) when shift = '0' else
+							uFlag2 and (not expoO2(7)) when shift = '1';
 	
 	output_f.sign <= inputA_f.sign xor inputB_f.sign when zeroFlag = '0' else
 	                 '0';
-  output_f.expo <= x"11"  when infFlag  = '1' else
+  output_f.expo <= x"ff"  when infFlag  = '1' else
 	                 x"00"  when zeroFlag = '1' else
 	                 expoO1 when shift    = '0' else
 	                 expoO2;

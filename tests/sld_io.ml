@@ -332,7 +332,6 @@ let rec loopback n =
   else
     (
     let x = int_of_float (read_float ()) in
-    print_int x; print_char 32; print_int table.(n); print_newline();
     if x <> table.(n) then
       if x <> table.(n) - 1 then n
       else loopback (n + 1)

@@ -18,29 +18,6 @@ REG_DICT = {"%zero" : 0, "%at" : 1,\
 		"%f16" : 16, "%f17" : 17, "%f18" : 18, "%f19" : 19, "%f20" : 20, "%f21" : 21, "%f22" : 22, "%f23" : 23, 
 		"%f24" : 24, "%f25" : 25, "%f26" : 26, "%f27" : 27, "%f28" : 28, "%f29" : 29, "%f30" : 30, "%f31" : 31 }
 
-def binary_inc(binary):
-	i = len(binary)
-	lst = list(binary)
-	while(True):
-		if lst[i - 1] == "0":
-			lst[i - 1] = "1"
-			break
-		else:
-			lst[i - 1] = "0"
-			i -= 1
-	return "".join(lst)
-
-def dissolve_minus(binary):
-	new_binary = ""
-	binary = binary.replace("-", "")
-	while(len(binary) > 0):
-		if binary[0] == '1':
-			new_binary += '0'
-		else:
-			new_binary += '1'
-		binary = binary[1:]
-	return binary_inc(new_binary)
-
 def bin2hex(binary):
 	hex_len = len(binary) / 4
 	return format(int(binary, 2), '0' + str(hex_len) + 'x')
@@ -49,36 +26,30 @@ def hex2bin(hex):
 	return format(int(hex, 16), "032b")
 
 def imm2bin(immediate):
+	assert abs(immediate) < 2**15, "too large immediate"
 	if immediate < 0:
-		binary = format(immediate, '017b')
-		binary = dissolve_minus(binary)
+		return format(2**16+immediate, "016b")
 	else:
-		binary = format(immediate, '016b')
-	return binary 
+		return format(immediate, "016b")
 
 def shamt2bin(shamt):
-	if shamt < 0:
-		binary = format(shamt, '06b')
-		binary = dissolve_minus(binary)
-	else:
-		binary = format(shamt, '05b')
-	return binary 
+	assert shamt >= 0, "shamt must be positive value"
+	assert shamt < 2**5, "shamt must be in the range of 0 <= shamt <= 31"
+	return format(shamt, '05b')
 
 def address2bin(address):
-	if address < 0:
-		binary = format(address, '027b')
-		binary = dissolve_minus(binary)
+	assert abs(address) < 2**25, "too large offset"
+	if offset < 0:
+		return format(2**26+offset, "026b")
 	else:
-		binary = format(address, '026b')
-	return binary
+		return format(offset, "026b")
 
 def offset2bin(offset):
+	assert abs(offset) < 2**15, "too large offset"
 	if offset < 0:
-		binary = format(offset, '017b')
-		binary = dissolve_minus(binary)
+		return format(2**16+offset, "016b")
 	else:
-		binary = format(offset, '016b')
-	return binary
+		return format(offset, "016b")
 
 def reg2bin(register):
 	"""

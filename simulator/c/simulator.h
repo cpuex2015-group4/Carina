@@ -15,6 +15,7 @@ typedef struct simulator_{
 	unsigned long inst_cnt;
 	instruction* inst_mem;
 	int* mem;
+	unsigned int *called_count_table;
 	unsigned int binary_size;
 	unsigned int data_size;
 	unsigned int text_size;

@@ -55,7 +55,7 @@ class Assembler:
 		"out" : Instruction.out,
 	}
 
-	def assemble(self, filename):
+	def assemble(self, filename, coe = False, mode = None):
 		"""
 		Assemble the given file.
 
@@ -71,6 +71,10 @@ class Assembler:
 			lines = file_in.readlines()
 
 		text_lines, data_lines = Parser.read_section(lines)
+
+		# .coe file needs jump to entry point
+		if coe:
+			text_lines = ["j _min_caml_start"] + text_lines
 	
 		with open(oc_name, "wb") as file_out:
 			# build the correspondence between label and address
@@ -82,8 +86,16 @@ class Assembler:
 			file_out.write(header)
 
 			# merge label dict
+			if mode == "add_header":
+				# COE file need header, so add 4 to all label addresses
+				offset = 4
+			else:
+				offset = 0
 			data_label_dict = {k: v + len(text_lines) for k, v in data_label_dict.items()}
-			label_dict = {k: v for d in [text_label_dict, data_label_dict] for k, v in d.items()}
+			label_dict = {k: v + offset for d in [text_label_dict, data_label_dict] for k, v in d.items()}
+			
+			# label represent for heap pointer
+			label_dict["min_caml_heap_pointer"] = len(text_lines) + len(data_lines)
 
 			for i, line in enumerate(text_lines):
 				# Each line correspond to one assembly instruction,

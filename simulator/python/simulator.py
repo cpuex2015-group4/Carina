@@ -436,7 +436,7 @@ class Simulator:
 	@classmethod
 	def finv(cls, sim, inst_bin):
 		ft, _, fd = cls.decode_FR(inst_bin)
-		sim.freg[fd] = utils.float2reg(1. /  utils.reg2float(sim.freg[ft]))
+		sim.freg[fd] = format(fpu.finv(int(sim.freg[ft], 2)), '032b')
 		sim.pc += 1
 		return 1
 
