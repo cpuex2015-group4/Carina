@@ -35,6 +35,8 @@
  *
  */
 
+extern int MEM_SIZE;
+extern int SIGUNATURE; 
 char* PROMPT = "Hdb > ";
 
 static simulator sim_previous;
@@ -513,11 +515,50 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 	return simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
 }
 
+
+void print_mem(simulator* sim)
+{
+	int i;
+	fprintf(stderr, "------------------mem---------------\n");
+	for(i = 0; i < MEM_SIZE; i++){
+		if(sim->mem[i] != 0){
+			fprintf(stderr, "mem[%d] = %d\n", i, sim->mem[i]);
+		}
+	}
+	return;
+}
+
+void print_reg(simulator* sim)
+{
+	int i;
+	fprintf(stderr, "------------------reg---------------\n");
+	for(i = 0; i < 32; i++){
+		fprintf(stderr, "reg[%d] = %d\n", i, sim->reg[i]);
+	}
+	return;
+}
+
+void print_f_reg(simulator* sim)
+{
+	int i;
+	fprintf(stderr, "------------------freg---------------\n");
+	for(i = 0; i < 32; i++){
+		fprintf(stderr, "freg[%d] = %f\n", i, sim->f_reg[i]);
+	}
+	return;
+}
+
 void segfault_sigaction(int signal, siginfo_t *si, void *arg)
 {
 	/*
 	 * catch SEGV and dump the previous instrction and register values
 	 */
+	
+	fprintf(stderr, "SEGV at the instruction below\n");
+	fprintf(stderr, "-------------------------------\n");
+	print_mem(&sim_previous);
+	print_reg(&sim_previous);
+	print_f_reg(&sim_previous);
 	print_inst(&sim_previous, inst_previous,operation_binary_previous, fmt_binary_previous, ft_binary_previous, function_binary_previous);
     exit(1);
 }

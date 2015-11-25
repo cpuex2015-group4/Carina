@@ -7,6 +7,7 @@
  * -------------------------
  *  NEEDS ARGUMENT:
  *  -f [objectfile] Essential
+ *  -s [signature count] 
  *
  *  NOT NEED ARGUMENT:
  *  -c Instruction Count Flag
@@ -22,6 +23,7 @@
 
 int IS_DEBUG = 0;
 int INST_CNT = 0;
+int SIGNATURE = 0;
 int STATISTICS = 0;
 unsigned long MEM_SIZE = 100000000000L;
 
@@ -31,7 +33,7 @@ int main(int argc, char* argv[])
 {
 	FILE* fp_binary = NULL;
 	int result;
-	while((result=getopt(argc,argv,"cdsf:"))!=-1){
+	while((result=getopt(argc,argv,"cdf:s:"))!=-1){
 		switch(result){
 			/* 
 			 * Option that does not need arg
@@ -46,11 +48,6 @@ int main(int argc, char* argv[])
 				INST_CNT = 1;
 				break;
 
-			case 's':
-				/* statistics */
-				STATISTICS = 1;
-				break;
-				
 			/*
 			 * Option that needs arg
 			 */
@@ -62,8 +59,9 @@ int main(int argc, char* argv[])
 				if(IS_DEBUG)fprintf(stderr,"Object File : %s\n", optarg);
 				break;
 			
-			case ':':
-				fprintf(stderr,"%c needs value\n",result);
+			case 's':
+				SIGNATURE = atoi(optarg);
+				fprintf(stderr, "SIGUNATURE = %d\n", SIGNATURE);
 				break;
 
 			case '?':

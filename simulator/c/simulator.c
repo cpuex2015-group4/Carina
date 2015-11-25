@@ -86,38 +86,6 @@ void free_sim(simulator *sim) {
 	SAFE_DELETE(sim);
 }
 
-void print_mem(simulator* sim)
-{
-	int i;
-	for(i = 0; i < MEM_SIZE; i++){
-		if(sim->mem[i] != 0){
-			fprintf(stderr, "mem[%d] = %d\n", i, sim->mem[i]);
-		}
-	}
-	return;
-}
-
-void print_reg(simulator* sim)
-{
-	int i;
-	fprintf(stderr, "------------------reg---------------\n");
-	for(i = 0; i < 32; i++){
-		fprintf(stderr, "reg[%d] = %d\n", i, sim->reg[i]);
-	}
-	fprintf(stderr, "------------------------------------\n");
-	return;
-}
-
-void print_f_reg(simulator* sim)
-{
-	int i;
-	fprintf(stderr, "------------------reg---------------\n");
-	for(i = 0; i < 32; i++){
-		fprintf(stderr, "freg[%d] = %f\n", i, sim->f_reg[i]);
-	}
-	fprintf(stderr, "------------------------------------\n");
-	return;
-}
 
 void print_inst_cnt(void)
 {
