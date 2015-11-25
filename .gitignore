@@ -12,6 +12,7 @@ core/iseconfig
 __pycache__
 .python-version
 raytracer/raytracer
+raytracer/raytracer_bin
 .mem-dump
 output.ppm
 output.jpg

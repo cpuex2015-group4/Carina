@@ -1,6 +1,6 @@
 TARGET=csim
 CC=gcc
-CFLAGS=-Wall -std=c99 -O3
+CFLAGS=-Wall -std=c99 -O3 -D_POSIX_C_SOURCE=199309L
 SRC_MAIN=main.c
 SRC_UTILS=utils.c
 SRC_SIM=simulator.c

@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <signal.h>
 #include "./utils.h"
 #include "./simulator.h"
 #include "./debugger.h"
-
+#define handle_error(msg) \
+	do { perror(msg); exit(EXIT_FAILURE); } while (0)
 /*
  *
  * 88        88           88  88           
@@ -28,26 +30,21 @@
  * - break n:
  *   set BreakPoint to the instruction whose PC is 'n'
  *
- * - run:
+ * - continue:
  *   run the program until reaches a BreakPoint
  *
  */
 
+extern int MEM_SIZE;
+extern int SIGUNATURE; 
 char* PROMPT = "Hdb > ";
 
-void main_debugger(void)
-{
-	fprintf(stderr, "88        88           88  88          \n"); 
-	fprintf(stderr, "88        88           88  88          \n"); 
-	fprintf(stderr, "88        88           88  88          \n"); 
-	fprintf(stderr, "88aaaaaaaa88   ,adPPYb,88  88,dPPYba,  \n"); 
-	fprintf(stderr, "88\"\"\"\"\"\"\"\"88  a8\"    `Y88  88P'    \"8a \n"); 
-	fprintf(stderr, "88        88  8b       88  88       d8 \n"); 
-	fprintf(stderr, "88        88  \"8a,   ,d88  88b,   ,a8\" \n"); 
-	fprintf(stderr, "88        88   `\"8bbdP\"Y8  8Y\"Ybbd8\"'  \n"); 
-	fprintf(stderr, "=======================================\n"); 
-	fprintf(stderr, "\n");
-}
+static simulator sim_previous;
+static instruction inst_previous;
+static unsigned char operation_binary_previous;
+static unsigned char fmt_binary_previous;
+static unsigned char ft_binary_previous;
+static unsigned char function_binary_previous;
 
 extern int simulate_inst(simulator* , instruction, unsigned char, unsigned char, unsigned char, unsigned char);
 
@@ -371,6 +368,7 @@ int print_inst_hlt(simulator* sim_p, instruction inst)
 
 int print_inst(simulator* sim_p, instruction inst, unsigned char operation_binary, unsigned char fmt_binary, unsigned char ft_binary, unsigned char function_binary)
 {
+
 	if(operation_binary == 0 && function_binary == 32) return print_inst_add(sim_p, inst);
 
 	if(operation_binary == 8) return print_inst_addi(sim_p, inst);
@@ -472,6 +470,14 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 		}
 
 		fprintf(stderr, "%lu : ", sim_p->pc);
+
+		sim_previous = *sim_p;
+		inst_previous = inst;
+		operation_binary_previous = operation_binary;
+		fmt_binary_previous = fmt_binary;
+		ft_binary_previous = ft_binary;
+		function_binary_previous = function_binary;
+
 		print_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
 
 		fprintf(stderr, "%s", PROMPT);
@@ -483,12 +489,12 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 			break;
 		}
 
-		if(strcmp(input, "run") == 0){
+		if(strcmp(input, "continue") == 0){
 			is_running = 1;
 			break;
 		}
 
-		if(strcmp("break", input) < 0 && strcmp(input, "break~") < 0){ //command == break && exists argument
+		if(strcmp("continue", input) < 0 && strcmp(input, "continue~") < 0){ //command == break && exists argument
 			pc = get_break_point(input);
 			if(breakpoint[pc]){
 				continue;
@@ -508,3 +514,74 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 	}
 	return simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
 }
+
+
+void print_mem(simulator* sim)
+{
+	int i;
+	fprintf(stderr, "------------------mem---------------\n");
+	for(i = 0; i < MEM_SIZE; i++){
+		if(sim->mem[i] != 0){
+			fprintf(stderr, "mem[%d] = %d\n", i, sim->mem[i]);
+		}
+	}
+	return;
+}
+
+void print_reg(simulator* sim)
+{
+	int i;
+	fprintf(stderr, "------------------reg---------------\n");
+	for(i = 0; i < 32; i++){
+		fprintf(stderr, "reg[%d] = %d\n", i, sim->reg[i]);
+	}
+	return;
+}
+
+void print_f_reg(simulator* sim)
+{
+	int i;
+	fprintf(stderr, "------------------freg---------------\n");
+	for(i = 0; i < 32; i++){
+		fprintf(stderr, "freg[%d] = %f\n", i, sim->f_reg[i]);
+	}
+	return;
+}
+
+void segfault_sigaction(int signal, siginfo_t *si, void *arg)
+{
+	/*
+	 * catch SEGV and dump the previous instrction and register values
+	 */
+	
+	fprintf(stderr, "SEGV at the instruction below\n");
+	fprintf(stderr, "-------------------------------\n");
+	print_mem(&sim_previous);
+	print_reg(&sim_previous);
+	print_f_reg(&sim_previous);
+	print_inst(&sim_previous, inst_previous,operation_binary_previous, fmt_binary_previous, ft_binary_previous, function_binary_previous);
+    exit(1);
+}
+
+void main_debugger(void)
+{
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88aaaaaaaa88   ,adPPYb,88  88,dPPYba,  \n"); 
+	fprintf(stderr, "88\"\"\"\"\"\"\"\"88  a8\"    `Y88  88P'    \"8a \n"); 
+	fprintf(stderr, "88        88  8b       88  88       d8 \n"); 
+	fprintf(stderr, "88        88  \"8a,   ,d88  88b,   ,a8\" \n"); 
+	fprintf(stderr, "88        88   `\"8bbdP\"Y8  8Y\"Ybbd8\"'  \n"); 
+	fprintf(stderr, "=======================================\n"); 
+	fprintf(stderr, "\n");
+
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sigaction));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_sigaction = segfault_sigaction;
+	sa.sa_flags = SA_SIGINFO;
+	sigaction(SIGSEGV, &sa, NULL);
+	
+}
+
