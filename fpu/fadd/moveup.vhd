@@ -16,7 +16,7 @@ architecture struct of moveup is
 begin
   man2_U <= man1_U(26 downto 0) when (man1_U(27) = '0') else
             man1_U(27 downto 2) & (man1_U(1) or man1_U(0)) when (exp1_U(7 downto 0) < "11111110") else
-            "000000000000000000000000000"; -- 無限大に飛ぶとき
+            "000000000000000000000000000";
   exp2_U <= exp1_U( 7 downto 0) when (man1_U(27) = '0') else
             exp1_U( 7 downto 0) + "00000001" when (exp1_U(7 downto 0) < "11111110") else
             "11111111";

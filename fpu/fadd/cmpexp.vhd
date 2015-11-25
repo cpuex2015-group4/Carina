@@ -8,9 +8,9 @@ entity cmpexp is
     inb_U     : in  std_logic_vector (31 downto 0);
     winner_U  : out std_logic_vector (31 downto 0);
     loser_U   : out std_logic_vector (31 downto 0);
-    sigzero_U : out std_logic; -- どちらかが0なら1が立つ、winnerを返して演算終了
-    siginf_U  : out std_logic; -- どちらかが無限なら1が立つ、winnerを返して演算終了
-    anszero_U : out std_logic); -- 答えが0なら1が立つ0を返して演算終了
+    sigzero_U : out std_logic;
+    siginf_U  : out std_logic;
+    anszero_U : out std_logic);
 end cmpexp;
 
 architecture struct of cmpexp is

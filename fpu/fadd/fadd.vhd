@@ -10,7 +10,7 @@ entity fadd is
 end fadd;
 
 architecture struct of fadd is
-  component cmpexp port ( -- expの比較、winnerとloserの決定
+  component cmpexp port (
     ina_U     : in  std_logic_vector (31 downto 0);
     inb_U     : in  std_logic_vector (31 downto 0);
     winner_U  : out std_logic_vector (31 downto 0);
@@ -62,15 +62,15 @@ architecture struct of fadd is
   signal loser1  : std_logic_vector (31 downto 0);
   signal winner2  : std_logic_vector (26 downto 0);
   signal loser2   : std_logic_vector (26 downto 0);
-  signal sign : std_logic;                      -- 計算中の符号
-  signal exp1 : std_logic_vector (7  downto 0); -- 計算中の指数部
+  signal sign : std_logic; 
+  signal exp1 : std_logic_vector (7  downto 0); 
   signal exp2 : std_logic_vector (7  downto 0);
   signal exp3 : std_logic_vector (7  downto 0);
   signal exp4 : std_logic_vector (7  downto 0); 
-  signal man1 : std_logic_vector (27 downto 0); -- 仮数部の計算の結果
-  signal man2 : std_logic_vector (26 downto 0); -- 繰り上がり判定の結果(carry除去)
-  signal man3 : std_logic_vector (25 downto 0); -- 繰り下がり判定の結果(ケチ表現除去)
-  signal man4 : std_logic_vector (22 downto 0); -- 丸め処理の結果(R,G,S除去)
+  signal man1 : std_logic_vector (27 downto 0);
+  signal man2 : std_logic_vector (26 downto 0);
+  signal man3 : std_logic_vector (25 downto 0);
+  signal man4 : std_logic_vector (22 downto 0);
 
 begin
   cmpExp_U : cmpexp port map (
@@ -91,7 +91,6 @@ begin
     winner_shifted_U => winner2,
     loser_shifted_U  => loser2);
 
--- 仮数部の計算(符号処理はすでに行ったので、異符号なら減算、同符号なら加算
   man1 <= ('0' & winner2(26 downto 0)) - ('0' & loser2(26 downto 0)) when (subflag = '1') else
           ('0' & winner2(26 downto 0)) + ('0' & loser2(26 downto 0));
 
@@ -119,5 +118,7 @@ begin
               when (anszero = '1') else
             winner1
               when ((sigzero = '1') or (siginf = '1')) else
+						x"00000000"
+						  when exp4( 7 downto 0) = x"00" and man4(22 downto 0) = "00000000000000000000000" else
             sign & exp4( 7 downto 0) & man4(22 downto 0);
 end struct;

@@ -19,8 +19,8 @@ architecture testbench of top is
   file   infile    : TEXT open read_mode  is "sample.in";
   file   outfile   : TEXT open write_mode is "outfile.txt";
   component fadd port (
-    ina    : in  std_logic_vector (31 downto 0);
-    inb    : in  std_logic_vector (31 downto 0);
+    ina : in  std_logic_vector (31 downto 0);
+    inb : in  std_logic_vector (31 downto 0);
     output : out std_logic_vector (31 downto 0));
   end component;
 
@@ -50,15 +50,17 @@ begin
   end process;
 
   unit : fadd port map (
-    ina  => dina,
-    inb  => dinb,
+    ina => dina,
+    inb => dinb,
     output => tb_output);
 
-  writefile : process(tb_output)
+  writefile : process(clk)
     variable lo : line;
   begin
     if falling_edge(clk) then
-      if (tb_output /= dout) then
+      if not (tb_output = dout) then
+        write(lo,dina,left,33);
+        write(lo,dinb,left,33);
         write(lo,tb_output,left,33);
         write(lo,dout,left,32);
         writeline(outfile,lo);

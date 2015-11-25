@@ -8,7 +8,7 @@ entity shiftupper is
     exp2_U : in  std_logic_vector ( 7 downto 0);
     man3_U : out std_logic_vector (25 downto 0);
     exp3_U : out std_logic_vector ( 7 downto 0);
-	 siginf2_U : in  std_logic);
+	  siginf2_U : in  std_logic);
 end shiftupper;
 
 architecture struct of shiftupper is
