@@ -603,7 +603,7 @@ int inst_subs(simulator* sim_p, instruction inst)
 	operands ops = decode_FR(inst);
 	float ft = sim_p->f_reg[ops.ft_idx];
 	float fs = sim_p->f_reg[ops.fs_idx];
-	float fd = fs - ft;
+	float fd = int2float(fadd(float2int(fs), float2int(-ft)));
 	sim_p->f_reg[ops.fd_idx] = fd;
 	sim_p->pc++;
 	return 1;
