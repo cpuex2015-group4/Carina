@@ -76,14 +76,28 @@ int main(int argc, char *argv[]){
 
 	union hoge out;
 
-  printf("inputa                           ");
-  printf("inputb                           ");
-  printf("output                           ");
-  printf("answer(x86)                      ");
-  printf("error\n");
+//	FILE *fp;
+//	char *fname = "fmul.log.txt";
+//	int ret;
+//	union hoge log;
 
-	for(inputb.i = 8388608; inputb.i < 2139095040; inputb.i += 4278190){
-		for(inputa.i = inputb.i; inputa.i < 2139095040; inputa.i += 4278190){
+  printf("inputa   ");
+  printf("inputb   ");
+  printf("output   ");
+//	printf("log      ");
+  printf("x87      ");
+//  printf("err(out-log) ");
+  printf("err(out-x87)\n");
+
+//  fp = fopen(fname,"r");
+//	if(fp == NULL){
+//	  puts("file can't open");
+//		return -1;
+//	}
+
+//	while((ret = fscanf(fp,"%x,%x,%x",&log.i,&inputa.i,&inputb.i)) != EOF){
+	for(inputa.i = 8388608; inputa.i < 2139095040; inputa.i += 4278190){
+		for(inputb.i = inputa.i; inputb.i < 2139095040; inputb.i += 4278190){
 			manta    = fromdownto(inputa.i,22,0) + ((uint32_t)1 << 23);
 			expoa    = fromdownto(inputa.i,30,23);
 			mantb    = fromdownto(inputb.i,22,0) + ((uint32_t)1 << 23);
@@ -106,7 +120,6 @@ int main(int argc, char *argv[]){
 
 			sign = fromdownto(inputa.i,31,31) ^ fromdownto(inputb.i,31,31);
 
-			// このへんはvhdl実装ではカバーしてないけどまぁレイトレでは関係ないらしいし
 			if(expo < 1 || expoa == 0 || expob == 0){ // アンダーフロー
 				manto = 0;
 				expo  = 0;
@@ -118,15 +131,12 @@ int main(int argc, char *argv[]){
 			out.i = (sign << 31) + (fromdownto((uint32_t)expo,7,0) << 23) + manto;
 			answer.f = inputa.f * inputb.f;
 
-			if(abs(answer.i - out.i) > 2){
-				printbit("inputa",inputa.i,31,0);
-				printf(" ");
-				printbit("inputb",inputb.i,31,0);
-				printf(" ");
-				printbit("output",out.i,31,0);
-				printf(" ");
-				printbit("answer",answer.i,31,0);
-				printf(" %7d ulp (exponent : %d)\n",abs(answer.i - out.i),fromdownto(answer.i,30,23));
+			if(abs(answer.i - out.i) > 0){
+//			if(abs(answer.i - out.i) > 0 || abs(answer.i - log.i) > 0 || abs(out.i - log.i) > 0){
+        printf("%8x %8x %8x %8x ",inputa.i,inputb.i,out.i,answer.i);
+//        printf("%8x %8x %8x %8x %8x ",inputa.i,inputb.i,out.i,log.i,answer.i);
+				printf("%7d ulp\n",abs(answer.i - out.i));
+//				printf("%7d ulp  %7d ulp\n",abs(log.i - out.i),abs(answer.i - out.i));
 			}
 		}
 	}
