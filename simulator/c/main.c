@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 {
 	FILE* fp_binary = NULL;
 	int result;
-	while((result=getopt(argc,argv,"cdf:s:"))!=-1){
+	while((result=getopt(argc,argv,"cdSf:s:"))!=-1){
 		switch(result){
 			/* 
 			 * Option that does not need arg
@@ -46,6 +46,10 @@ int main(int argc, char* argv[])
 			case 'c':
 				fprintf(stderr, "INST CNT ON\n");
 				INST_CNT = 1;
+				break;
+
+			case 'S':
+				STATISTICS = 1;
 				break;
 
 			/*
