@@ -6,7 +6,6 @@
  * OPTION
  * -------------------------
  *  NEEDS ARGUMENT:
- * // -b [Dynamic InstCnt] Break Point
  *  -f [objectfile] Essential
  *
  *  NOT NEED ARGUMENT:

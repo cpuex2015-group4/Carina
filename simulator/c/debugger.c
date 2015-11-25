@@ -37,35 +37,12 @@
 
 char* PROMPT = "Hdb > ";
 
-void segfault_sigaction(int signal, siginfo_t *si, void *arg)
-{
-    printf("Caught segfault at address %p\n", si->si_addr);
-    exit(0);
-}
-
-void main_debugger(void)
-{
-	fprintf(stderr, "88        88           88  88          \n"); 
-	fprintf(stderr, "88        88           88  88          \n"); 
-	fprintf(stderr, "88        88           88  88          \n"); 
-	fprintf(stderr, "88aaaaaaaa88   ,adPPYb,88  88,dPPYba,  \n"); 
-	fprintf(stderr, "88\"\"\"\"\"\"\"\"88  a8\"    `Y88  88P'    \"8a \n"); 
-	fprintf(stderr, "88        88  8b       88  88       d8 \n"); 
-	fprintf(stderr, "88        88  \"8a,   ,d88  88b,   ,a8\" \n"); 
-	fprintf(stderr, "88        88   `\"8bbdP\"Y8  8Y\"Ybbd8\"'  \n"); 
-	fprintf(stderr, "=======================================\n"); 
-	fprintf(stderr, "\n");
-
-	struct sigaction sa;
-	memset(&sa, 0, sizeof(sigaction));
-	sigemptyset(&sa.sa_mask);
-	sa.sa_sigaction = segfault_sigaction;
-	sa.sa_flags = SA_SIGINFO;
-	sigaction(SIGSEGV, &sa, NULL);
-	//float  *foo, *foo2; 
-	//foo = (float*)malloc(1000);
-	//foo2[0] = 1.0;
-}
+static simulator sim_previous;
+static instruction inst_previous;
+static unsigned char operation_binary_previous;
+static unsigned char fmt_binary_previous;
+static unsigned char ft_binary_previous;
+static unsigned char function_binary_previous;
 
 extern int simulate_inst(simulator* , instruction, unsigned char, unsigned char, unsigned char, unsigned char);
 
@@ -389,6 +366,7 @@ int print_inst_hlt(simulator* sim_p, instruction inst)
 
 int print_inst(simulator* sim_p, instruction inst, unsigned char operation_binary, unsigned char fmt_binary, unsigned char ft_binary, unsigned char function_binary)
 {
+
 	if(operation_binary == 0 && function_binary == 32) return print_inst_add(sim_p, inst);
 
 	if(operation_binary == 8) return print_inst_addi(sim_p, inst);
@@ -490,6 +468,14 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 		}
 
 		fprintf(stderr, "%lu : ", sim_p->pc);
+
+		sim_previous = *sim_p;
+		inst_previous = inst;
+		operation_binary_previous = operation_binary;
+		fmt_binary_previous = fmt_binary;
+		ft_binary_previous = ft_binary;
+		function_binary_previous = function_binary;
+
 		print_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
 
 		fprintf(stderr, "%s", PROMPT);
@@ -526,3 +512,35 @@ int simulate_inst_debug(simulator* sim_p, instruction inst, unsigned char operat
 	}
 	return simulate_inst(sim_p, inst, operation_binary, fmt_binary, ft_binary, function_binary);
 }
+
+void segfault_sigaction(int signal, siginfo_t *si, void *arg)
+{
+	/*
+	 * catch SEGV and dump the previous instrction and register values
+	 */
+	print_inst(&sim_previous, inst_previous,operation_binary_previous, fmt_binary_previous, ft_binary_previous, function_binary_previous);
+    exit(1);
+}
+
+void main_debugger(void)
+{
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88        88           88  88          \n"); 
+	fprintf(stderr, "88aaaaaaaa88   ,adPPYb,88  88,dPPYba,  \n"); 
+	fprintf(stderr, "88\"\"\"\"\"\"\"\"88  a8\"    `Y88  88P'    \"8a \n"); 
+	fprintf(stderr, "88        88  8b       88  88       d8 \n"); 
+	fprintf(stderr, "88        88  \"8a,   ,d88  88b,   ,a8\" \n"); 
+	fprintf(stderr, "88        88   `\"8bbdP\"Y8  8Y\"Ybbd8\"'  \n"); 
+	fprintf(stderr, "=======================================\n"); 
+	fprintf(stderr, "\n");
+
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sigaction));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_sigaction = segfault_sigaction;
+	sa.sa_flags = SA_SIGINFO;
+	sigaction(SIGSEGV, &sa, NULL);
+	
+}
+
