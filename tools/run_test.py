@@ -72,9 +72,8 @@ def test_sin(c, py):
 
 @runtest("tests/sqrt", "float")
 def test_sqrt(c, py):
-	# 1.4142135
-	# TODO: inv error
-	assert c == py # == 0x3fb504f3
+	# 1.4142137
+	assert c == py == 0x3fb504f4
 
 @runtest("tests/closure", "int")
 def test_closure(c, py):
