@@ -34,15 +34,13 @@ uint32_t fmul(uint32_t f1, uint32_t f2) {
 	int        expo;
 	uint32_t   sign;
 
-	union hoge answer;
 	union hoge out;
 
   // 入力値をここにいれてね
 	inputa.i = f1;
 	inputb.i = f2; 
 
-	answer.f = inputa.f * inputb.f;
-  manta    = fromdownto(inputa.i,22,0) + ((uint32_t)1 << 23);
+	manta    = fromdownto(inputa.i,22,0) + ((uint32_t)1 << 23);
 	expoa    = fromdownto(inputa.i,30,23);
 	mantb    = fromdownto(inputb.i,22,0) + ((uint32_t)1 << 23);
 	expob    = fromdownto(inputb.i,30,23);
