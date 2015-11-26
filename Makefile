@@ -62,9 +62,9 @@ run: $(TARGET) $(CSIM)
 
 .PHONY: server-run
 server-run: $(CONTEST_TARGET) $(CSIM)
-	@echo "PLEASE BUILD CSERVER-COM HERE"
-	@echo "PLEASE RUN SERVER HERE"
-
+	@echo "tekitou. owattaatoni cutecom de raytracer_bin wo okuttene"
+	sudo linux_server/cserver -b -B 9600 linux_server/sld/contest.sld output.ppm
+	convert output.ppm output.jpg
 .PHONY: debug
 debug: $(TARGET)
 	@echo "begin running raytracer ... " 1>&2
