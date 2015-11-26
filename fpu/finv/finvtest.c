@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <math.h>
 
 // A = 1 X X X X X X X X X | X X X X X X X X X X X X X X
@@ -68,7 +69,7 @@ void printbit(char *name, uint32_t f, int up, int down){
 int main(int argc, char *argv[]){
 	union hoge input;
 	union hoge a0;
-	union hoge a1;
+	union hoge x0; // initial number
 	union hoge x1; // to derive initial number
 	union hoge x2; // to derive initial number
 	union hoge constant;
@@ -80,38 +81,48 @@ int main(int argc, char *argv[]){
 	uint32_t mantg;
 	uint32_t manto;
 	union hoge out;
+	union hoge ans;
+	union hoge tes;
 
-	input.i  = 0xc147ae; // input 
 	one.f    = 1.0;
+	for(input.f = 1.0; input.f < 2.0; input.i += 1){
+		ans.f    = 1.0 / input.f;
 
-	a0.i = one.i + (fromdownto(input.i, 22, 13) << 13);
-	a1.i = one.i + (fromdownto(input.i, 22,  0) << 13);
-	
-	x1.f = one.f / a0.f;
-	x2.i = a0.i + ((uint32_t)1 << 13);
-	x2.f = one.f / x2.f;
+		a0.i = one.i + (fromdownto(input.i, 22, 13) << 13);
 
-	constant.f = pow((sqrt(x1.f) + sqrt(x2.f)),2) / 2;
-	gradient.f = x1.f * x2.f;
+		x1.f = one.f / a0.f;
+		x2.i = a0.i + ((uint32_t)1 << 13);
+		x2.f = one.f / x2.f;
 
-	mant  = fromdownto(a1.i      ,22,0) + ((uint32_t)1 << 23);
-	mantc = fromdownto(constant.i,22,0) + ((uint32_t)1 << 23);
-	mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23));
-	manto = ((uint64_t)mantg * (uint64_t)mant) / 8388608;
+		constant.f = pow((sqrt(x1.f) + sqrt(x2.f)),2) / 2;
+		gradient.f = x1.f * x2.f;
 
-	if(fromdownto(gradient.i,30,23) == 126){
-	  manto = mantc  - manto / 2;
-	}else{
-	  manto = mantc  - manto / 4;
+		tes.f = constant.f - (gradient.f * input.f); // expo = 126
+		mant  = fromdownto(input.i   ,22,0) + ((uint32_t)1 << 23);
+		mantc = fromdownto(constant.i,22,0) + ((uint32_t)1 << 23);
+		mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23));
+		manto = ((uint64_t)mantg * (uint64_t)mant) / 8388608;
+
+		if(fromdownto(gradient.i,30,23) == 126){
+			manto = mantc  - manto / 2;
+		}else{
+			manto = mantc  - manto / 4;
+		}
+
+		out.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(manto,21,0) << 1);
+		tes.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(tes.i,22,1) << 1);
+
+		if(abs(out.i - ans.i) > 5){
+			printbit("input ",input.i,31,0);
+			printbit("a0    ",a0.i,31,0);
+			printbit("const ",constant.i,31,0);
+			printbit("grad  ",gradient.i,31,0);
+			printbit("test  ",tes.i,31,0);
+			printbit("output",out.i,31,0);
+			printbit("answer",ans.i,31,0);
+			printf("error:%3dulp\n", abs(out.i-ans.i));
+		}
 	}
-
-	puts("");
-
-	out.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(manto,21,0) << 1);
-
-	printbit("output",out.i,31,0);
-  printf("%f,%f\n", input.f, out.f);
-
 
 	return 0;
 }
