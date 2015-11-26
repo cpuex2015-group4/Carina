@@ -25,6 +25,8 @@ def sim(s, x):
 			f.write("sqrt({:f})".format(x))
 		elif s == "float_of_int":
 			f.write("float_of_int({})".format(x))
+		elif s == "inv":
+			f.write("1.0 /. {:f}".format(x))
 	compile(TMP_ML, quiet = True)
 	return csim(TMP_ML)[1]
 
@@ -49,7 +51,7 @@ if __name__ == "__main__":
 		sys.stderr.write("compile x87\n$ gcc -o x87 x87.c\n")
 		sys.exit()
 
-	basic = ["sin", "cos", "tan", "atan", "sqrt"]
+	basic = ["sin", "cos", "tan", "atan", "sqrt", "inv"]
 
 	if s in basic:
 		x = 0

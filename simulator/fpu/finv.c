@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 #include "fpu.h"
 
 // A = 1 X X X X X X X X X | X X X X X X X X X X X X X X
@@ -15,39 +16,47 @@
 // ...
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX;
 
-// to <= from(up downto down);
- 
-
-uint32_t finv(uint32_t f) {
+uint32_t finv(uint32_t f1) {
 	union hoge input;
 	union hoge a0;
-	union hoge x0; // initial number
+	union hoge a1;
 	union hoge x1; // to derive initial number
 	union hoge x2; // to derive initial number
 	union hoge constant;
 	union hoge gradient;
 	union hoge one;
 
-	uint32_t a1; // 13bit
-	uint32_t gr; // 9bit gradient(+hidden bit)
+	uint32_t mant;
+	uint32_t mantc;
+	uint32_t mantg;
+	uint32_t manto;
 	union hoge out;
 
-	input.i  = f;   // input 
+	input.i  = f1; // input 
 	one.f    = 1.0;
 
-	a0.i = fromdownto(input.i, 31, 13) << 13;
-	a1 = fromdownto(input.i, 12,  0);
-
+	a0.i = one.i + (fromdownto(input.i, 22, 13) << 13);
+	a1.i = one.i + (fromdownto(input.i, 22,  0) << 13);
+	
 	x1.f = one.f / a0.f;
 	x2.i = a0.i + ((uint32_t)1 << 13);
 	x2.f = one.f / x2.f;
-	x0.f = (x1.f + x2.f)/2;
 
-	constant.f = 2*x0.f - a0.f * x0.f * x0.f;
-	gradient.f = x0.f * x0.f;
+	constant.f = pow((sqrt(x1.f) + sqrt(x2.f)),2) / 2;
+	gradient.f = x1.f * x2.f;
 
-	gr = fromdownto(gradient.i, 22, 14) + ((uint32_t)1 << 9);
-	out.i = constant.i - ((a1 * gr) >> 10);
+	mant  = fromdownto(a1.i      ,22,0) + ((uint32_t)1 << 23);
+	mantc = fromdownto(constant.i,22,0) + ((uint32_t)1 << 23);
+	mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23));
+	manto = ((uint64_t)mantg * (uint64_t)mant) / 8388608;
+
+	if(fromdownto(gradient.i,30,23) == 126){
+	  manto = mantc  - manto / 2;
+	}else{
+	  manto = mantc  - manto / 4;
+	}
+
+	out.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(manto,21,0) << 1);
 
 	return out.i;
 }

@@ -22,6 +22,9 @@ int main(int argc, char **argv) {
 	} else if(!strncmp(argv[1], "float_of_int", 12)) {
 		int d = atoi(argv[2]);
 		printf("%.8f\n", (float)d);
+	} else if(!strncmp(argv[1], "inv", 3)) {
+		float f = atof(argv[2]);
+		printf("%.8f\n", 1/f);
 	}
 	return 0;
 }
