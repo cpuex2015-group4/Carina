@@ -9,26 +9,26 @@ library work;
 use work.p_type.all;
 
 entity top is
-port (
-  MCLK1 : in    std_logic;
-  RS_RX : in    std_logic;
-  RS_TX : out   std_logic;
-  ZD    : inout std_logic_vector(31 downto 0);
-  ZA    : out   std_logic_vector(19 downto 0);
-  XWA   : out   std_logic;
-  XE1   : out   std_logic;
-  E2A   : out   std_logic;
-  XE3   : out   std_logic;
-  XGA   : out   std_logic;
-  XZCKE : out   std_logic;
-  ADVA  : out   std_logic;
-  XLBO  : out   std_logic;
-  ZZA   : out   std_logic;
-  XFT   : out   std_logic;
-  XZBE  : out   std_logic_vector(3 downto 0);
-  ZCLKMA : out std_logic_vector(1 downto 0)
+  port (
+    MCLK1 : in    std_logic;
+    RS_RX : in    std_logic;
+    RS_TX : out   std_logic;
+    ZD    : inout std_logic_vector(31 downto 0);
+    ZA    : out   std_logic_vector(19 downto 0);
+    XWA   : out   std_logic;
+    XE1   : out   std_logic;
+    E2A   : out   std_logic;
+    XE3   : out   std_logic;
+    XGA   : out   std_logic;
+    XZCKE : out   std_logic;
+    ADVA  : out   std_logic;
+    XLBO  : out   std_logic;
+    ZZA   : out   std_logic;
+    XFT   : out   std_logic;
+    XZBE  : out   std_logic_vector(3 downto 0);
+    ZCLKMA : out std_logic_vector(1 downto 0)
 --  DEBUG :out top_debug_out
-);
+    );
 end top;
 
 architecture RTL of top is
@@ -45,17 +45,17 @@ architecture RTL of top is
       );
   end component;
   component cpu 
-	port (
+    port (
       clk,IO_empty,IO_full: in std_logic;
       IO_recv_data: in std_logic_vector(31 downto 0);
       IO_WE,IO_RE: out std_logic;
       IO_send_data:out std_logic_vector(31 downto 0);
-		word_access:out std_logic;
+      word_access:out std_logic;
       SRAM_ADDR:out std_logic_vector(19 downto 0);
       SRAM_DATA:inout datat;
       SRAM_WE:out std_logic;
       DEBUG :out top_debug_out
-	);
+      );
   end component;
 
 --clk
@@ -68,14 +68,14 @@ architecture RTL of top is
   signal word_access:std_logic:='1';
 
 --core
-	signal DEBUG_inner:top_debug_out;
+  signal DEBUG_inner:top_debug_out;
 
 --sram
   signal latch_sram:std_logic_vector(31 downto 0):="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
 
 
 --debug
-signal recved:boolean:=false; 
+  signal recved:boolean:=false; 
 begin
   XE1<='0';
   E2A<='1';
@@ -92,11 +92,11 @@ begin
   ib: IBUFG port map(
     i=>MCLK1,
     o=>iclk
-  );
+    );
   bg:  BUFG port map(
     i=>iclk,
     o=>clk
-  );
+    );
   io: IO32 port map(clk,IO_WE,IO_RE,IO_send_data,IO_recv_data,IO_full,IO_empty, RS_TX,RS_RX,word_access);
 
 --  io_send_data<=io_recv_data;

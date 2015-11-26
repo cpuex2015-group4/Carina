@@ -6,13 +6,13 @@ library work;
 use work.p_type.all;
 
 entity alu is
-port (
-  operand1,operand2:in datat;
-  ALU_control:in alu_controlt;
-  shamt:in REGT;
-  result:out datat;
-  isZero:out std_logic
-);
+  port (
+    operand1,operand2:in datat;
+    ALU_control:in alu_controlt;
+    shamt:in REGT;
+    result:out datat;
+    isZero:out std_logic
+    );
 end alu;
 
 architecture pohe of alu is
@@ -41,6 +41,10 @@ begin
         vresult:=SHL(operand1,shamt);
       when ALUSLR =>
         vresult:=SHR(operand1,shamt);
+      when ALUDIV2 =>
+        vresult:='0' & operand1(31 downto 1);
+      when ALUMUL4 =>
+        vresult:=operand1(29 downto 0) & "00";
     end case;
     result<=vresult;
     if vresult=x"00000000" then

@@ -11,7 +11,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 
 package p_type is
-  constant BRAM_ADDR_SIZE:integer:=14;
+
+  
+  constant BRAM_ADDR_SIZE:integer:=15;
   subtype BRAM_ADDRT is std_logic_vector(BRAM_ADDR_SIZE-1 downto 0);
   subtype datat is std_logic_vector(31 downto 0);
   subtype opet is std_logic_vector(5 downto 0);
@@ -20,9 +22,38 @@ package p_type is
   subtype imdt is std_logic_vector(15 downto 0);
   subtype addrt is std_logic_vector( 25 downto 0);
   subtype memaddrt is std_logic_vector(19 downto 0);
+
+
+--ISA------------------------------------------------------------------
+  constant OP_REGREG    :opet:="000000";
+  constant OP_J         :opet:="000010";
+  constant OP_JAL       :opet:="000011";
+  constant OP_BEQ       :opet:="000100";
+  constant OP_BNE       :opet:="000101";
+  constant OP_ADDI      :opet:="001000";
+  constant OP_ORI       :opet:="001101";
+  constant OP_SLTI      :opet:="001010";
+  constant OP_ANDI      :opet:="001100";
+  constant OP_LW        :opet:="100011";
+  constant OP_SW        :opet:="101011";
+
+  constant OP_FP        :opet:="010001";
+  constant OP_LWCL      :opet:="110001";
+  constant OP_SWCL      :opet:="111001";
+
+  constant OP_IN        :opet:="011010";
+  constant OP_OUT       :opet:="011011";
+  constant OP_HLT       :opet:="111111";
+  
+  
+--/ISA-----------------------------------------------------------------
+
+
+
+
   type reg_filet is array(0 to 31) of datat;
   type PC_controlt is (j,jr,b,normal);
-   type INST_TYPE is (I,R,J);
+  type INST_TYPE is (I,R,J);
   type inst_file is record
     PC:datat;
     instruction:datat;
@@ -32,7 +63,7 @@ package p_type is
     rt:regt;
     rd:regt;
     reg_dest:regt;
- --   reg_source:regt;
+    --   reg_source:regt;
     shamt:regt;
     funct:functt;
     immediate:imdt;
@@ -46,11 +77,11 @@ package p_type is
     result:datat;
     newPC:datat;
   end record;
- type CORE_STATE_TYPE is (INIT,WAIT_HEADER,EXE_READY,EXECUTING,HALTED);
+  type CORE_STATE_TYPE is (INIT,WAIT_HEADER,EXE_READY,EXECUTING,HALTED);
   type EXE_STATE_TYPE is (F,D,EX,MEM,WB);
 
   type control_file is record
-                                --negate /assert
+    --negate /assert
     RegDst:std_logic;           --rd->0 rt->1
     RegWrite:std_logic;         --we
     ALUSrc:std_logic;           --reg2/imd
@@ -67,7 +98,7 @@ package p_type is
 
   function make_control (opecode:opet;fmt:regt;funct:functt) return control_file;
 
-  type ALU_CONTROLT is (ALUADD,ALUSUB,ALUAND,ALUOR,ALUSLT,ALUNOR,ALUSLL,ALUSLR);
+  type ALU_CONTROLT is (ALUADD,ALUSUB,ALUAND,ALUOR,ALUDIV2,ALUMUL4,ALUSLT,ALUNOR,ALUSLL,ALUSLR);
   type FPU_CONTROLT is (FADD,FSUB,FMUL,FINV,FCOMP);
   
   function make_alu_control(opecode:opet; funct:functt) return ALU_CONTROLT;
@@ -91,6 +122,10 @@ package p_type is
     f1:datat;
     f2:datat;
     f3:datat;
+    f4:datat;
+    f5:datat;
+    f6:datat;
+    f7:datat;
     gp:datat;
     sp:datat;
     fp:datat;
@@ -125,7 +160,6 @@ package body p_type is
     end if;
 
     if opecode="110000" or opecode="100011" or opecode="110001" then
-      report "mem_read";
       control.MemRead:='1';
       control.MemToReg:='1';
     else
@@ -162,15 +196,15 @@ package body p_type is
 
     if opecode="011010" then
       control.IORead:='1';
-	 else
-	   control.IORead:='0';
+    else
+      control.IORead:='0';
     end if;
     
     if opecode="011011" then
       control.IOWrite:='1';
     eLSE
-		control.IOWrite:='0';
-	 end if;
+      control.IOWrite:='0';
+    end if;
     if opecode="010001" then
       control.fpu_data:='1';
     else
@@ -202,9 +236,11 @@ package body p_type is
           AC:=ALUSLL;
         when "000010" =>
           AC:=ALUSLR;
+        when "011010" =>
+          AC:=ALUDIV2;
+        when "011000" =>
+          AC:=ALUMUL4;
         when others =>
-          assert false
-            report "invalid input in make_alu_control";
       end case;
     else
       case (opecode) is
@@ -256,5 +292,5 @@ package body p_type is
 --  begin
 --    
 --  end <procedure_name>;
- 
+  
 end p_type;
