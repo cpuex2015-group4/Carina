@@ -19,8 +19,8 @@ architecture struct of finv is
   component finv_table is
 	  port (
 		  CLKA  : in  std_logic;
-			ADDRA : in  std_logic_vector ( 9 downto 0); -- テーブル引きするmantの上位10bit - 1bit(ケチ表現)
-			DOUTA : out std_logic_vector (31 downto 0)); -- 定数項24bit & 勾配8bit
+			ADDRA : in  std_logic_vector ( 9 downto 0); 
+			DOUTA : out std_logic_vector (45 downto 0));
 	end component;
 
 	signal input_f  : float;
@@ -28,10 +28,13 @@ architecture struct of finv is
 
   signal rom_en   : std_logic := '0';
   signal rom_addr : std_logic_vector ( 9 downto 0);
-  signal rom_data : std_logic_vector (31 downto 0);
-	signal const    : std_logic_vector (22 downto 0);
-	signal grad     : std_logic_vector (22 downto 0);
-	signal mant     : std_logic_vector (22 downto 0);
+  signal rom_data : std_logic_vector (45 downto 0);
+	signal const    : std_logic_vector (23 downto 0);
+	signal manti    : std_logic_vector (23 downto 0);
+  signal grad     : std_logic_vector (22 downto 0);
+	signal gx       : std_logic_vector (46 downto 0);
+  signal gx2      : std_logic_vector (23 downto 0);
+	signal mant     : std_logic_vector (23 downto 0);
 
 begin
 	rom_addr <= input(22 downto 13);
@@ -41,12 +44,16 @@ begin
 		ADDRA => rom_addr,
 		DOUTA => rom_data);
 
-  grad <= ("1" & rom_data( 8 downto 0)) * input_f.mant(12 downto 0);
+  manti <= "1" & input_f.mant(22 downto 0);
+  const <= "1" & rom_data(45 downto 23);
+  grad  <= rom_data(22 downto  0);
+  gx    <= grad * manti;
+  gx2   <= gx(46 downto 23);
+  mant  <= const - gx2;
 
--- Underflowの場合を追加すべき
   output_f.sign <= input_f.sign;
-	output_f.expo <= 253 - input_f.expo; -- 指数部を計算
-	output_f.mant <= rom_data(31 downto 9) - ("000000000" & grad(22 downto 10)); -- ニュートン法からfinvmanを計算
+	output_f.expo <= 253 - input_f.expo;
+	output_f.mant <= mant(21 downto 0) & "0";
 
   holo : process(clk)
   begin

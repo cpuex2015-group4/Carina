@@ -53,17 +53,17 @@ uint32_t todownto(uint32_t from, uint32_t to, int up, int down){
 
 void printbit(char *name, uint32_t f, int up, int down){
 	int i,j;
-	printf("%s =",name);
+	//	printf("%s =",name);
 	j = down;
 
 	for(i = 0; down < up+1; down++){
-		if(up == 31 && j == 0){
-			if(i == 0 || i == 1 || i == 9) printf(" ");
-			i++;
-		}
+	//	if(up == 31 && j == 0){
+	//		if(i == 0 || i == 1 || i == 9) printf(" ");
+	//		i++;
+	//	}
 		printf("%d", (int)((f & ((uint32_t)1 << (up-down))) >> (up-down)));
 	}
-	puts("");
+	//	puts("");
 }	 
 
 int main(int argc, char *argv[]){
@@ -112,14 +112,16 @@ int main(int argc, char *argv[]){
 		out.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(manto,21,0) << 1);
 		tes.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(tes.i,22,1) << 1);
 
-			printbit("input ",input.i,31,0);
-			printbit("a0    ",a0.i,31,0);
-			printbit("const ",constant.i,31,0);
-			printbit("grad  ",gradient.i,31,0);
-			printbit("test  ",tes.i,31,0);
-			printbit("output",out.i,31,0);
-			printbit("answer",ans.i,31,0);
-			printf("error:%3dulp\n", abs(out.i-ans.i));
+		printbit("input ",input.i,31,0);
+		printf(" ");
+		/*			printbit("a0    ",a0.i,31,0);
+						printbit("const ",constant.i,31,0);
+						printbit("grad  ",gradient.i,31,0);
+						printbit("test  ",tes.i,31,0);
+		 */			printbit("output",out.i,31,0);
+		puts("");
+		//			printbit("answer",ans.i,31,0);
+		//			printf("error:%3dulp\n", abs(out.i-ans.i));
 	}
 
 	return 0;
