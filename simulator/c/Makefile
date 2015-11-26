@@ -12,7 +12,7 @@ HEADER_UTILS=utils.h
 
 $(TARGET): $(OBJS)
 	cd ../fpu; make
-	$(CC) -I$(FPUDIR) $(LDFLAGS) -o $(TARGET) $(CFLAGS) $(OBJS)
+	$(CC) -I$(FPUDIR) -o $(TARGET) $(CFLAGS) $(OBJS) $(LDFLAGS)
 
 %.o: %.c
 	$(CC) -I$(FPUDIR) -c $(CFLAGS) $<
