@@ -112,7 +112,6 @@ int main(int argc, char *argv[]){
 		out.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(manto,21,0) << 1);
 		tes.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(tes.i,22,1) << 1);
 
-		if(abs(out.i - ans.i) > 6){
 			printbit("input ",input.i,31,0);
 			printbit("a0    ",a0.i,31,0);
 			printbit("const ",constant.i,31,0);
@@ -121,7 +120,6 @@ int main(int argc, char *argv[]){
 			printbit("output",out.i,31,0);
 			printbit("answer",ans.i,31,0);
 			printf("error:%3dulp\n", abs(out.i-ans.i));
-		}
 	}
 
 	return 0;

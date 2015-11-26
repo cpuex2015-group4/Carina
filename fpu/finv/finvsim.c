@@ -80,13 +80,15 @@ int main(int argc, char *argv[]){
 	uint32_t mantg;
 	uint32_t manto;
 	union hoge out;
+	union hoge ans;
 
-	input.i  = 0xc147ae; // input 
+	input.i  = 0x3fc147ae; // input 
 	one.f    = 1.0;
+	ans.f    = 1.0 / input.f;
 
 	a0.i = one.i + (fromdownto(input.i, 22, 13) << 13);
-	a1.i = one.i + (fromdownto(input.i, 22,  0) << 13);
-	
+	a1.i = one.i + fromdownto(input.i, 22,  0);
+
 	x1.f = one.f / a0.f;
 	x2.i = a0.i + ((uint32_t)1 << 13);
 	x2.f = one.f / x2.f;
@@ -97,20 +99,17 @@ int main(int argc, char *argv[]){
 	mant  = fromdownto(a1.i      ,22,0) + ((uint32_t)1 << 23);
 	mantc = fromdownto(constant.i,22,0) + ((uint32_t)1 << 23);
 	if(fromdownto(gradient.i,30,23) == 126){
-	  mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23)) / 2;
+		mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23)) / 2;
 	}else{
-	  mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23)) / 4;
+		mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23)) / 4;
 	}
 	manto = ((uint64_t)mantg * (uint64_t)mant) / 8388608;
 	manto = mantc - manto;
 
-	puts("");
-
 	out.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(manto,21,0) << 1);
 
 	printbit("output",out.i,31,0);
-  printf("%f,%f\n", input.f, out.f);
-
+	printbit("answer",ans.i,31,0);
 
 	return 0;
 }
