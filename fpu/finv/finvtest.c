@@ -100,19 +100,19 @@ int main(int argc, char *argv[]){
 		tes.f = constant.f - (gradient.f * input.f); // expo = 126
 		mant  = fromdownto(input.i   ,22,0) + ((uint32_t)1 << 23);
 		mantc = fromdownto(constant.i,22,0) + ((uint32_t)1 << 23);
-		mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23));
-		manto = ((uint64_t)mantg * (uint64_t)mant) / 8388608;
-
 		if(fromdownto(gradient.i,30,23) == 126){
-			manto = mantc  - manto / 2;
+			mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23)) / 2;
 		}else{
-			manto = mantc  - manto / 4;
+			mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23)) / 4;
 		}
+		manto = ((uint64_t)mantg * (uint64_t)mant) / 8388608;
+		manto = mantc - manto;
+
 
 		out.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(manto,21,0) << 1);
 		tes.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(tes.i,22,1) << 1);
 
-		if(abs(out.i - ans.i) > 5){
+		if(abs(out.i - ans.i) > 6){
 			printbit("input ",input.i,31,0);
 			printbit("a0    ",a0.i,31,0);
 			printbit("const ",constant.i,31,0);
