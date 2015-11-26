@@ -14,6 +14,11 @@ AS=$(PYTHON) ./assembler/main.py
 PC_EMITTER=$(PYTHON) ./assembler/emit.py
 CSIM_DIR=./simulator/c
 FSIM_DIR=./simulator/fpu
+SERVER_DIR=./linux_server
+SERVER=$(SERVER_DIR)/cserver
+SERVERFLAGS= -b -B 9600
+IMPACT = impact -batch
+IMPACT_CMD= impact.cmd
 PYSIM=$(PYTHON) ./simulator/python/main.py
 CSIM=$(CSIM_DIR)/csim
 DEPENDENCY_MODULES=.install.txt
@@ -63,7 +68,12 @@ run: $(TARGET) $(CSIM)
 .PHONY: server-run
 server-run: $(CONTEST_TARGET) $(CSIM)
 	@echo "tekitou. owattaatoni cutecom de raytracer_bin wo okuttene"
-	sudo linux_server/cserver -b -B 9600 linux_server/sld/contest.sld output.ppm
+	cd $(SERVER_DIR);$(MAKE)
+	$(IMPACT) $(IMPACT_CMD)
+#	cat $(CONTEST_TARGET) |sudo tee  /dev/ttyUSB0
+#	@echo "cat $(CONTEST_TARGET) |sudo tee  /dev/ttyUSB0 wo kokode sitakatta"
+	@echo "jibunde $(CONTEST_TARGET) okutte"
+	sudo $(SERVER) $(SERVERFLAGS) $(SLD) output.ppm
 	convert output.ppm output.jpg
 .PHONY: debug
 debug: $(TARGET)
@@ -100,7 +110,8 @@ clean:
 		assembler/*.pyc simulator/*.pyc \
 		tools/*.pyc \
 		raytracer/*.s raytracer/*.o $(TARGET) $(CONTEST_TARGET) \
-		.mem-dump output.png output.ppm
+		.mem-dump output.png output.ppm output.jpg
 	@cd $(MINCAML_DIR); $(MAKE) clean
 	@cd $(CSIM_DIR); $(MAKE) clean
 	@cd $(FSIM_DIR); $(MAKE) clean
+	@cd $(SERVER_DIR); $(MAKE) clean
