@@ -705,7 +705,6 @@ in
 
 (**** オブジェクト1つのデータの読み込み ****)
 let rec read_nth_object n =
-
   let texture = read_int () in                      
   if texture <> -1 then
     ( 
@@ -805,7 +804,7 @@ in
 (* ネットワーク1つを読み込みベクトルにして返す *)
 let rec read_net_item length =
   let item = read_int () in
-  if item = -1 then create_array (length + 1) (-1)
+  if item = -1 then (create_array (length + 1) (-1))
   else
     let v = read_net_item (length + 1) in
     (v.(length) <- item; v)
@@ -835,7 +834,7 @@ let rec read_parameter _ =
    read_light();
    read_all_object ();
    read_and_network 0;
-   or_net.(0) <- read_or_network 0
+   or_net.(0) <- read_or_network 0;
   )
 in
 

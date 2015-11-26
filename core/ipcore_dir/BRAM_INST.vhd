@@ -44,7 +44,7 @@ ENTITY BRAM_INST IS
   PORT (
     clka : IN STD_LOGIC;
     wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
-    addra : IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(14 DOWNTO 0);
     dina : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
@@ -56,7 +56,7 @@ COMPONENT wrapped_BRAM_INST
   PORT (
     clka : IN STD_LOGIC;
     wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
-    addra : IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(14 DOWNTO 0);
     dina : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
@@ -65,8 +65,8 @@ END COMPONENT;
 -- Configuration specification
   FOR ALL : wrapped_BRAM_INST USE ENTITY XilinxCoreLib.blk_mem_gen_v7_3(behavioral)
     GENERIC MAP (
-      c_addra_width => 14,
-      c_addrb_width => 14,
+      c_addra_width => 15,
+      c_addrb_width => 15,
       c_algorithm => 1,
       c_axi_id_width => 4,
       c_axi_slave_type => 0,
@@ -93,16 +93,16 @@ END COMPONENT;
       c_has_softecc_input_regs_a => 0,
       c_has_softecc_output_regs_b => 0,
       c_init_file => "BlankString",
-      c_init_file_name => "no_coe_file_loaded",
+      c_init_file_name => "BRAM_INST.mif",
       c_inita_val => "0",
       c_initb_val => "0",
       c_interface_type => 0,
-      c_load_init_file => 0,
+      c_load_init_file => 1,
       c_mem_type => 0,
       c_mux_pipeline_stages => 0,
       c_prim_type => 1,
-      c_read_depth_a => 16384,
-      c_read_depth_b => 16384,
+      c_read_depth_a => 32768,
+      c_read_depth_b => 32768,
       c_read_width_a => 32,
       c_read_width_b => 32,
       c_rst_priority_a => "CE",
@@ -119,8 +119,8 @@ END COMPONENT;
       c_use_softecc => 0,
       c_wea_width => 1,
       c_web_width => 1,
-      c_write_depth_a => 16384,
-      c_write_depth_b => 16384,
+      c_write_depth_a => 32768,
+      c_write_depth_b => 32768,
       c_write_mode_a => "WRITE_FIRST",
       c_write_mode_b => "WRITE_FIRST",
       c_write_width_a => 32,

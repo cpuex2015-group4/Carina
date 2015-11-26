@@ -45,6 +45,7 @@ BRAM_INST/simulation/timing/wave_mti.do
 BRAM_INST/simulation/timing/wave_ncsim.sv
 BRAM_INST.asy
 BRAM_INST.gise
+BRAM_INST.mif
 BRAM_INST.ngc
 BRAM_INST.sym
 BRAM_INST.vhd
@@ -53,4 +54,5 @@ BRAM_INST.xco
 BRAM_INST.xise
 BRAM_INST_flist.txt
 BRAM_INST_xmdf.tcl
+_xmsgs/pn_parser.xmsgs
 summary.log

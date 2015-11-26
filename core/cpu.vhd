@@ -30,8 +30,8 @@ end cpu;
 ----pipeline ga sitai naa
 
 architecture RTL of cpu is
-
-  constant IS_DEBUG:boolean:=true;
+  constant IS_SERVER:boolean:=false;
+  constant IS_DEBUG:boolean:=false;
   constant IS_SIM:boolean:=false;
   component BRAM_INST
     port(
@@ -55,7 +55,7 @@ architecture RTL of cpu is
   component loader
     port (
       clk,IO_empty,activate: in std_logic;
-      IO_recv_data: in std_logic_vector(31 downto 0);
+      IO_recv_data: in std_logic_vector(31 Downto 0);
       addr:out BRAM_ADDRT;
       din:out datat;
       bram_we:out std_logic_vector(0 downto 0);
@@ -127,7 +127,8 @@ signal isZero:std_logic;
   constant memory_read_wait:std_logic_vector(2 downto 0):="101";
   signal memory_count:std_logic_vector(2 downto 0):="000";
 
-
+--io
+  signal io_send_aa_wait:std_logic_vector(2 downto 0):="000";
 --fpu
 constant fpu_wait_max:std_logic_vector(2 downto 0):="010";
 signal fpu_wait:std_logic_vector(2 downto 0):="000";
@@ -138,6 +139,17 @@ signal fpu_result:datat:=x"00000000";
 signal fpu_FPCond:std_logic:='0';
   
   signal count:integer:=0;
+
+
+
+
+
+--dump
+  type dump_state_type is (D_INIT,D_GPR,D_FPR_INIT,D_FPR,D_PC_INIT,D_PC,DEAD);
+  signal dump_state:dump_state_type:=D_INIT;
+  signal dump_gpr_i:std_logic_vector(6 downto 0):="0000000"; --hitotu ooku torimashita
+  signal dump_fpr_i:std_logic_vector(6 downto 0):="0000000"; --hitotu ooku torimashita
+  signal wait_count:std_logic_vector(2 downto 0):="000";
 begin
   inst_mem:BRAM_INST port map(
     addra=>inst_addr,
@@ -210,7 +222,7 @@ begin
               core_state<=WaIT_HEADER;
             end if;
           else
-            core_state<=WaIT_HEADER;
+            core_state<=wait_header;
             io_we<='0';
           end if;
         when WAIT_HEADER =>
@@ -230,18 +242,23 @@ begin
               io_send_data<=x"52435644";
               IO_WE<='1';
             end if;
+--            if IS_Server then
+              io_send_data<=x"000000aa";
+              IO_WE<='1';
+--            end if;
+
+            word_access<='0';
             PC<=entry_point;
             core_state<=EXE_READY;
---       else
---        io_send_data<=io_recv_data;
---        io_we<=loader_io_re;
+--          else
+--            io_send_data<=io_recv_data;
+--            io_we<=loader_io_re;
           end if;
         when EXE_READY=>
           reg_file(29)<="00000000000011111111111111111111";   --sp=mem_max;
           reg_file(28)<=heap_head; --gp=heap_head
           io_we<='0';
           word_access<='0';
-          report "exe ready";
           core_state<=EXECUTING;    --data source no kirikae
         when EXECUTING =>
       --debug
@@ -255,6 +272,10 @@ begin
           DEBUG.f1<=fpu_reg_file(1);
           DEBUG.f2<=fpu_reg_file(2);
           DEBUG.f3<=fpu_reg_file(3);
+          DEBUG.f4<=fpu_reg_file(4);
+          DEBUG.f5<=fpu_reg_file(5);
+          DEBUG.f6<=fpu_reg_file(6);
+          DEBUG.f7<=fpu_reg_file(7);
           DEBUG.fp<=reg_file(30);
           DEBUG.gp<=reg_file(28);
           DEBUG.sp<=reg_file(29);
@@ -366,10 +387,8 @@ begin
                   data.newPC<=PC+1;
                 when b=>
                   if inst.immediate(15)='0' then
-                    report "PLUS";
                     data.newPC<=PC+1+("0000000000000000" & inst.immediate);
                   else
-                    report "MINUS";
                     data.newPC<=PC+1+("1111111111111111" & inst.immediate);
                   end if;
                 when j=>
@@ -415,7 +434,6 @@ begin
                     memory_count<=memory_count+"001";
                 end case;
               elsif control.MemRead='1' then
-                report "memread";
                 case (memory_count) is
                   when "000" =>
                     SRAM_ADDR<=inst.memaddr;
@@ -447,7 +465,6 @@ begin
               exe_state<=F;
               if inst.opecode="000011" or (inst.opecode="000000" and inst.funct="01001") then  --jal,jral
                 reg_file(31)<=PC+x"00000001";
-                report "j_l";
               end if;
               case (control.PC_control) is
                 when normal =>
@@ -471,6 +488,98 @@ begin
 
           if IS_SIM then
             assert false report "Halted" severity failure;
+          end if;
+          word_access<='1';
+          if IS_DEBUG then
+          case (dump_state) is
+            when d_init =>
+              if wait_count=3 then
+                wait_count<="000";
+                if IO_full='0' then
+                  IO_we<='1';
+                  IO_send_data<=x"cafecafe";
+                  dump_state<=d_gpr;
+                else
+                  IO_we<='0';
+                end if;
+              else
+                wait_count<=wait_count+1;
+              end if;
+            when d_gpr =>
+              if wait_count=3 then
+                wait_count<="000";
+                if IO_full='0' then
+                  IO_we<='1';
+                  dump_gpr_i<=dump_gpr_i+1;
+                  IO_send_data<=reg_file(CONV_INTEGER(dump_gpr_i));
+                  if dump_gpr_i=31 then
+                    dump_state<=d_fpr_init;
+                  end if;
+                else
+                  IO_we<='0';
+                end if;
+                else
+                  wait_count<=wait_count+1;
+                end if;
+            when d_fpr_init =>
+              if wait_count<=3 then
+                wait_count<="000";
+                if IO_full='0' then
+                  IO_we<='1';
+                  IO_send_data<=x"cafecafe";
+                  dump_state<=d_fpr;
+                else
+                  IO_we<='0';
+                end if;
+                else
+                  wait_count<=wait_count+1;
+                end if;
+            when d_fpr =>
+              if wait_count=3 then
+                wait_count<="000";
+                if IO_full='0' then
+                  IO_we<='1';
+                  dump_fpr_i<=dump_fpr_i+1;
+                  IO_send_data<=fpu_reg_file(CONV_INTEGER(dump_fpr_i));
+                  if dump_fpr_i=31 then
+                    dump_state<=d_pc_init;
+                  end if;
+                else
+                  IO_we<='0';
+                end if;
+                else
+                  wait_count<=wait_count+1;
+                end if;
+            when d_pc_init =>
+              if wait_count<=3 then
+                wait_count<="000";
+                if IO_full='0' then
+                  IO_we<='1';
+                  IO_send_data<=x"cafecafe";
+                  dump_state<=d_pc;
+                else
+                  IO_we<='0';
+                end if;
+              else
+                wait_count<=wait_count+1;
+              end if;
+            when d_pc =>
+              if wait_count=3 then
+                wait_count<="000";
+              if IO_full='0' then
+                  IO_we<='1';
+                  IO_send_data<=PC;
+                  dump_state<=dead;
+                else
+                  IO_we<='0';
+                end if;
+              else
+                wait_count<=wait_count+1;
+              end if;
+            when dead =>
+              io_we<='0';
+          end case;
+
           end if;
           
 --          if IS_DEBUG then

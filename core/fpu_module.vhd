@@ -72,7 +72,7 @@ begin
   fi: finv
     port map(
       clk=>clk,
-      input=>data1,
+      input=>data2,
       output=>inv_result
       );
 
