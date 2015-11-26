@@ -36,8 +36,8 @@ uint32_t finv(uint32_t f1) {
 	one.f    = 1.0;
 
 	a0.i = one.i + (fromdownto(input.i, 22, 13) << 13);
-	a1.i = one.i + (fromdownto(input.i, 22,  0) << 13);
-	
+	a1.i = one.i + fromdownto(input.i, 22,  0);
+
 	x1.f = one.f / a0.f;
 	x2.i = a0.i + ((uint32_t)1 << 13);
 	x2.f = one.f / x2.f;
@@ -47,14 +47,13 @@ uint32_t finv(uint32_t f1) {
 
 	mant  = fromdownto(a1.i      ,22,0) + ((uint32_t)1 << 23);
 	mantc = fromdownto(constant.i,22,0) + ((uint32_t)1 << 23);
-	mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23));
-	manto = ((uint64_t)mantg * (uint64_t)mant) / 8388608;
-
 	if(fromdownto(gradient.i,30,23) == 126){
-	  manto = mantc  - manto / 2;
+		mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23)) / 2;
 	}else{
-	  manto = mantc  - manto / 4;
+		mantg = (fromdownto(gradient.i,22,0) + ((uint32_t)1 << 23)) / 4;
 	}
+	manto = ((uint64_t)mantg * (uint64_t)mant) / 8388608;
+	manto = mantc - manto;
 
 	out.i = (fromdownto(input.i,31,31) << 31) + ((uint32_t)(253 - fromdownto(input.i,30,23)) << 23) + (fromdownto(manto,21,0) << 1);
 
