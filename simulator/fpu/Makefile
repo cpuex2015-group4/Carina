@@ -1,6 +1,7 @@
 TARGET=libfpu.so
 CC=gcc
 CFLAGS=-Wall
+LDFLAGS=-lm
 SRC=fpu.c fadd.c fmul.c finv.c
 
 $(TARGET): $(SRC)

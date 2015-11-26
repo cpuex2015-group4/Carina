@@ -1,6 +1,7 @@
 TARGET=csim
 CC=gcc
 CFLAGS=-Wall -std=c99 -O3 -D_POSIX_C_SOURCE=199309L
+LDFLAGS=-lm
 SRC_MAIN=main.c
 SRC_UTILS=utils.c
 SRC_SIM=simulator.c
@@ -11,7 +12,7 @@ HEADER_UTILS=utils.h
 
 $(TARGET): $(OBJS)
 	cd ../fpu; make
-	$(CC) -I$(FPUDIR) -o $(TARGET) $(CFLAGS) $(OBJS)
+	$(CC) -I$(FPUDIR) $(LDFLAGS) -o $(TARGET) $(CFLAGS) $(OBJS)
 
 %.o: %.c
 	$(CC) -I$(FPUDIR) -c $(CFLAGS) $<
