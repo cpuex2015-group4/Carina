@@ -9,6 +9,8 @@ core/_impact*
 core/hakeisimu
 core/iseconfig
 core/ipcore_dir/_xmsgs
+_*
+linux_server/cserver
 #*#
 __pycache__
 .python-version

@@ -10,42 +10,43 @@ Running ngcbuild...
 Writing VHO instantiation template for 'finv_table'...
 Writing VHDL behavioral simulation model for 'finv_table'...
 WARNING:sim - Overwriting existing file
-   /home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table/doc/b
-   lk_mem_gen_v7_3_vinfo.html with file from view xilinx_documentation
+   /home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table/
+   doc/blk_mem_gen_v7_3_vinfo.html with file from view xilinx_documentation
 Delivered 1 file into directory
-/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table
+/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table
 Generating ASY schematic symbol...
 INFO:sim:949 - Finished generation of ASY schematic symbol.
 Generating SYM schematic symbol for 'finv_table'...
 Generating metadata file...
-Generating ISE project file for 'finv_table'...
+Regenerating ISE project file for 'finv_table'...
 Generating ISE project...
 XCO file found: finv_table.xco
 XMDF file found: finv_table_xmdf.tcl
 Adding
-/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table.asy
+/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table.asy
 -view all -origin_type imported
 Adding
-/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table.ngc
+/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table.ngc
 -view all -origin_type created
+WARNING: ja is not supported as a language.  Using usenglish.
 Checking file
-"/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table.ngc"
-for project device match ...
+"/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table.ng
+c" for project device match ...
 File
-"/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table.ngc"
-device information matches project device.
+"/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table.ng
+c" device information matches project device.
 Adding
-/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table.sym
+/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table.sym
 -view all -origin_type imported
 Adding
-/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table.vhd
+/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table.vhd
 -view all -origin_type created
 INFO:HDLCompiler:1061 - Parsing VHDL file
-   "/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table.vhd"
-   into library work
+   "/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table
+   .vhd" into library work
 INFO:ProjectMgmt - Parsing design hierarchy completed successfully.
 Adding
-/home/kentaro/Documents/cpuex/Carina/core/ipcore_dir/tmp/_cg/finv_table.vho
+/home/yukiimai/Sandbox/2015_winter/Carina/core/ipcore_dir/tmp/_cg/finv_table.vho
 -view all -origin_type imported
 INFO:TclTasksC:2116 - The automatic calculation of top has been turned-off.
    Please set the new top explicitly by running the "project set top" command.
