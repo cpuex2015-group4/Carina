@@ -24,3 +24,4 @@ python-tmp.*
 *.png
 *.jpg
 *.coe
+input.rs
